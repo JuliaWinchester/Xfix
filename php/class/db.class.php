@@ -86,8 +86,7 @@ class DB {
 		$sql = "INSERT INTO $table($column) VALUES $value_placeholder";
 		$stmt = $this->dbh->prepare($sql);
 		$stmt->execute($value);
-
-		return true;
+		return $stmt->rowCount();
 	}
 
 	/**
@@ -157,7 +156,13 @@ class DB {
 			$sql = "SELECT $column FROM $table";
 			$params = [];
 		}
-		return $this->executereadquery($sql, $params);
+
+		$result = $this->executereadquery($sql, $params);
+		if (count($result) == 1) { 
+			return $result[0];
+		} else {
+			return $result;
+		}
 	}
 
 	/**

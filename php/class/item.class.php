@@ -1,6 +1,6 @@
 <?php
 
-include_once 'dbObject.class.php';
+include_once 'DBObject.class.php';
 
 /**    
 * Class for Xfix database "item" object, describing an anatomical structure. 

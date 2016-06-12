@@ -1,6 +1,6 @@
 <?php
 
-include_once 'dbObject.class.php';
+include_once 'DBObject.class.php';
 
 /**    
 * Class for Xfix database "view" object, describing an image view of an
@@ -25,7 +25,7 @@ class View extends DBObject
 	public $scale;
 	public $position_x;
 	public $position_y;
-	public $object_id;
+	public $model_id;
 	public $labels; // Array of label objects
 	public $items; // Array of item objects
 
@@ -45,10 +45,10 @@ class View extends DBObject
 		$this->scale = $this->data['scale'];
 		$this->position_x = $this->data['position_x'];
 		$this->position_y = $this->data['position_y'];
-		$this->object_id = $this->data['object_id'];
+		$this->model_id = $this->data['model_id'];
 		$this->datafields = ['id', 'type', 'image', 'image_scaled', 'image_flat',
 							 'image_thumb', 'scale', 'position_x', 'position_y', 
-							 'object_id'];
+							 'model_id'];
 		$this->$labels = [];
 		$this->$items = [];
 	}
