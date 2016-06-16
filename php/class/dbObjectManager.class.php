@@ -90,8 +90,8 @@ class DBObjectManager
 	function dbRowsToObjArray($obj_class, $db_rows)
 	{
 		$obj_array = [];
-		foreach ($db_rows as $key => $value) {
-			$obj_array[$value['id']] = new $obj_class($value);
+		foreach ($db_rows as $index => $data) {
+			$obj_array[$data['id']] = new $obj_class($data);
 		}
 		return $obj_array;
 	}
@@ -109,7 +109,7 @@ class DBObjectManager
 		$view_rows = $this->DB->read('view', ['id', 'in', $view_ids]);
 		$view_objs = $this->dbRowsToObjArray('View', $view_rows);
 
-		$model_ids = array_map(function($x) {return $x->model_id;}, $view_objs);
+		$model_ids = array_map(function($x) {return $x->data['model_id'];}, $view_objs);
 		$model_ids = array_unique($model_ids);
 
 		$model_rows = $this->DB->read('model',['id', 'in', $model_ids]);
@@ -204,8 +204,8 @@ class DBObjectManager
 		}
 
 		$obj_ids = []
-		foreach ($obj_array as $key => $value) {
-			$obj_ids[] = $value->id;
+		foreach ($obj_array as $index => $obj) {
+			$obj_ids[] = $obj->data['id'];
 		}
 
 		return $this->DB->delete($obj_types[0], $obj_ids);
