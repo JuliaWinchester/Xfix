@@ -16,19 +16,17 @@ include_once 'DBObject.class.php';
 */
 class Item extends DBObject
 {
-	// Inherited variables: public $id, $data, $datafields
-	public $name;
+	// Inherited variables: protected $db_row, $data; public $tiers
 
 	/**
 	* Unpacks database row array and sorts values into variables as appropriate. 
 	*
-	* @access public 
+	* @access protected 
 	*/
-	function unpackdata()
+	protected function unpackData()
 	{
-		$this->id = $this->data['id'];
-		$this->name = $this->data['name'];
-		$this->datafields = ['id', 'name'];
+		$this->data['id'] = $this->db_row['id'];
+		$this->data['name'] = $this->db_row['name'];
 	}
 }
 

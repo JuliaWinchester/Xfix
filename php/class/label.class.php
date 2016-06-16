@@ -15,39 +15,26 @@ include_once 'DBObject.class.php';
 */
 class Label extends DBObject
 {
-	// Inherited variables: public $id, $data, $datafields
-	public $name;
-	public $label_position_x;
-	public $label_position_y;
-	public $arrow_position_x;
-	public $arrow_position_y;
-	public $font_family;
-	public $font_weight;
-	public $color;
-	public $view_id;
-	public $item_id;
+	// Inherited variables: protected $db_row, $data; public $tiers
 
 	/**
 	* Unpacks database row array and sorts values into variables as appropriate. 
 	*
 	* @access public 
 	*/
-	function unpackdata()
+	protected function unpackData()
 	{
-		$this->id = $this->data['id'];
-		$this->name = $this->data['name'];
-		$this->label_position_x = $this->data['label_position_x'];
-		$this->label_position_y = $this->data['label_position_y'];
-		$this->arrow_position_x = $this->data['arrow_position_x'];
-		$this->arrow_position_y = $this->data['arrow_position_y'];
-		$this->font_family = $this->data['font_family'];
-		$this->font_weight = $this->data['font_weight'];
-		$this->color = $this->data['color'];
-		$this->view_id = $this->data['view_id'];
-		$this->item_id = $this->data['item_id'];
-		$this->datafields = ['id', 'name', 'label_position_x', 
-			'label_position_y', 'arrow_position_x', 'arrow_position_y',
-			'font_family', 'font_weight', 'color', 'view_id', 'item_id'];
+		$this->data['id'] = $this->db_row['id'];
+		$this->data['name'] = $this->db_row['name'];
+		$this->data['label_position_x'] = $this->db_row['label_position_x'];
+		$this->data['label_position_y'] = $this->db_row['label_position_y'];
+		$this->data['arrow_position_x'] = $this->db_row['arrow_position_x'];
+		$this->data['arrow_position_y'] = $this->db_row['arrow_position_y'];
+		$this->data['font_family'] = $this->db_row['font_family'];
+		$this->data['font_weight'] = $this->db_row['font_weight'];
+		$this->data['color'] = $this->db_row['color'];
+		$this->data['view_id'] = $this->db_row['view_id'];
+		$this->data['item_id'] = $this->db_row['item_id'];
 	}
 }
 

@@ -16,41 +16,27 @@ include_once 'DBObject.class.php';
 */
 class View extends DBObject
 {
-	// Inherited variables: public $id, $data, $datafields
-	public $type;
-	public $image;
-	public $image_scaled;
-	public $image_flat;
-	public $image_thumb;
-	public $scale;
-	public $position_x;
-	public $position_y;
-	public $model_id;
-	public $labels; // Array of label objects
-	public $items; // Array of item objects
+	// Inherited variables: protected $db_row, $data; public $tiers
 
 	/**
 	* Unpacks database row array and sorts values into variables as appropriate. 
 	*
 	* @access public 
 	*/
-	function unpackdata()
+	protected function unpackData()
 	{
-		$this->id = $this->data['id'];
-		$this->type = $this->data['type'];
-		$this->image = $this->data['image'];
-		$this->image_scaled = $this->data['image_scaled'];
-		$this->image_flat = $this->data['image_flat'];
-		$this->image_thumb = $this->data['image_thumb'];
-		$this->scale = $this->data['scale'];
-		$this->position_x = $this->data['position_x'];
-		$this->position_y = $this->data['position_y'];
-		$this->model_id = $this->data['model_id'];
-		$this->datafields = ['id', 'type', 'image', 'image_scaled', 'image_flat',
-							 'image_thumb', 'scale', 'position_x', 'position_y', 
-							 'model_id'];
-		$this->$labels = [];
-		$this->$items = [];
+		$this->data['id'] = $this->db_row['id'];
+		$this->data['type'] = $this->db_row['type'];
+		$this->data['image'] = $this->db_row['image'];
+		$this->data['image_scaled'] = $this->db_row['image_scaled'];
+		$this->data['image_flat'] = $this->db_row['image_flat'];
+		$this->data['image_thumb'] = $this->db_row['image_thumb'];
+		$this->data['scale'] = $this->db_row['scale'];
+		$this->data['position_x'] = $this->db_row['position_x'];
+		$this->data['position_y'] = $this->db_row['position_y'];
+		$this->data['model_id'] = $this->db_row['model_id'];
+		$this->data['labels'] = [];
+		$this->data['items'] = []
 	}
 }
 

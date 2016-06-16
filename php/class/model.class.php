@@ -14,27 +14,21 @@ include_once 'DBObject.class.php';
 */
 class Model extends DBObject
 {
-	// Inherited variables: public $id, $data, $datafields
-	public $name;
-	public $type;
-	public $description;
-	public $section_id;
-	public $views;
+	// Inherited variables: protected $db_row, $data; public $tiers
 
 	/**
 	* Unpacks database row array and sorts values into variables as appropriate. 
 	*
 	* @access public 
 	*/
-	function unpackdata()
+	protected function unpackData()
 	{
-		$this->id = $this->data['id'];
-		$this->name = $this->data['name'];
-		$this->type = $this->data['type'];
-		$this->description = $this->data['description'];
-		$this->section_id = $this->data['section_id'];
-		$this->datafields = ['id', 'name', 'type', 'description', 'section_id'];
-		$this->views = [];
+		$this->data['id'] = $this->db_row['id'];
+		$this->data['name'] = $this->db_row['name'];
+		$this->data['type'] = $this->db_row['type'];
+		$this->data['description'] = $this->db_row['description'];
+		$this->data['section_id'] = $this->db_row['section_id'];
+		$this->data['views'] = []];
 	}
 }
 

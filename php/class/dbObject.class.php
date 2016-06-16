@@ -11,9 +11,8 @@
 */
 class DBObject
 {
-	public $id;
-	public $data;
-	public $datafields;
+	protected $db_row;
+	protected $data;
 	public $tiers = ['Section','Model','View','Label'];
 
 	// Static functions
@@ -56,16 +55,17 @@ class DBObject
 		}
 
 		// Merge top and sub objects
-		$top_id = strtolower($objs_t)."_id"
+		$top_id = strtolower($objs_t[0])."_id"
 		$sub_array_name = strtolower($sub_objs_t)."s";
 
-		foreach ($sub_objs as $key => $value) {
-			$obj_array[$value->{$top_id}]->{$sub_array_name}[$value->id] = $value;
+		foreach ($sub_objs as $index => $s_obj) {
+			$obj_i = $s_obj->data[$top_id];
+			$obj_array[$obj_i]->data[$sub_array_name][$s_obj->id] = $s_obj;
 		}
 
 		// Check for duplicate sub-objects
-		foreach ($obj_array as $key => $value) {
-			$value->removeDuplicateSubObjs();
+		foreach ($obj_array as $index => $obj) {
+			$obj->removeDuplicateSubObjs();
 		}
 
 		return $obj_array;
@@ -73,10 +73,24 @@ class DBObject
 
 	// Instance functions
 
-	function __construct($data)
+	function __construct($db_row)
 	{
-		$this->data = $data;
-		$this->unpackdata();
+		$this->db_row = $db_row;
+		$this->unpackData();
+	}
+
+	public function __set($variable, $value)
+	{
+		$this->data[$variable] = $value;	
+	}
+
+	public function __get($variable)
+	{
+		if (isset($this->data[$variable])){
+			return $this->data[$variable];
+		} else {
+			die('Unknown variable '.$variable.' in object '.$this);
+		}
 	}
 
 	/**
@@ -85,10 +99,9 @@ class DBObject
 	*
 	* @access public 
 	*/
-	function unpackdata() 
+	protected function unpackData() 
 	{
-		$this->id = $this->data['id'];
-		$this->datafields = ['id'];
+		$this->data['id'] = $this->db_row['id'];
 	}
 
 	/**
@@ -97,14 +110,14 @@ class DBObject
 	*
 	* @access public 
 	*/
-	function removeDuplicateSubObjs()
+	protected function removeDuplicateSubObjs()
 	{
 		$sub = $this->tiers[
 						array_search(get_class($this), $this->tiers) + 1]."s";
-		if (count($this->{$sub}) != count(array_unique($this->{$sub}))) {
+		if (count($this->data[$sub]) != count(array_unique($this->data[$sub]))) {
 			echo "Duplicate sub-objects found in ".get_class($this)." object!";
 			echo "Duplicate sub-objects being removed.";
-			$this->{$sub} = array_unique($this->{$sub});
+			$this->data[$sub] = array_unique($this->data[$sub]);
 		}
 	}
 
@@ -122,7 +135,7 @@ class DBObject
 	 * @return bool Success or failure of sub-object merge
 	 * @access public
 	 */
-	function mergeSubObjects($sub_object_array)
+	protected function mergeSubObjects($sub_object_array)
 	{
 		$obj_type = get_class($this);
 		$obj_type_index = array_search($obj_type, $this->tiers);
@@ -133,8 +146,8 @@ class DBObject
 		if (($obj_type_index + 1) != $sub_obj_type_index) { return FALSE;}
 
 		// for class section, need to add $sub_object_array to $models
-		$var_name = $sub_obj_types[0]."s";
-		$this->{$var_name} = array_merge($this->{$var_name}, $sub_object_array);
+		$sub_array = $sub_obj_types[0]."s";
+		$this->data[$sub_array] = array_merge($this->data[$sub_array], $sub_object_array);
 		$this->removeDuplicateSubObjs();
 		return TRUE; 
 	}

@@ -11,11 +11,11 @@
  */
 class DB {
 	protected $dbdriver = 'mysql';
-	protected $host = 'host_ip';
+	protected $host = '127.0.0.1';
 	protected $dbname = 'Xfix_test';
 	protected $charset = 'utf8';
-	protected $username = 'user';
-	protected $password = 'pass';
+	protected $username = 'Moocow';
+	protected $password = 'salmiakki';
 	public $dbh;
 
 	function __construct() 
@@ -115,7 +115,7 @@ class DB {
 	 					   "=" can also be "in" with "value" as array of values. 
 	 * @param mixed $column Optional column name(s) as string or array
 	 * @param bool $distinct Optional, whether or not distinct results returned
-	 * @return array Indexed array of database results
+	 * @return array Array of indexed database row result arrays
 	 * @access public
 	 */
 	function read($table, $where=NULL, $column=NULL, $distinct=FALSE)
@@ -157,12 +157,7 @@ class DB {
 			$params = [];
 		}
 
-		$result = $this->executereadquery($sql, $params);
-		if (count($result) == 1) { 
-			return $result[0];
-		} else {
-			return $result;
-		}
+		return $this->executereadquery($sql, $params);
 	}
 
 	/**
@@ -178,7 +173,7 @@ class DB {
 	 * @param array $where Optional where clause e.g. ["column","=","value"],
 	 					   "=" can also be "in" with "value" as array of values.
 	 * @param mixed $column Optional column name(s) as string or array
-	 * @return array Indexed array of database results
+	 * @return array Array of indexed database row result arrays
 	 * @access public
 	 */
 	function readInnerJoin($t1, $t2, $j1, $j2, $where=NULL, $column=NULL)
