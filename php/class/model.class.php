@@ -28,7 +28,9 @@ class Model extends DBObject
 		$this->data['type'] = $this->db_row['type'];
 		$this->data['description'] = $this->db_row['description'];
 		$this->data['section_id'] = $this->db_row['section_id'];
-		$this->data['views'] = []];
+		$this->data['views'] = [];
+		$this->data['save_fields'] = ['name', 'type', 'description', 
+			'section_id'];
 	}
 }
 

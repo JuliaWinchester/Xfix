@@ -35,6 +35,9 @@ class Label extends DBObject
 		$this->data['color'] = $this->db_row['color'];
 		$this->data['view_id'] = $this->db_row['view_id'];
 		$this->data['item_id'] = $this->db_row['item_id'];
+		$this->data['save_fields'] = array('name', 'label_position_x', 
+			'label_position_y', 'arrow_position_x', 'arrow_position_y',
+			'font_family', 'font_weight', 'color', 'view_id', 'item_id');
 	}
 }
 

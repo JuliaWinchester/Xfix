@@ -26,10 +26,30 @@ class DBObjectManager
 		$this->DB = $DB;
 	}
 
-	function flattenArray($a)
+	protected function flattenArray($a)
 	{
 		return call_user_func_array('array_merge', 
 									array_map('array_values', $a));
+	}
+
+	protected function validateObjClass($o)
+	{
+		if (gettype($o) == 'string') {
+			$class = $o;
+		} elseif (gettype($o) == 'object') {
+			$class = get_class($o)
+		} else {
+			return FALSE; // Error later
+		}
+
+		$valid_classes = ['Section','Model','View','Label','Item'];
+
+		if (in_array($class, $valid_classes)) {
+			return TRUE; 
+		} else {
+			return FALSE; // Error later
+		}
+
 	}
 
 	############################################################################
@@ -45,13 +65,10 @@ class DBObjectManager
 	 * @return DBObject Section, model, view, label, or item object
 	 * @access public
 	 */
-	function readObject($obj_class, $id)
+	public function readObject($obj_class, $id)
 	{
-		$obj_types = ['Section','Model','View','Label','Item'];
-		if (!in_array($obj_class, $obj_types)) {
-			return FALSE; // Error later
-		}
-		$db_row = $this->DB.read(strtolower($obj_class),['id','=',$id])[0];
+		$this->validateObjClass($obj_class);
+		$db_row = $this->DB->read(strtolower($obj_class),['id','=',$id])[0];
 		return new $obj_class($db_row);
 	}
 
@@ -65,9 +82,22 @@ class DBObjectManager
 	 * @return integer Number of affected database rows (should be 1)
 	 * @access public
 	 */
-	function saveObject($obj, $new=T)
+	public function saveObject($obj, $new=TRUE)
 	{
+		$this->validateObjClass($obj);
+		$obj_data = array_intersect_key($obj->data, 
+				array_flip($obj->data['save_fields']));
 
+		if ($new = TRUE) {
+			return $this->DB->create(strtolower($obj_class), 
+				array_keys($obj_data), array_values($obj_data));
+		} elseif ($new = FALSE) {
+			return $this->DB->update(strtolower($obj_class), 
+				array_keys($obj_data), array_values($obj_data), 
+				$obj->data['id']);
+		} else {
+			return FALSE; // Error later
+		}
 	}
 
 	/**
@@ -78,16 +108,21 @@ class DBObjectManager
 	 * @return integer Number of affected database rows (should be 1)
 	 * @access public
 	 */
-	function deleteObject($obj)
+	public function deleteObject($obj)
 	{
+		$this->validateObjClass($obj);
 		return $this->DB->delete(strtolower(get_class($obj)), [$obj->id]);
 	}
 
 	############################################################################
 	# Methods for collections of multiple DBObjects
 	############################################################################
+	protected function numberObjClasses($obj_array)
+	{
+		return count(array_unique(array_map('get_class', $obj_array)));
+	}
 
-	function dbRowsToObjArray($obj_class, $db_rows)
+	protected function dbRowsToObjArray($obj_class, $db_rows)
 	{
 		$obj_array = [];
 		foreach ($db_rows as $index => $data) {
@@ -96,7 +131,7 @@ class DBObjectManager
 		return $obj_array;
 	}
 
-	function readMatchingCollectionModel($match_view_id)
+	protected function readMatchingCollectionModel($match_view_id)
 	{
 		$item_ids = $this->DB->read('view_item', 
 									['view_id', '=', $match_view_id],'item_id');
@@ -119,7 +154,7 @@ class DBObjectManager
 		return $model_objs;
 	}
 
-	function readMatchingCollectionItem($match_view_id)
+	protected function readMatchingCollectionItem($match_view_id)
 	{
 		$db_rows = $this->DB->readInnerJoin('item', 'view_item', 'id', 
 											'item_id', ['view_item.view_id','=',
@@ -127,7 +162,7 @@ class DBObjectManager
 		return $this->dbRowsToObjArray('Item', $db_rows);
 	}
 
-	function readMatchingCollection($obj_class, $match_view_id)
+	protected function readMatchingCollection($obj_class, $match_view_id)
 	{
 		if ($obj_class == 'Model') {
 			return $this->readMatchingCollectionModel($match_view_id);
@@ -155,12 +190,9 @@ class DBObjectManager
 	 * @return array Array of section, model, view, label, or item objects
 	 * @access public
 	 */
-	function readObjCollection($obj_class, $where=NULL, $match_view_id=NULL)
+	public function readObjCollection($obj_class, $where=NULL, $match_view_id=NULL)
 	{
-		$obj_types = ['Section','Model','View','Label','Item'];
-		if (!in_array($obj_class, $obj_types)) {
-			return FALSE; // Error later
-		}
+		$this->validateObjClass($obj_class);
 
 		if ($match_view_id) {
 			if ($where) {
@@ -169,7 +201,7 @@ class DBObjectManager
 			return $this->readMatchingCollection($obj_class, $match_view_id);
 		}
 		
-		$db_rows = $this->DB.read(strtolower($obj_class),$where);
+		$db_rows = $this->DB->read(strtolower($obj_class),$where);
 		return $this->dbRowsToObjArray($obj_class, $db_rows);
 	}
 
@@ -183,9 +215,28 @@ class DBObjectManager
 	 * @return integer Number of affected database rows
 	 * @access public
 	 */
-	function saveObjCollection($obj_array, $new_bool_array)
+	public function saveObjCollection($obj_array, $new_bool_array)
 	{
-
+		if (numberObjClasses($obj_array) == 1 && 
+			!in_array(FALSE, $new_bool_array, TRUE)) {
+			$this->validateObjClass($obj_array[0]);
+			$keys = $obj_array[0]->data['save_fields'];
+			$values_array = [];
+			foreach ($obj_array as $index => $obj) {
+				$values_array[] = array_intersect_key($obj->data, 
+					array_flip($keys);
+			}
+			$values = call_user_func_array('array_merge', $values_array);
+			return $this->DB->create(
+				strtolower(get_class($obj_array[0])), $keys, $values);
+		} else {
+			$rows_affected = [];
+			foreach (values($obj_array) as $index => $obj) {
+				$rows_affected[] = $this->saveObject($obj, 
+					$new_bool_array[$index]);
+			}
+			return array_sum($rows_affected);
+		}
 	}
 
 	/**
@@ -196,12 +247,13 @@ class DBObjectManager
 	 * @return integer Number of affected database rows
 	 * @access public
 	 */
-	function deleteObjCollection($obj_array)
+	public function deleteObjCollection($obj_array)
 	{
-		$obj_types = array_map('get_class', $obj_array)
-		if (count(array_unique($obj_types)) != 1) {
+		if (numberObjClasses($obj_array) != 1) {
 			return FALSE; // Error later
 		}
+
+		$this->validateObjClass($obj_array[0]);
 
 		$obj_ids = []
 		foreach ($obj_array as $index => $obj) {

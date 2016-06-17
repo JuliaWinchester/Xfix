@@ -27,6 +27,7 @@ class Item extends DBObject
 	{
 		$this->data['id'] = $this->db_row['id'];
 		$this->data['name'] = $this->db_row['name'];
+		$this->data['save_fields'] = array('id', 'name');
 	}
 }
 

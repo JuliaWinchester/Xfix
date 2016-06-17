@@ -36,7 +36,10 @@ class View extends DBObject
 		$this->data['position_y'] = $this->db_row['position_y'];
 		$this->data['model_id'] = $this->db_row['model_id'];
 		$this->data['labels'] = [];
-		$this->data['items'] = []
+		$this->data['items'] = [];
+		$this->data['save_fields'] = array('type', 'image', 'image_scaled', 
+			'image_flat', 'image_thumb', 'scale', 'position_x', 'position_y',
+			'model_id');
 	}
 }
 

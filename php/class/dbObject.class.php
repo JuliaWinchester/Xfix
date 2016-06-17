@@ -60,7 +60,7 @@ class DBObject
 
 		foreach ($sub_objs as $index => $s_obj) {
 			$obj_i = $s_obj->data[$top_id];
-			$obj_array[$obj_i]->data[$sub_array_name][$s_obj->id] = $s_obj;
+			$obj_array[$obj_i]->data[$sub_array_name][] = $s_obj;
 		}
 
 		// Check for duplicate sub-objects
