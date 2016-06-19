@@ -25,13 +25,15 @@ class DBObject
 	 * model, and view objects can contain a collection of model, view, and
 	 * label objects respectively.   
 	 *
-	 * @param array $objs Array of DBObjects to be merged into
+	 * @param mixed $objs DBobject or array of DBObjects to be merged into
 	 * @param array $sub_objs Array of DBObjects to merge into $objs
 	 * @return array Array of objects with sub-level objects incorporated
 	 * @access public
 	 */
 	public static function mergeObjects($objs, $sub_objs)
 	{
+		if (gettype($objs) == 'object') {$objs = [$objs];}
+
 		$tiers = ['Section','Model','View','Label'];
 		$objs_t = array_map('get_class', $objs);
 		$sub_objs_t = array_map('get_class', $sub_objs);
@@ -39,13 +41,13 @@ class DBObject
 		// Validation and error handling
 		if (count(array_unique($objs_t)) != 1)
 		{
-			return FALSE; // Error later
+			die("Multiple object types in $objs"); // Error later
 		} elseif (count(array_unique($sub_objs_t)) != 1) {
-			return FALSE; // Error later
+			die("Multiple object types in $sub_objs"); // Error later
 		} elseif ((array_search($obj_t[0], $tiers) + 1) != 
 				   array_search($sub_obj_t[0], $tiers))
 		{
-			return FALSE; // Error later
+			die("Sub-object type not valid for object type"); // Error later
 		}
 		
 		// Ensure top object array is indexed by id

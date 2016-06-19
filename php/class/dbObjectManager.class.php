@@ -62,14 +62,14 @@ class DBObjectManager
 	 *
 	 * @param string $obj_class One of ['section','model','view','label','item']
 	 * @param integer $id Primary key ID of database row for object
-	 * @return DBObject Section, model, view, label, or item object
+	 * @return array Array containing section, model, view, label, item object
 	 * @access public
 	 */
 	public function readObject($obj_class, $id)
 	{
 		$this->validateObjClass($obj_class);
 		$db_row = $this->DB->read(strtolower($obj_class),['id','=',$id])[0];
-		return new $obj_class($db_row);
+		return array($db_row['id'] => new $obj_class($db_row));
 	}
 
 	/**
