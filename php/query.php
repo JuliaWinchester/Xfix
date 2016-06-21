@@ -10,8 +10,8 @@ function validateReq($req)
 		die('Type not valid'); // Better error later
 	}
 	if ($req['sub_layer'] && $req['type'] == 'Item') {
-			die('Item can not have sub-layer'); // Better error later 
-		}
+		die('Item can not have sub-layer'); // Better error later 
+	}
 	if ($req['id'] && $req['match_view_id']) {
 		die('id and match_view_id both present'); // Error later
 	}

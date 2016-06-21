@@ -86,7 +86,7 @@ class DB {
 		$sql = "INSERT INTO $table($column) VALUES $value_placeholder";
 		$stmt = $this->dbh->prepare($sql);
 		$stmt->execute($value);
-		return $stmt->rowCount();
+		return $this->dbh->lastInsertId();
 	}
 
 	/**
@@ -118,7 +118,7 @@ class DB {
 	 * @return array Array of indexed database row result arrays
 	 * @access public
 	 */
-	function read($table, $where=NULL, $column=NULL, $distinct=FALSE)
+	function read($table, $where=NULL, $column=NULL, $distinct=F, $count=F)
 	{
 		// prepare identifiers
 		$table = $this->prepareidentifier($table);
@@ -139,6 +139,11 @@ class DB {
 			$column = "*";
 		}
 
+		if ($count) {
+			$group_by = "GROUP BY $column";
+			$column = $column.", COUNT(*)";
+		}
+
 		if ($where) {
 			$where_col = $this->prepareidentifier($where[0]);
 			if ($where[1] == "=") {
@@ -155,6 +160,10 @@ class DB {
 		} else {
 			$sql = "SELECT $column FROM $table";
 			$params = [];
+		}
+
+		if ($count) {
+			$sql = $sql." $group_by";
 		}
 
 		return $this->executereadquery($sql, $params);

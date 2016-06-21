@@ -52,6 +52,14 @@ class DBObjectManager
 
 	}
 
+	public function countDBObject($obj_class, $column, $where = NULL)
+	{
+		$this->validateObjClass($obj_class);
+
+		return $this->DB->read(strtolower($obj_class), $where, $column, 
+			$distinct = F, $count = T);
+	}
+
 	############################################################################
 	# Methods for single DBObjects
 	############################################################################
@@ -78,25 +86,26 @@ class DBObjectManager
 	 * entry.
 	 *
 	 * @param DBObject $obj Section, model, label, view, or item object
-	 * @param bool $new Whether object to be saved is new or not
-	 * @return integer Number of affected database rows (should be 1)
+	 * @return DBObject Created or updated DBObject
 	 * @access public
 	 */
-	public function saveObject($obj, $new=TRUE)
+	public function saveObject($obj, $type=NULL)
 	{
-		$this->validateObjClass($obj);
+		if (!$type) { $type = get_class($obj); }
+
+		$this->validateObjClass($type);
 		$obj_data = array_intersect_key($obj->data, 
 				array_flip($obj->data['save_fields']));
 
-		if ($new = TRUE) {
-			return $this->DB->create(strtolower($obj_class), 
-				array_keys($obj_data), array_values($obj_data));
-		} elseif ($new = FALSE) {
-			return $this->DB->update(strtolower($obj_class), 
-				array_keys($obj_data), array_values($obj_data), 
-				$obj->data['id']);
+		if ($obj->data['id') {
+			$this->DB->update($type, array_keys($obj_data), 
+				array_values($obj_data), $obj->data['id']);
+			return $obj;
 		} else {
-			return FALSE; // Error later
+			$new_id = $this->DB->create($type, array_keys($obj_data), 
+				array_values($obj_data));
+			$obj->data['id'] = $new_id;
+			return $obj;
 		}
 	}
 
@@ -211,32 +220,14 @@ class DBObjectManager
 	 * previous entries.
 	 *
 	 * @param array $obj_array Array of section, model, label, view, item objs
-	 * @param array $new_bool_array Bool per object, T if new and F if not
-	 * @return integer Number of affected database rows
+	 * @return array Array of created or updated DBObjects
 	 * @access public
 	 */
-	public function saveObjCollection($obj_array, $new_bool_array)
+	public function saveObjCollection($obj_array, $type=NULL)
 	{
-		if (numberObjClasses($obj_array) == 1 && 
-			!in_array(FALSE, $new_bool_array, TRUE)) {
-			$this->validateObjClass($obj_array[0]);
-			$keys = $obj_array[0]->data['save_fields'];
-			$values_array = [];
-			foreach ($obj_array as $index => $obj) {
-				$values_array[] = array_intersect_key($obj->data, 
-					array_flip($keys);
-			}
-			$values = call_user_func_array('array_merge', $values_array);
-			return $this->DB->create(
-				strtolower(get_class($obj_array[0])), $keys, $values);
-		} else {
-			$rows_affected = [];
-			foreach (values($obj_array) as $index => $obj) {
-				$rows_affected[] = $this->saveObject($obj, 
-					$new_bool_array[$index]);
-			}
-			return array_sum($rows_affected);
-		}
+		return array_map(
+			function($obj) use ($type) {return $this->saveObject($obj, $type);}, 
+			$obj_array);
 	}
 
 	/**
@@ -247,20 +238,23 @@ class DBObjectManager
 	 * @return integer Number of affected database rows
 	 * @access public
 	 */
-	public function deleteObjCollection($obj_array)
+	public function deleteObjCollection($obj_array, $type=NULL)
 	{
-		if (numberObjClasses($obj_array) != 1) {
-			return FALSE; // Error later
+		if (!$type) { 
+			if (numberObjClasses($obj_array) != 1) {
+				die('Number of object classes not 1'); // Better error later
+			}
+			$type = get_class($obj_array[0]); 
 		}
 
-		$this->validateObjClass($obj_array[0]);
+		$this->validateObjClass($type);
 
 		$obj_ids = []
 		foreach ($obj_array as $index => $obj) {
 			$obj_ids[] = $obj->data['id'];
 		}
 
-		return $this->DB->delete($obj_types[0], $obj_ids);
+		return $this->DB->delete($type, $obj_ids);
 	}
 }
 

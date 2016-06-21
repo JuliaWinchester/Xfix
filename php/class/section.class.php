@@ -22,8 +22,8 @@ class Section extends DBObject
 	*/
 	protected function unpackData()
 	{
-		$this->data['id'] = $this->db_row['id'];
-		$this->data['name'] = $this->db_row['name'];
+		$this->data['id'] = isset($this->db_row['id']) ?? NULL;
+		$this->data['name'] = isset($this->db_row['name']) ?? NULL;
 		$this->data['models'] = [];
 		$this->data['save_fields'] = array('id', 'name');
 	}

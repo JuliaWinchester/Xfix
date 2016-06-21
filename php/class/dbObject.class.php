@@ -12,8 +12,11 @@
 class DBObject
 {
 	protected $db_row;
-	protected $data;
-	public $tiers = ['Section','Model','View','Label'];
+	protected $tiers = ['Section','Model','View','Label'];
+	public $data;
+	public $edited = FALSE;
+	public $new = FALSE;
+
 
 	// Static functions
 
@@ -75,7 +78,7 @@ class DBObject
 
 	// Instance functions
 
-	function __construct($db_row)
+	function __construct($db_row = NULL)
 	{
 		$this->db_row = $db_row;
 		$this->unpackData();
