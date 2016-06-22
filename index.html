@@ -9,20 +9,12 @@
 </head>
 <body ng-app="index" ng-controller="indexController">
 	<header>
-		<h1>List of models by chapter</h1>
+		<h1>List of chapters</h1>
 	</header>
-	<article ng-init="getSections()">
+	<article>
 		<div ng-repeat="section in sections track by $index">
 			<h2>Chapter {{section.id}}: {{section.name}}</h2>
 			</br>
-			<div ng-repeat="obj in section.objects track by $index">
-				<h3>Model {{obj.id}}: {{obj.name}}</h3>
-				</br>
-				<div ng-repeat="view in obj.views track by $index">
-					<p>View {{view.id}}: {{view.type}}</p>
-					</br>
-				</div>
-			</div>
 		</div>
 	</article>
 </body>

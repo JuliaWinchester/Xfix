@@ -16,6 +16,7 @@ include_once 'Model.class.php';
 include_once 'View.class.php';
 include_once 'Label.class.php';
 include_once 'Item.class.php';
+include_once 'View_Item.class.php';
 
 class DBObjectManager
 {
@@ -42,7 +43,7 @@ class DBObjectManager
 			return FALSE; // Error later
 		}
 
-		$valid_classes = ['Section','Model','View','Label','Item'];
+		$valid_classes = ['Section','Model','View','Label','Item', 'View_Item'];
 
 		if (in_array($class, $valid_classes)) {
 			return TRUE; 

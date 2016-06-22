@@ -35,7 +35,7 @@ function obj_data_column($obj_array, $var) {
 	return array_column($data_column, $var);
 }
 
-function recursiveDelete($obj=NULL, $type=NULL) {
+function recursiveDelete($obj=NULL, $type=NULL, $count=0) {
 	// Final loop condition
 	if ($type == 'Label') {
 		// Get item_id array from label $obj array
@@ -57,18 +57,18 @@ function recursiveDelete($obj=NULL, $type=NULL) {
 		$trash_item_ids = array_keys($combined, $search_value = 1);
 
 		// Delete label objects
-		$DBObjManager->deleteObjCollection($obj, $type);
+		$count += $DBObjManager->deleteObjCollection($obj, $type);
 		
 		// Delete all items where id in item_id list
-		$trash_items = $DBObjManager->readObjCollection('item', 
+		$trash_items = $DBObjManager->readObjCollection('Item', 
 			['id', 'IN', $trash_item_ids]);
-		$DBObjManager->deleteObjCollection($trash_items);
+		$count += $DBObjManager->deleteObjCollection($trash_items);
 		// Delete all view_item entries where item_id in item_id list
-		$trash_view_item = $DBObjManager->readObjCollection('view_item', 
+		$trash_view_item = $DBObjManager->readObjCollection('View_Item', 
 			['item_id', 'IN', $trash_item_ids]);
-		$DBObjManager->deleteObjCollection($trash_view_item);
+		$count += $DBObjManager->deleteObjCollection($trash_view_item);
 
-		return TRUE;
+		return $count;
 	}
 
 	if (gettype($obj) == 'array') {
@@ -78,23 +78,60 @@ function recursiveDelete($obj=NULL, $type=NULL) {
 		$obj = [$obj];
 	}
 
-	$DBObjManager->deleteObjCollection($obj, $type);
+	$count += $DBObjManager->deleteObjCollection($obj, $type);
 	$sub_type = subLayer($type);
 	$obj_id_field = strtolower($type)."_id";
 	$sub_obj = $DBObjManager->readObjCollection($sub_type, 
 		[$obj_id_field, 'IN', $id]);
-	recursiveDelete($sub_obj, $sub_type);
+
+	if (count($sub_obj) > 0) {
+		recursiveDelete($sub_obj, $sub_type, $count);
+	} else {
+		return $count;
+	}
 }
 
 function save($post)
 {
 	$return = [];
-	foreach ($post['obj'] as $key => $obj) {
+	foreach ($post['obj'] as $obj) {
 		$r_obj = $DBObjManager->saveObject($obj, $post['type']);
 		if ($post['sub_layer']) {
 			$sub = subLayer($post['type']);
 			$sub_array = strtolower($sub)."s";
-			$sub_obj = $DBObjManager->saveObjCollection($obj[$sub_array], $sub);
+			if ($sub == 'Label') {
+				foreach ($obj->data[$sub_array] as $label) {
+					if (!$label->data['id']) {
+						$item = $DBObjManager->readObjCollection(
+							'Item', ['name', '=', $label->data['name']]);
+						if (count($item) > 1) {
+							die('Two items with the same name, please check.');
+						} elseif (count($item) == 1) {
+							$label->data['item_id'] = $item[0]->data['id'];
+							$v_i = $DBObjManager->readObjCollection('View_Item',
+								['item_id', 'IN', $item[0]->data['id']]);
+							$v_id_array = obj_data_column($v_i, 'view_id');
+							if (!in_array($obj->data['id'], $v_id_array)) {
+								$new_v_i = ['view_id' => $obj->data['id'], 
+									'item_id' => $item[0]->data['id'], 'save_fields' =>
+									['view_id', 'item_id']];
+								$DBObjManager->saveObject($new_v_i, 'View_Item');
+							}
+						} elseif (count($item) == 0) {
+							$new_item = ['name' => $label->data['name'], 
+								'save_fields' => ['name']];
+							$item = $DBObjManager->saveObject($new_item, 'Item');
+							$label->data['item_id'] = $item->data['id'];
+							$new_view_item = ['view_id' => $obj->data['id'],
+								'item_id' => $item->data['id'], 'save_fields' =>
+								['view_id', 'item_id']];
+							$DBObjManager->saveObject($new_view_item, 'View_Item');
+						}
+					}
+				}
+			}
+			$sub_obj = $DBObjManager->saveObjCollection(
+				$obj->data[$sub_array], $sub);
 			$r_obj[$sub_array] = $sub_obj;
 		}
 		$return[] = $r_obj;
@@ -105,10 +142,12 @@ function save($post)
 
 function delete($post)
 {
-	$return = [];
+	$count = 0;
 	foreach ($post['obj'] as $key => $obj) {
-
+		$count += recursiveDelete($obj, $post['type']);
 	}
+	header('Content-Type: application/json');
+	echo json_encode($count);
 }
 
 $DB = new DB();
@@ -122,6 +161,8 @@ $post['sub_layer'] = isset($data->sub_layer) ?? NULL;
 $post['obj'] = isset($data->obj) ?? NULL;
 
 validatePost($post);
+
+if (gettype($post['obj']) != 'array') { $post['obj'] = [$post['obj']]; }
 
 if (strtolower($post['mode']) == 'save') {
 	save($post);

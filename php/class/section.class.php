@@ -25,7 +25,7 @@ class Section extends DBObject
 		$this->data['id'] = isset($this->db_row['id']) ?? NULL;
 		$this->data['name'] = isset($this->db_row['name']) ?? NULL;
 		$this->data['models'] = [];
-		$this->data['save_fields'] = array('id', 'name');
+		$this->data['save_fields'] = array('name');
 	}
 }
 
