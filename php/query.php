@@ -7,7 +7,7 @@ function validateReq($req)
 {
 	$valid_types = ['Section', 'Model', 'View', 'Label', 'Item'];
 	if (!in_array($req['type'], $valid_types)) {
-		die('Type not valid'); // Better error later
+		die('Type not valid:'.var_dump($req)); // Better error later
 	}
 	if ($req['sub_layer'] && $req['type'] == 'Item') {
 		die('Item can not have sub-layer'); // Better error later 
@@ -25,7 +25,7 @@ function validateReq($req)
 function subLayer($type)
 {
 	$valid_types = ['Section', 'Model', 'View', 'Label'];
-	if (!in_array($type), $valid_types) {
+	if (!in_array($type, $valid_types)) {
 		die('No valid sub-layer type'); // Better error later
 	}
 	return $valid_types[array_search($type, $valid_types)+1];
@@ -34,19 +34,17 @@ function subLayer($type)
 $DB = new DB();
 $DBObjManager = new DBObjectManager($DB);
 
-$data = json_decode(file_get_contents('php://input'));
-
 $req = array();
 
-$req['type'] = isset($data->type) ?? NULL;
-$req['sub_layer'] = isset($data->sub_layer) ?? FALSE;
-$req['id'] = isset($data->id) ?? NULL;
-$req['match_view_id'] = isset($data->match_view_id) ?? NULL;
+$req['type'] = $_GET['type'] ?? NULL;
+$req['sub_layer'] = $_GET['sub_layer'] ?? FALSE;
+$req['id'] = $_GET['id'] ?? NULL;
+$req['match_view_id'] = $_GET['match_view_id'] ?? NULL;
 
 validateReq($req);
 
 if ($req['id']) {
-	$obj = $DBObjManager->readObj($req['type'], $req['id']);
+	$obj = $DBObjManager->readObject($req['type'], $req['id']);
 } elseif ($req['match_view_id']) {
 	$obj = $DBObjManager->readObjCollection($req['type'], NULL, 
 		$req['match_view_id']);
@@ -55,12 +53,17 @@ if ($req['id']) {
 }
 
 if ($req['sub_layer']) {
+	if ($req['id']) {
+		$sub_where = [strtolower($req['type'])."_id", "=", $req['id']];
+	} else {
+		$sub_where = NULL;
+	}
 	$sub_type = subLayer($req['type']);
-	$sub_objs = $DBObjManager->readObjCollection($sub_type);
+	$sub_objs = $DBObjManager->readObjCollection($sub_type, $sub_where);
 	$obj = $obj[0]->mergeObjects($obj, $sub_objs);
 }
 
 header('Content-Type: application/json');
-echo json_encode($obj);
+echo json_encode(array_values($obj));	
 
 ?>

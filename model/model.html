@@ -1,0 +1,14 @@
+<!-- model.html -->
+<header>
+	<h1>Model {{model.data.id}}: {{model.data.name}}</h1>
+</header>
+<article>
+	<h2>Type: {{model.data.type}}</h2>
+	</br>
+	<h2>Description: {{model.data.description}}</h2>
+	</br>
+		<div ng-repeat="view in model.data.views track by $index">
+			<h2>View {{view.data.id}}: {{view.data.type}}</h2>
+			</br>
+		</div>
+</article>

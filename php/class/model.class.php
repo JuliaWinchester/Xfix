@@ -23,11 +23,11 @@ class Model extends DBObject
 	*/
 	protected function unpackData()
 	{
-		$this->data['id'] = isset($this->db_row['id']) ?? NULL;
-		$this->data['name'] = isset($this->db_row['name']) ?? NULL;
-		$this->data['type'] = isset($this->db_row['type']) ?? NULL;
-		$this->data['description'] = isset($this->db_row['description']) ?? NULL;
-		$this->data['section_id'] = isset($this->db_row['section_id']) ?? NULL;
+		$this->data['id'] = $this->db_row['id'] ?? NULL;
+		$this->data['name'] = $this->db_row['name'] ?? NULL;
+		$this->data['type'] = $this->db_row['type'] ?? NULL;
+		$this->data['description'] = $this->db_row['description'] ?? NULL;
+		$this->data['section_id'] = $this->db_row['section_id'] ?? NULL;
 		$this->data['views'] = [];
 		$this->data['save_fields'] = ['name', 'type', 'description', 
 			'section_id'];

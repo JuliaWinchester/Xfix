@@ -20,7 +20,7 @@ include_once 'View_Item.class.php';
 
 class DBObjectManager
 {
-	protected DB;
+	protected $DB;
 
 	function __construct($DB)
 	{
@@ -38,7 +38,7 @@ class DBObjectManager
 		if (gettype($o) == 'string') {
 			$class = $o;
 		} elseif (gettype($o) == 'object') {
-			$class = get_class($o)
+			$class = get_class($o);
 		} else {
 			return FALSE; // Error later
 		}
@@ -78,7 +78,7 @@ class DBObjectManager
 	{
 		$this->validateObjClass($obj_class);
 		$db_row = $this->DB->read(strtolower($obj_class),['id','=',$id])[0];
-		return array($db_row['id'] => new $obj_class($db_row));
+		return array(new $obj_class($db_row));
 	}
 
 	/**
@@ -98,7 +98,7 @@ class DBObjectManager
 		$obj_data = array_intersect_key($obj->data, 
 				array_flip($obj->data['save_fields']));
 
-		if ($obj->data['id') {
+		if ($obj->data['id']) {
 			$this->DB->update($type, array_keys($obj_data), 
 				array_values($obj_data), $obj->data['id']);
 			return $obj;
@@ -136,7 +136,8 @@ class DBObjectManager
 	{
 		$obj_array = [];
 		foreach ($db_rows as $index => $data) {
-			$obj_array[$data['id']] = new $obj_class($data);
+			//$obj_array[$data['id']] = new $obj_class($data);
+			$obj_array[] = new $obj_class($data);
 		}
 		return $obj_array;
 	}
@@ -250,8 +251,8 @@ class DBObjectManager
 
 		$this->validateObjClass($type);
 
-		$obj_ids = []
-		foreach ($obj_array as $index => $obj) {
+		$obj_ids = [];
+		foreach ($obj_array as $obj) {
 			$obj_ids[] = $obj->data['id'];
 		}
 

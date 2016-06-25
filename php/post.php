@@ -24,7 +24,7 @@ function validatePost($post)
 function subLayer($type)
 {
 	$valid_types = ['Section', 'Model', 'View', 'Label'];
-	if (!in_array($type), $valid_types) {
+	if (!in_array($type, $valid_types)) {
 		die('No valid sub-layer type'); // Better error later
 	}
 	return $valid_types[array_search($type, $valid_types)+1];

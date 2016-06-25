@@ -11,9 +11,9 @@
  */
 class DB {
 	protected $dbdriver = 'mysql';
-	protected $host = '127.0.0.1';
-	protected $dbname = 'Xfix_test';
-	protected $charset = 'utf8';
+	protected $host     = '127.0.0.1';
+	protected $dbname   = 'Xfix_test';
+	protected $charset  = 'utf8';
 	protected $username = 'Moocow';
 	protected $password = 'salmiakki';
 	public $dbh;
@@ -118,7 +118,7 @@ class DB {
 	 * @return array Array of indexed database row result arrays
 	 * @access public
 	 */
-	function read($table, $where=NULL, $column=NULL, $distinct=F, $count=F)
+	function read($table, $where=NULL, $column=NULL, $distinct=FALSE, $count=FALSE)
 	{
 		// prepare identifiers
 		$table = $this->prepareidentifier($table);
@@ -284,5 +284,3 @@ class DB {
 }
 
 ?>
-
-

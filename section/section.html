@@ -1,0 +1,13 @@
+<!-- section.html -->
+<header>
+	<h1>List of chapters</h1>
+</header>
+<article>
+	<div ng-repeat="section in sections track by $index">
+		<h2>Chapter {{section.data.id}}: {{section.data.name}}</h2>
+		</br>
+		<div ng-repeat="model in section.data.models track by $index">
+			<a href="model/{{model.data.id}}">Model {{model.data.id}}: {{model.data.name}}</a>
+		</div>
+	</div>
+</article>

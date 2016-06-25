@@ -1,21 +1,19 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html>
 <head>
 	<meta charset="UTF-8">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular.min.js"></script>
-	<script src="index.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular-route.js"></script>
+	<script src="app.js"></script>
+
+	<base href="/Xfix/">
 
 	<title>List of models</title>
 </head>
-<body ng-app="index" ng-controller="indexController">
-	<header>
-		<h1>List of chapters</h1>
-	</header>
-	<article>
-		<div ng-repeat="section in sections track by $index">
-			<h2>Chapter {{section.id}}: {{section.name}}</h2>
-			</br>
-		</div>
-	</article>
+<body ng-app="app" ng-controller="appController">
+	<main>
+		<div ng-view=""></div>
+	</main>
 </body>
 </html>

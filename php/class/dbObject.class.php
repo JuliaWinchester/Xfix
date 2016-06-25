@@ -35,7 +35,9 @@ class DBObject
 	 */
 	public static function mergeObjects($objs, $sub_objs)
 	{
-		if (gettype($objs) == 'object') {$objs = [$objs];}
+		if (count($sub_objs) == 0) { return $objs; }
+		if (gettype($objs) == 'object') { $objs = [$objs]; }
+		if (gettype($sub_objs) == 'object') { $sub_objs = [$sub_objs]; }
 
 		$tiers = ['Section','Model','View','Label'];
 		$objs_t = array_map('get_class', $objs);
@@ -45,32 +47,34 @@ class DBObject
 		if (count(array_unique($objs_t)) != 1)
 		{
 			die("Multiple object types in $objs"); // Error later
-		} elseif (count(array_unique($sub_objs_t)) != 1) {
+		} elseif (count(array_unique($sub_objs_t)) > 1) {
 			die("Multiple object types in $sub_objs"); // Error later
-		} elseif ((array_search($obj_t[0], $tiers) + 1) != 
-				   array_search($sub_obj_t[0], $tiers))
+		} elseif ((array_search($objs_t[0], $tiers) + 1) != 
+				   array_search($sub_objs_t[0], $tiers))
 		{
 			die("Sub-object type not valid for object type"); // Error later
 		}
 		
 		// Ensure top object array is indexed by id
 		$obj_array = [];
-		foreach ($objs as $key => $value) {
-			$obj_array[$value->id] = $value;
+		foreach ($objs as $obj) {
+			$obj_array[$obj->data['id']] = $obj;
 		}
 
 		// Merge top and sub objects
-		$top_id = strtolower($objs_t[0])."_id"
-		$sub_array_name = strtolower($sub_objs_t)."s";
+		$top_id = strtolower($objs_t[0])."_id";
+		$sub_array_name = strtolower($sub_objs_t[0])."s";
 
 		foreach ($sub_objs as $index => $s_obj) {
 			$obj_i = $s_obj->data[$top_id];
-			$obj_array[$obj_i]->data[$sub_array_name][] = $s_obj;
+			if (isset($obj_array[$obj_i])) {
+				$obj_array[$obj_i]->data[$sub_array_name][] = $s_obj;
+			}
 		}
 
 		// Check for duplicate sub-objects
-		foreach ($obj_array as $index => $obj) {
-			$obj->removeDuplicateSubObjs();
+		foreach ($obj_array as $obj) {
+				$obj->removeDuplicateSubObjs();
 		}
 
 		return $obj_array;
@@ -98,6 +102,11 @@ class DBObject
 		}
 	}
 
+	public function __toString()
+	{
+		return (string) $this->data['id']; 
+	}
+
 	/**
 	* Unpacks database row array and sorts values into variables as appropriate.
 	* This method is replaced in child classes for type-specific behavior. 
@@ -117,8 +126,8 @@ class DBObject
 	*/
 	protected function removeDuplicateSubObjs()
 	{
-		$sub = $this->tiers[
-						array_search(get_class($this), $this->tiers) + 1]."s";
+		$sub = strtolower($this->tiers[
+						array_search(get_class($this), $this->tiers) + 1]."s");
 		if (count($this->data[$sub]) != count(array_unique($this->data[$sub]))) {
 			echo "Duplicate sub-objects found in ".get_class($this)." object!";
 			echo "Duplicate sub-objects being removed.";

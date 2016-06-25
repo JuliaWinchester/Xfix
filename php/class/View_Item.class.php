@@ -11,7 +11,7 @@ include_once 'DBObject.class.php';
 * @author Julie Winchester <julie.m.winchester@gmail.com>
 * @access public    
 */
-class Section extends DBObject
+class View_Item extends DBObject
 {
 	// Inherited variables: protected $db_row; public $data, $tiers
 
@@ -22,9 +22,9 @@ class Section extends DBObject
 	*/
 	protected function unpackData()
 	{
-		$this->data['id'] = isset($this->db_row['id']) ?? NULL;
-		$this->data['view_id'] = isset($this->db_row['view_id']) ?? NULL;
-		$this->data['item_id'] = isset($this->db_row['item_id']) ?? NULL;
+		$this->data['id'] = $this->db_row['id'] ?? NULL;
+		$this->data['view_id'] = $this->db_row['view_id'] ?? NULL;
+		$this->data['item_id'] = $this->db_row['item_id'] ?? NULL;
 		$this->data['save_fields'] = array('view_id', 'item_id');
 	}
 }
