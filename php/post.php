@@ -12,22 +12,23 @@ function validatePost($post)
 	}
 
 	$valid_types = ['Section', 'Model', 'View', 'Label', 'Item'];
-	if (!in_array($req['type'], $valid_types)) {
+	if (!in_array($post['type'], $valid_types)) {
 		die('Type not valid'); // Better error later
 	}
 
-	if ($req['sub_layer'] && $req['type'] == 'Item') {
+	if ($post['sub_layer'] && $post['type'] == 'Item') {
 		die('Item can not have sub-layer'); // Better error later 
 	}
 }
 
 function subLayer($type)
 {
-	$valid_types = ['Section', 'Model', 'View', 'Label'];
+	$valid_types = ['Section', 'Model', 'View'];
+	$sub_types = ['Model', 'View', 'Label'];
 	if (!in_array($type, $valid_types)) {
-		die('No valid sub-layer type'); // Better error later
+		return -1;
 	}
-	return $valid_types[array_search($type, $valid_types)+1];
+	return $sub_types[array_search($type, $valid_types)];
 }
 
 function obj_data_column($obj_array, $var) {
@@ -91,12 +92,13 @@ function recursiveDelete($obj=NULL, $type=NULL, $count=0) {
 	}
 }
 
-function save($post)
+function save($post, $DBObjManager)
 {
 	$return = [];
 	foreach ($post['obj'] as $obj) {
 		$r_obj = $DBObjManager->saveObject($obj, $post['type']);
 		if ($post['sub_layer']) {
+			die('sub_layer triggered');
 			$sub = subLayer($post['type']);
 			$sub_array = strtolower($sub)."s";
 			if ($sub == 'Label') {
@@ -150,22 +152,42 @@ function delete($post)
 	echo json_encode($count);
 }
 
+function dataObjToArray($obj, $type)
+{
+	$obj->data = (Array)$obj->data;
+	$sub_type = subLayer($type);
+	$sub_array_str = strtolower($sub_type)."s";
+	if (isset($obj->data[$sub_array_str]) && 
+		count($obj->data[$sub_array_str]) > 0) {
+		foreach ($obj->data[$sub_array_str] as $sub_obj) {
+			$sub_obj = dataObjToArray($sub_obj, $sub_type);
+		}
+	}
+	return $obj;
+}
+
 $DB = new DB();
 $DBObjManager = new DBObjectManager($DB);
 
 $data = json_decode(file_get_contents('php://input'));
 
-$post['mode'] = isset($data->mode) ?? NULL;
-$post['type'] = isset($data->type) ?? NULL;
-$post['sub_layer'] = isset($data->sub_layer) ?? NULL;
-$post['obj'] = isset($data->obj) ?? NULL;
+$post = array();
+
+$post['mode'] = $_GET['mode'] ?? NULL;
+$post['type'] = $_GET['type'] ?? NULL;
+$post['sub_layer'] = $_GET['sub_layer'] ?? FALSE;
+$post['obj'] = $data->obj ?? NULL;
 
 validatePost($post);
 
 if (gettype($post['obj']) != 'array') { $post['obj'] = [$post['obj']]; }
 
+foreach ($post['obj'] as $obj) {
+	$obj = dataObjToArray($obj, $post['type']);
+}
+
 if (strtolower($post['mode']) == 'save') {
-	save($post);
+	save($post, $DBObjManager);
 } elseif (strtolower($post['mode']) == 'delete') {
 	delete($post);
 }
