@@ -66,7 +66,6 @@ class DB {
 	function create($table, $column, $value) 
 	{
 		$table = $this->prepareidentifier($table);
-
 		if (gettype($column) == 'string') {
 			$column = $this->prepareidentifier($column);
 		} elseif (gettype($column) == 'array') {
@@ -80,7 +79,6 @@ class DB {
 			$value = call_user_func_array('array_merge', $value);
 		} else {
 			$value_placeholder = "(".implode(',', array_fill(0, count($value), '?')).")";
-			$value = array_map(array($this, "prepareidentifier"), $value);
 		}
 
 		$sql = "INSERT INTO $table($column) VALUES $value_placeholder";
@@ -152,9 +150,13 @@ class DB {
 			} elseif ($where[1] == "in") {
 				$placeholder = "(".implode(',',array_fill(0,count($where[2]), '?')).")";
 				$where_stmt = "WHERE $where_col IN $placeholder";
-				$params = $where[2];
+				if (gettype($where[2]) == 'array') {
+					$params = $where[2];
+				} else {
+					$params = [$where[2]];
+				}
 			} else {
-				return FALSE; // Add error later
+				die('Where statement problem. Where: '.var_dump($where)); 
 			}
 			$sql = "SELECT $column FROM $table $where_stmt";
 		} else {

@@ -77,8 +77,13 @@ class DBObjectManager
 	public function readObject($obj_class, $id)
 	{
 		$this->validateObjClass($obj_class);
-		$db_row = $this->DB->read(strtolower($obj_class),['id','=',$id])[0];
-		return array(new $obj_class($db_row));
+		$result = $this->DB->read(strtolower($obj_class),['id','=',$id]);
+		if (count($result) == 0) {
+			return array();
+		} else {
+			return array(new $obj_class($result[0]));
+		}
+		
 	}
 
 	/**
@@ -95,17 +100,18 @@ class DBObjectManager
 		if (!$type) { $type = get_class($obj); }
 
 		$this->validateObjClass($type);
-		$obj_data = array_intersect_key($obj->data, 
-				array_flip($obj->data['save_fields']));
 
-		if ($obj->data['id']) {
+		if (isset($obj->data['id'])) {
+			$obj_data = array_intersect_key($obj->data, 
+				array_flip($obj->data['save_fields']));
 			$this->DB->update($type, array_keys($obj_data), 
 				array_values($obj_data), $obj->data['id']);
 			return $obj;
 		} else {
-			$new_id = $this->DB->create($type, array_keys($obj_data), 
-				array_values($obj_data));
+			$new_id = $this->DB->create($type, array_keys($obj->data), 
+				array_values($obj->data));
 			$obj->data['id'] = $new_id;
+			$obj = new $type($obj->data);
 			return $obj;
 		}
 	}
@@ -135,7 +141,7 @@ class DBObjectManager
 	protected function dbRowsToObjArray($obj_class, $db_rows)
 	{
 		$obj_array = [];
-		foreach ($db_rows as $index => $data) {
+		foreach ($db_rows as $data) {
 			//$obj_array[$data['id']] = new $obj_class($data);
 			$obj_array[] = new $obj_class($data);
 		}
@@ -213,7 +219,12 @@ class DBObjectManager
 		}
 		
 		$db_rows = $this->DB->read(strtolower($obj_class),$where);
-		return $this->dbRowsToObjArray($obj_class, $db_rows);
+		if (count($db_rows) == 0) {
+			return array();
+		} else {
+			return $this->dbRowsToObjArray($obj_class, $db_rows);
+		}
+		
 	}
 
 	/**

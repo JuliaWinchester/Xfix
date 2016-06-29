@@ -1,10 +1,13 @@
 <!-- section/edit.html -->
 <header>
-	<h1>Edit section</h1>
+	<h1>Edit Chapter</h1>
 </header>
 <article>
 	<form>
-		<input type="text" name="name" ng-model="name"><
+		<label for="name">Name:</label>
+		<input type="text" name="name" ng-model="name" />
+		<label for="number">Number:</label>
+		<input type="text" name="number" ng-model="number" />
 		<button ng-click="submit()" type="button">Submit</button>
 		<button ng-click="redirect()" type="button">Cancel</button>
 	</form>

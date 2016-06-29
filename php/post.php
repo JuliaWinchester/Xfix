@@ -36,7 +36,7 @@ function obj_data_column($obj_array, $var) {
 	return array_column($data_column, $var);
 }
 
-function recursiveDelete($obj=NULL, $type=NULL, $count=0) {
+function recursiveDelete($obj=NULL, $DBObjManager, $type=NULL, $count=0) {
 	// Final loop condition
 	if ($type == 'Label') {
 		// Get item_id array from label $obj array
@@ -83,10 +83,10 @@ function recursiveDelete($obj=NULL, $type=NULL, $count=0) {
 	$sub_type = subLayer($type);
 	$obj_id_field = strtolower($type)."_id";
 	$sub_obj = $DBObjManager->readObjCollection($sub_type, 
-		[$obj_id_field, 'IN', $id]);
+		[$obj_id_field, 'in', $id]);
 
 	if (count($sub_obj) > 0) {
-		recursiveDelete($sub_obj, $sub_type, $count);
+		recursiveDelete($sub_obj, $DBObjManager, $sub_type, $count);
 	} else {
 		return $count;
 	}
@@ -142,11 +142,11 @@ function save($post, $DBObjManager)
 	echo json_encode($return);
 }
 
-function delete($post)
+function delete($post, $DBObjManager)
 {
 	$count = 0;
-	foreach ($post['obj'] as $key => $obj) {
-		$count += recursiveDelete($obj, $post['type']);
+	foreach ($post['obj'] as $obj) {
+		$count += recursiveDelete($obj, $DBObjManager, $post['type']);
 	}
 	header('Content-Type: application/json');
 	echo json_encode($count);
@@ -189,7 +189,7 @@ foreach ($post['obj'] as $obj) {
 if (strtolower($post['mode']) == 'save') {
 	save($post, $DBObjManager);
 } elseif (strtolower($post['mode']) == 'delete') {
-	delete($post);
+	delete($post, $DBObjManager);
 }
 
 ?>

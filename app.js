@@ -84,9 +84,10 @@ app.service('HTTPService', ['$http', function ($http) {
 			var o = typeof obj !== 'undefined' ?  obj : null;
 
 			var config = {params: {mode: 'delete', type: t}};
-			$http.post('php/post.php', {obj: o}, config).then(
+			return $http.post('php/post.php', {obj: o}, config).then(
 				function successCallback(response) {
-					return response.data;
+					console.log(response);
+					return response;
 				},
 				function errorCallback(response) {
 					service.handleError(response);
@@ -123,14 +124,16 @@ app.service('Section', ['$rootScope', 'HTTPService', function($rootScope, HTTPSe
 		},
 		deleteSection: function (id) {
 			sIndex = service.findIndex(id, service.sections);
-			success = HTTPService.delete('Section', service.sections[sIndex]);
-			if (success) {
-				service.sections.splice(sectionIndex, 1);
-				$rootScope.$broadcast('sections.update');
-				return success;
-			} else {
-				console.log('Error deleting section.');
-			}
+			HTTPService.delete('Section', service.sections[sIndex]).then(
+				function (result) {
+					if (result.status > 199 && result.status < 300) {
+						service.sections.splice(sIndex, 1);
+						$rootScope.$broadcast('sections.update');
+						return result.data;
+					} else {
+						console.log('Something went wrong deleting section.');
+					}
+				});
 		},
 		saveSection: function (obj, sub_layer) {
 			var l = typeof sub_layer !== 'undefined' ?  sub_layer : 0;
@@ -146,7 +149,7 @@ app.service('Section', ['$rootScope', 'HTTPService', function($rootScope, HTTPSe
 						}
 						$rootScope.$broadcast('sections.update');
 					} else {
-						console.log('Something went wrong saving section.')
+						console.log('Something went wrong saving section.');
 					}
 				});
 		},
@@ -187,6 +190,10 @@ app.controller('sectionController', ['$scope', 'HTTPService', 'Section', functio
 	HTTPService.get('Section', true).then(function (result) { 
 		Section.addContent(result);
 	});
+
+	$scope.numberFilter = function (obj) {
+		return obj.data.number;
+	};
 }]);
 
 app.directive('deleteSection', ['Section', function (Section) {
@@ -198,7 +205,6 @@ app.directive('deleteSection', ['Section', function (Section) {
 		link: function (scope, element, attrs) {
 			function deleteSection () {
 				Section.deleteSection(scope.id);
-				console.log('Section baleeted');
 			}
 			element.on('click', deleteSection);
 		}
@@ -234,11 +240,13 @@ app.controller('sectionEditController',
 	HTTPService.get('Section', true, $scope.sectionId).then(function (result) {
 		Section.addContent(result);
 		$scope.name = Section.sections[0].data.name;
+		$scope.number = Section.sections[0].data.number;
 	});
 
 	$scope.submit = function () {
 		if ($scope.name) {
 			Section.sections[0].data.name = $scope.name;
+			Section.sections[0].data.number = $scope.number;
 			Section.saveSection(Section.sections[0]);
 			$scope.redirect();
 		}
@@ -255,22 +263,15 @@ app.controller('sectionCreateController',
 		//$scope.$apply();
 	});
 
-	$scope.sectionId = $routeParams.sectionId;
-	$scope.sections = Section.sections;
-	HTTPService.get('Section', true, $scope.sectionId).then(function (result) {
-		Section.addContent(result);
-		$scope.name = Section.sections[0].data.name;
-	});
-
 	$scope.submit = function () {
-		if ($scope.name) {
-			Section.sections[0].data.name = $scope.name;
-			Section.saveSection(Section.sections[0]);
+		if ($scope.name && $scope.number) {
+			section = {data: {name: $scope.name, number: parseInt($scope.number)}};
+			Section.saveSection(section);
 			$scope.redirect();
 		}
 	};
 	$scope.redirect = function () {
-		$location.path('/#/');
+		$location.path('/');
 	};
 }]);
 
@@ -278,6 +279,20 @@ app.controller('sectionCreateController',
 
 app.controller('modelController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
 	console.log('In model controller!');
+	$scope.model = null;
+	$modelId = $routeParams.modelId;
+	
+}]);
+
+app.controller('modelEditController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+	console.log('In model edit controller!');
+	$scope.model = null;
+	$modelId = $routeParams.modelId;
+	
+}]);
+
+app.controller('modelCreateController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
+	console.log('In model create controller!');
 	$scope.model = null;
 	$modelId = $routeParams.modelId;
 	
