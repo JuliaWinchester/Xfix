@@ -1,1 +1,23 @@
-<!-- edit.html -->
+<!-- model/edit.html -->
+<header>
+	<h1>Edit Model</h1>
+</header>
+<article>
+	<form>
+		<label for="name">Name:</label>
+		<input type="text" name="name" ng-model="name" /></br>
+		<label for="typeSelect">Type:</label>
+		<select name="typeSelect" ng-model="type">
+			<option value="Bone">Bone</option>
+			<option value="Plastic model">Plastic model</option>
+		</select></br>
+		<label for="desc">Description:</label>
+		<input type="text" name="desc" ng-model="desc" />
+		<label for="chapter">Associated Chapter:</label>
+		<select name="chapter" ng-model="chapterId">
+			<option ng-repeat="section in sections | orderBy:numberFilter track by $index" value="{{section.data.id}}">{{section.data.number}}: {{section.data.name}}</option>
+		<input type="text" name="number" ng-model="number" />
+		<button ng-click="submit()" type="button">Submit</button>
+		<button ng-click="redirect()" type="button">Cancel</button>
+	</form>
+</article>

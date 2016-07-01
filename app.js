@@ -12,6 +12,10 @@ app.config(function($routeProvider, $locationProvider) {
 			templateUrl: 'section/create.html',
 			controller: 'sectionCreateController'
 		})
+		.when('/model/create', {
+			templateUrl: 'model/create.html',
+			controller: 'modelCreateController'
+		})
 		.when('/model/:modelId', {
 			templateUrl: 'model/model.html',
 			controller: 'modelController'
@@ -19,10 +23,6 @@ app.config(function($routeProvider, $locationProvider) {
 		.when('/model/edit/:modelId', {
 			templateUrl: 'model/edit.html',
 			controller: 'modelEditController'
-		})
-		.when('/model/create', {
-			templateUrl: 'model/create.html',
-			controller: 'modelCreateController'
 		})
 		.when('/model/:modelId/view/:viewId', {
 			templateUrl: 'view/view.html',
@@ -80,7 +80,6 @@ app.service('HTTPService', ['$http', function ($http) {
 		},
 		delete: function (type, obj) {
 			var t = typeof type !== 'undefined' ?  type : null;
-			var s = typeof sub_layer !== 'undefined' ?  sub_layer : 0;
 			var o = typeof obj !== 'undefined' ?  obj : null;
 
 			var config = {params: {mode: 'delete', type: t}};
@@ -155,11 +154,11 @@ app.service('Section', ['$rootScope', 'HTTPService', function($rootScope, HTTPSe
 		},
 		deleteModel: function (sId, mId) {
 			sIndex = service.findIndex(sId, service.sections);
-			mIndex = service.findIndex(mId, service.sections[sIndex]);
+			mIndex = service.findIndex(mId, service.sections[sIndex].data.models);
 			success = HTTPService.delete('Model', 
 				service.sections[sIndex].data.models[mIndex]);
 			if (success) {
-				service.sections[sIndex].data.models[mIndex].splice(mIndex, 1);
+				service.sections[sIndex].data.models.splice(mIndex, 1);
 				$rootScope.$broadcast('sections.update');
 				return success;
 			} else {
@@ -187,7 +186,7 @@ app.controller('sectionController', ['$scope', 'HTTPService', 'Section', functio
 		//$scope.$apply(); Seems to be unneeded but in case it's needed later...
 	});
 	$scope.sections = Section.sections;
-	HTTPService.get('Section', true).then(function (result) { 
+	HTTPService.get('Section', 1).then(function (result) { 
 		Section.addContent(result);
 	});
 
@@ -221,8 +220,8 @@ app.directive('deleteModel', ['Section', function (Section) {
 		link: function (scope, element, attrs) {
 			function deleteModel () {
 				Section.deleteModel(scope.sid, scope.mid);
-				console.log('Model baleeted');
 			}
+			element.on('click', deleteModel);
 		}
 	};
 }]);
@@ -237,7 +236,7 @@ app.controller('sectionEditController',
 
 	$scope.sectionId = $routeParams.sectionId;
 	$scope.sections = Section.sections;
-	HTTPService.get('Section', true, $scope.sectionId).then(function (result) {
+	HTTPService.get('Section', 1, $scope.sectionId).then(function (result) {
 		Section.addContent(result);
 		$scope.name = Section.sections[0].data.name;
 		$scope.number = Section.sections[0].data.number;
@@ -277,24 +276,65 @@ app.controller('sectionCreateController',
 
 // Model controllers
 
-app.controller('modelController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
-	console.log('In model controller!');
-	$scope.model = null;
-	$modelId = $routeParams.modelId;
-	
+app.controller('modelController', ['$scope', '$routeParams', 'HTTPService', function($scope, $routeParams, HTTPService) {
+	HTTPService.get('Model', 1, $routeParams.modelId).then(function (result) {
+		$scope.model = result[0];
+	});
 }]);
 
 app.controller('modelEditController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
 	console.log('In model edit controller!');
 	$scope.model = null;
 	$modelId = $routeParams.modelId;
-	
+
+	$scope.submit = function () {
+		if ($scope.name) {
+			Section.sections[0].data.name = $scope.name;
+			Section.sections[0].data.number = $scope.number;
+			Section.saveSection(Section.sections[0]);
+			$scope.redirect();
+		}
+	};
+
+	$scope.redirect = function () {
+		$location.path('/');
+	};
+
+	$scope.numberFilter = function (obj) {
+		return obj.data.number;
+	};
 }]);
 
-app.controller('modelCreateController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
-	console.log('In model create controller!');
-	$scope.model = null;
-	$modelId = $routeParams.modelId;
+app.controller('modelCreateController', ['$scope', 'HTTPService', 'Section', '$location', '$timeout', function($scope, HTTPService, Section, $location, $timeout) {
+	$scope.name;
+	$scope.type = 'Plastic model';
+	$scope.desc;
+	$scope.chapterId = '1';
+
+	HTTPService.get('Section', 1).then(function (result) {
+		console.log(result);
+		Section.addContent(result);
+		$scope.sections = Section.sections;
+	
+	});
+
+	$scope.submit = function () {
+		if ($scope.name && $scope.type && $scope.desc && $scope.chapterId) {
+			var model = {data: {name: $scope.name, type: $scope.type, 
+				description: $scope.desc, section_id: $scope.chapterId}};
+			HTTPService.save(model, 'Model').then(function (result) {
+				$timeout($scope.redirect, 2000);
+			});
+		}
+	};
+
+	$scope.redirect = function () {
+		$location.path('/');
+	};
+
+	$scope.numberFilter = function (obj) {
+		return obj.data.number;
+	};
 	
 }]);
 
