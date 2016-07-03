@@ -1,17 +1,30 @@
 <!-- index.html -->
 <!DOCTYPE html>
-<html>
+<html ng-app="app" ng-controller="AppController">
 <head>
 	<meta charset="UTF-8">
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular-route.js"></script>
+	<script src="lib/paper-full.js"></script>
+  	<script src="lib/labelPath.js"></script>
+	<script src="bower_components/angular-route-styles/route-styles.js"></script>
+	<script src="components/iconolater/iconolater.js"></script>
+	<script src="components/iconolater/iconolater-service.js"></script>
+	<script src="components/iconolater/iconolater-directive.js"></script>
 	<script src="app.js"></script>
+	<script src="app-controller.js"></script>
+	<script src="app-service.js"></script>
+	<script src="section/section-controller.js"></script>
+	<script src="section/section-directive.js"></script>
+	<script src="section/section-service.js"></script>
+	<script src="model/model-controller.js"></script>
+	<script src="view/view-controller.js"></script>
 
 	<base href="/Xfix/">
 
-	<title>List of models</title>
+	<title>Xfix</title>
 </head>
-<body ng-app="app" ng-controller="appController">
+<body>
 	<main>
 		<div ng-view=""></div>
 	</main>
