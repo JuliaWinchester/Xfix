@@ -12,7 +12,7 @@
 class DB {
 	protected $dbdriver = 'mysql';
 	protected $host     = '127.0.0.1';
-	protected $dbname   = 'Xfix_test';
+	protected $dbname   = 'Xfix';
 	protected $charset  = 'utf8';
 	protected $username = 'Moocow';
 	protected $password = 'salmiakki';

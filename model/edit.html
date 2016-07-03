@@ -5,18 +5,18 @@
 <article>
 	<form>
 		<label for="name">Name:</label>
-		<input type="text" name="name" ng-model="name" /></br>
+		<input type="text" name="name" ng-model="model.data.name" /></br>
 		<label for="typeSelect">Type:</label>
-		<select name="typeSelect" ng-model="type">
-			<option value="Bone">Bone</option>
+		<select name="typeSelect" ng-model="model.data.type">
 			<option value="Plastic model">Plastic model</option>
+			<option value="Bone">Bone</option>
 		</select></br>
 		<label for="desc">Description:</label>
-		<input type="text" name="desc" ng-model="desc" />
+		<input type="text" name="desc" ng-model="model.data.description" /></br>
 		<label for="chapter">Associated Chapter:</label>
 		<select name="chapter" ng-model="chapterId">
-			<option ng-repeat="section in sections | orderBy:numberFilter track by $index" value="{{section.data.id}}">{{section.data.number}}: {{section.data.name}}</option>
-		<input type="text" name="number" ng-model="number" />
+			<option ng-repeat="section in sections | orderBy:numberFilter track by $index" value="{{section.data.id}}" ng-selected="{{section.data.id == chapterId}}">{{section.data.number}}: {{section.data.name}}</option>
+		</select></br>
 		<button ng-click="submit()" type="button">Submit</button>
 		<button ng-click="redirect()" type="button">Cancel</button>
 	</form>

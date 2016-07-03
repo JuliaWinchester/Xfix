@@ -58,6 +58,7 @@ app.service('HTTPService', ['$http', function ($http) {
 				{type: t, sub_layer: s, id: i, match_view_id: m_id}};
 			return $http.get('php/query.php', config).then(
 				function successCallback(response) {
+					console.log(response);
 					return response.data;
 				}, 
 				function errorCallback(response) {
@@ -183,7 +184,6 @@ app.controller('appController', ['$scope', function($scope, $route,
 app.controller('sectionController', ['$scope', 'HTTPService', 'Section', function($scope, HTTPService, Section) {
 	$scope.$on('sections.update', function(event) {
 		$scope.sections = Section.sections;
-		//$scope.$apply(); Seems to be unneeded but in case it's needed later...
 	});
 	$scope.sections = Section.sections;
 	HTTPService.get('Section', 1).then(function (result) { 
@@ -192,6 +192,10 @@ app.controller('sectionController', ['$scope', 'HTTPService', 'Section', functio
 
 	$scope.numberFilter = function (obj) {
 		return obj.data.number;
+	};
+
+	$scope.nameFilter = function (obj) {
+		return obj.data.name;
 	};
 }]);
 
@@ -231,7 +235,6 @@ app.controller('sectionEditController',
 	function($scope, HTTPService, $routeParams, Section, $location) {
 	$scope.$on('sections.update', function(event) {
 		$scope.sections = Section.sections;
-		//$scope.$apply();
 	});
 
 	$scope.sectionId = $routeParams.sectionId;
@@ -251,7 +254,7 @@ app.controller('sectionEditController',
 		}
 	};
 	$scope.redirect = function () {
-		$location.path('/#/');
+		$location.path('/');
 	};
 }]);
 
@@ -259,7 +262,6 @@ app.controller('sectionCreateController',
 	['$scope', 'Section', '$location', function($scope, Section, $location) {
 	$scope.$on('sections.update', function(event) {
 		$scope.sections = Section.sections;
-		//$scope.$apply();
 	});
 
 	$scope.submit = function () {
@@ -276,54 +278,31 @@ app.controller('sectionCreateController',
 
 // Model controllers
 
-app.controller('modelController', ['$scope', '$routeParams', 'HTTPService', function($scope, $routeParams, HTTPService) {
+app.controller('modelController', ['$scope', '$routeParams', 'HTTPService', '$routeParams', function($scope, $routeParams, HTTPService, $routeParams) {
 	HTTPService.get('Model', 1, $routeParams.modelId).then(function (result) {
 		$scope.model = result[0];
 	});
 }]);
 
-app.controller('modelEditController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams) {
-	console.log('In model edit controller!');
-	$scope.model = null;
-	$modelId = $routeParams.modelId;
+app.controller('modelEditController', ['$scope', 'HTTPService', 'Section', '$location', '$routeParams', function($scope, HTTPService, Section, $location, $routeParams) {
+	$scope.modelId = $routeParams.modelId;
 
-	$scope.submit = function () {
-		if ($scope.name) {
-			Section.sections[0].data.name = $scope.name;
-			Section.sections[0].data.number = $scope.number;
-			Section.saveSection(Section.sections[0]);
-			$scope.redirect();
-		}
-	};
+	HTTPService.get('Model', 0, $scope.modelId).then(function (result) {
+		$scope.model = result[0];
+		$scope.chapterId = String($scope.model.data.section_id);
+	});
 
-	$scope.redirect = function () {
-		$location.path('/');
-	};
-
-	$scope.numberFilter = function (obj) {
-		return obj.data.number;
-	};
-}]);
-
-app.controller('modelCreateController', ['$scope', 'HTTPService', 'Section', '$location', '$timeout', function($scope, HTTPService, Section, $location, $timeout) {
-	$scope.name;
-	$scope.type = 'Plastic model';
-	$scope.desc;
-	$scope.chapterId = '1';
-
-	HTTPService.get('Section', 1).then(function (result) {
-		console.log(result);
+	HTTPService.get('Section', 0).then(function (result) {
 		Section.addContent(result);
 		$scope.sections = Section.sections;
-	
 	});
 
 	$scope.submit = function () {
-		if ($scope.name && $scope.type && $scope.desc && $scope.chapterId) {
-			var model = {data: {name: $scope.name, type: $scope.type, 
-				description: $scope.desc, section_id: $scope.chapterId}};
-			HTTPService.save(model, 'Model').then(function (result) {
-				$timeout($scope.redirect, 2000);
+		if ($scope.model.data.name && $scope.model.data.type && 
+			$scope.model.data.description && $scope.chapterId) {
+			$scope.model.data.section_id = $scope.chapterId;
+			HTTPService.save($scope.model, 'Model').then(function (result) {
+				$scope.redirect();
 			});
 		}
 	};
@@ -335,7 +314,37 @@ app.controller('modelCreateController', ['$scope', 'HTTPService', 'Section', '$l
 	$scope.numberFilter = function (obj) {
 		return obj.data.number;
 	};
+}]);
+
+app.controller('modelCreateController', ['$scope', 'HTTPService', 'Section', '$location', function($scope, HTTPService, Section, $location) {
+	$scope.name = "";
+	$scope.type = 'Plastic model';
+	$scope.desc = "";
+	$scope.chapterId = '1';
+
+	HTTPService.get('Section', 1).then(function (result) {
+		Section.addContent(result);
+		$scope.sections = Section.sections;
 	
+	});
+
+	$scope.submit = function () {
+		if ($scope.name && $scope.type && $scope.desc && $scope.chapterId) {
+			var model = {data: {name: $scope.name, type: $scope.type, 
+				description: $scope.desc, section_id: $scope.chapterId}};
+			HTTPService.save(model, 'Model').then(function (result) {
+				$scope.redirect();
+			});
+		}
+	};
+
+	$scope.redirect = function () {
+		$location.path('/');
+	};
+
+	$scope.numberFilter = function (obj) {
+		return obj.data.number;
+	};
 }]);
 
 // View controllers

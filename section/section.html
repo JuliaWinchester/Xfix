@@ -3,12 +3,13 @@
 	<h1>List of chapters</h1>
 </header>
 <article>
+	<a href="#/model/create">Create new model</a>
 	<div ng-repeat="section in sections | orderBy:numberFilter track by $index">
 		<h2>Chapter {{section.data.number}}: {{section.data.name}}</h2>
 		</br>
 		<a href="#/section/edit/{{section.data.id}}">Edit</a>
 		<button delete-section id="section.data.id">Delete</button>
-		<div ng-repeat="model in section.data.models track by $index">
+		<div ng-repeat="model in section.data.models | orderBy:nameFilter track by $index">
 			<a href="#/model/{{model.data.id}}">{{model.data.name}} (ID: {{model.data.id}})</a>
 			<a href="#/model/edit/{{model.data.id}}">Edit</a>
 			<button delete-model mid="model.data.id" sid="section.data.id">Delete</button>
