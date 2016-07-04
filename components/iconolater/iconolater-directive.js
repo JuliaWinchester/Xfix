@@ -1,15 +1,15 @@
 angular.module('iconolater').directive('zoomImageIn', zoomImageIn);
 
-zoomImageIn.$inject = ['Image', 'Canvas'];
+zoomImageIn.$inject = ['Image'];
 
-function zoomImageIn(Image, Canvas) {
+function zoomImageIn(Image) {
 	return {
 	    restrict: 'A',
 	    link: function (scope, element, attrs) {
 			function zoomIn () {
 		        if (Image.raster) {
 		        	Image.raster.scale(1.1);
-		        	Canvas.resizeCanvasHeight(Image.raster.bounds.height+100);
+		        	Image.resizeCanvasHeight(Image.raster.bounds.height+100);
 		        	view.draw();
 		        }
 		    }
@@ -20,16 +20,16 @@ function zoomImageIn(Image, Canvas) {
 
 angular.module('iconolater').directive('zoomImageOut', zoomImageOut);
 
-zoomImageOut.$inject = ['Image', 'Canvas'];
+zoomImageOut.$inject = ['Image'];
 
-function zoomImageOut(Image, Canvas) {
+function zoomImageOut(Image) {
 	return {
     	restrict: 'A',
     	link: function (scope, element, attrs) {
       		function zoomOut () {
         		if (Image.raster) {
           			Image.raster.scale(0.9);
-          			Canvas.resizeCanvasHeight(Image.raster.bounds.height+100);
+          			Image.resizeCanvasHeight(Image.raster.bounds.height+100);
           			view.draw();
         		}
       		}
@@ -59,20 +59,20 @@ function centerImage(Image) {
 
 angular.module('iconolater').directive('addImage', addImage);
 
-addImage.$inject = ['Image', 'Canvas'];
+addImage.$inject = ['Image'];
 
-function addImage(Image, Canvas) {
+function addImage(Image) {
 	return {
     	restrict: 'A',
     	link: function (scope, element, attrs) {
       	function addImage () {
         	var f = document.getElementById('file').files[0];
-        	Image.addImage(URL.createObjectURL(f));
-        	Image.raster.onLoad = function () {
-          		newHeight = Image.raster.height + 100;
-          		Canvas.resizeCanvasHeight(newHeight);
-          		Image.raster.position = view.center;
-        	};
+        	Image.addImage(f);
+        	// Image.raster.onLoad = function () {
+         //  		newHeight = Image.raster.height + 100;
+         //  		Canvas.resizeCanvasHeight(newHeight);
+         //  		Image.raster.position = view.center;
+        	// };
       	}
       	element.on('click', addImage);
     	}

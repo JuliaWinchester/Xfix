@@ -178,8 +178,6 @@ $post['type'] = $_GET['type'] ?? NULL;
 $post['sub_layer'] = $_GET['sub_layer'] ?? FALSE;
 $post['obj'] = $data->obj ?? NULL;
 
-validatePost($post);
-
 if (gettype($post['obj']) != 'array') { $post['obj'] = [$post['obj']]; }
 
 foreach ($post['obj'] as $obj) {
