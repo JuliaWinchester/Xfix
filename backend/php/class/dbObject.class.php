@@ -1,8 +1,8 @@
 <?php
 
 /**    
-* DBObject is a parent class for Xfix database objects (sections, models, 
-* views, labels, items). Specific object classes inherit DBObject and are 
+* DBObject is a parent class for Xfix database objects (chapters, specimens, 
+* perspectives, labels, items). Specific object classes inherit DBObject and are 
 * created by DBObjectManager.
 * 
 * @package Xfix
@@ -12,7 +12,7 @@
 class DBObject
 {
 	protected $db_row;
-	protected $tiers = ['Section','Model','View','Label'];
+	protected $tiers = ['Chapter','Specimen','Perspective','Label'];
 	public $data;
 	public $edited = FALSE;
 	public $new = FALSE;
@@ -22,10 +22,10 @@ class DBObject
 
 	/**
 	 * Merges a variable number of DBObjects with a variable number of sub-level
-	 * DBObjects. DBObjects are merged along a sub-object hierarchy, section -> 
-	 * model -> view -> label. DBObject child types are associated with the type 
-	 * immediately higher in the hierarchy in a many to one manner. Section,
-	 * model, and view objects can contain a collection of model, view, and
+	 * DBObjects. DBObjects are merged along a sub-object hierarchy, chapter -> 
+	 * specimen -> perspective -> label. DBObject child types are associated with the type 
+	 * immediately higher in the hierarchy in a many to one manner. Chapter,
+	 * specimen, and perspective objects can contain a collection of specimen, perspective, and
 	 * label objects respectively.   
 	 *
 	 * @param mixed $objs DBobject or array of DBObjects to be merged into
@@ -39,7 +39,7 @@ class DBObject
 		if (gettype($objs) == 'object') { $objs = [$objs]; }
 		if (gettype($sub_objs) == 'object') { $sub_objs = [$sub_objs]; }
 
-		$tiers = ['Section','Model','View','Label'];
+		$tiers = ['Chapter','Specimen','Perspective','Label'];
 		$objs_t = array_map('get_class', $objs);
 		$sub_objs_t = array_map('get_class', $sub_objs);
 		
@@ -137,11 +137,11 @@ class DBObject
 
 	/**
 	 * Merges DBObject classes along a sub-object
-	 * hierarchy, section -> model -> view -> label. DBObject child types are 
+	 * hierarchy, chapter -> specimen -> perspective -> label. DBObject child types are 
 	 * associated with the type immediately higher in the hierarchy in a many to 
 	 * one manner. Each of the first three DBobject child types can contain a  
-	 * collection of objects belonging to the type immediately below (section
-	 * objects contain model objects, model objects contain view objects, etc.).
+	 * collection of objects belonging to the type immediately below (chapter
+	 * objects contain specimen objects, specimen objects contain perspective objects, etc.).
 	 * This method incorporates a collection of databases objects into a single
 	 * database object immediately higher in the hierarchy given.  
 	 *
@@ -159,7 +159,7 @@ class DBObject
 		$sub_obj_type_index = array_search($sub_obj_types[0], $this->tiers); 
 		if (($obj_type_index + 1) != $sub_obj_type_index) { return FALSE;}
 
-		// for class section, need to add $sub_object_array to $models
+		// for class chapter, need to add $sub_object_array to $specimens
 		$sub_array = $sub_obj_types[0]."s";
 		$this->data[$sub_array] = array_merge($this->data[$sub_array], $sub_object_array);
 		$this->removeDuplicateSubObjs();

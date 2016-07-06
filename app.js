@@ -2,42 +2,42 @@ var app = angular.module('app', ['ngRoute', 'routeStyles', 'iconolater']);
 
 app.config(function($routeProvider, $locationProvider) {
 	$routeProvider
-		.when('/section/edit/:sectionId', {
-			templateUrl: 'section/edit.html',
-			controller: 'SectionEditController'
+		.when('/chapter/edit/:chapterId', {
+			templateUrl: 'chapter/edit.html',
+			controller: 'ChapterEditController'
 		})
-		.when('/section/create', {
-			templateUrl: 'section/create.html',
-			controller: 'SectionCreateController'
+		.when('/chapter/create', {
+			templateUrl: 'chapter/create.html',
+			controller: 'ChapterCreateController'
 		})
-		.when('/model/create', {
-			templateUrl: 'model/create.html',
-			controller: 'ModelCreateController'
+		.when('/specimen/create', {
+			templateUrl: 'specimen/create.html',
+			controller: 'SpecimenCreateController'
 		})
-		.when('/model/:modelId', {
-			templateUrl: 'model/model.html',
-			controller: 'ModelController'
+		.when('/specimen/:specimenId', {
+			templateUrl: 'specimen/specimen.html',
+			controller: 'SpecimenController'
 		})
-		.when('/model/edit/:modelId', {
-			templateUrl: 'model/edit.html',
-			controller: 'ModelEditController'
+		.when('/specimen/edit/:specimenId', {
+			templateUrl: 'specimen/edit.html',
+			controller: 'SpecimenEditController'
 		})
-		.when('/model/:modelId/view/:viewId', {
-			templateUrl: 'view/view.html',
-			controller: 'ViewController',
-			css: 'view/view.css'
+		.when('/specimen/:specimenId/perspective/:perspectiveId', {
+			templateUrl: 'perspective/perspective.html',
+			controller: 'PerspectiveController',
+			css: 'perspective/perspective.css'
 		})
-		.when('/model/:modelId/view/edit/:viewId', {
-			templateUrl: 'view/edit.html',
-			controller: 'ViewEditController',
-			css: 'view/view.css'
+		.when('/specimen/:specimenId/perspective/edit/:perspectiveId', {
+			templateUrl: 'perspective/edit.html',
+			controller: 'PerspectiveEditController',
+			css: 'perspective/perspective.css'
 		})
-		.when('/model/:modelId/view/create', {
-			templateUrl: 'view/create.html',
-			controller: 'ViewCreateController'
+		.when('/specimen/:specimenId/perspective/create', {
+			templateUrl: 'perspective/create.html',
+			controller: 'PerspectiveCreateController'
 		})
 		.otherwise({
-			templateUrl: 'section/section.html',
-			controller: 'SectionController'
+			templateUrl: 'chapter/chapter.html',
+			controller: 'ChapterController'
 		});
 });

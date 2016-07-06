@@ -2,7 +2,7 @@
 
 /**    
 * DBObjectManager constructs and manages database operations for DBObject child 
-* class objects (sections, models, views, labels, items). This class acts as a
+* class objects (chapters, specimens, perspectives, labels, items). This class acts as a
 * factory generating DBObjects and provides a DBObject-specific interface
 * for database create, read, update, and delete functionality. 
 * 
@@ -11,12 +11,12 @@
 * @access public    
 */
 
-include_once 'Section.class.php';
-include_once 'Model.class.php';
-include_once 'View.class.php';
+include_once 'Chapter.class.php';
+include_once 'Specimen.class.php';
+include_once 'Perspective.class.php';
 include_once 'Label.class.php';
 include_once 'Item.class.php';
-include_once 'View_Item.class.php';
+include_once 'Perspective_Item.class.php';
 
 class DBObjectManager
 {
@@ -43,7 +43,7 @@ class DBObjectManager
 			return FALSE; // Error later
 		}
 
-		$valid_classes = ['Section','Model','View','Label','Item', 'View_Item'];
+		$valid_classes = ['Chapter','Specimen','Perspective','Label','Item','Perspective_Item'];
 
 		if (in_array($class, $valid_classes)) {
 			return TRUE; 
@@ -58,7 +58,7 @@ class DBObjectManager
 		$this->validateObjClass($obj_class);
 
 		return $this->DB->read(strtolower($obj_class), $where, $column, 
-			$distinct = F, $count = T);
+			$distinct = false, $count = true);
 	}
 
 	############################################################################
@@ -69,9 +69,9 @@ class DBObjectManager
 	 * Reads a database row corresponding to the $obj_class type with a primary
 	 * key ID $id and returns an appropriate $obj_class object. 
 	 *
-	 * @param string $obj_class One of ['section','model','view','label','item']
+	 * @param string $obj_class One of ['chapter','specimen','perspective','label','item']
 	 * @param integer $id Primary key ID of database row for object
-	 * @return array Array containing section, model, view, label, item object
+	 * @return array Array containing chapter, specimen, perspective, label, item object
 	 * @access public
 	 */
 	public function readObject($obj_class, $id)
@@ -87,11 +87,11 @@ class DBObjectManager
 	}
 
 	/**
-	 * Saves data from a DBObject section, model, label, view, or item object
+	 * Saves data from a DBObject chapter, specimen, label, perspective, or item object
 	 * to SQL database by either creating a new entry or updating a previous
 	 * entry.
 	 *
-	 * @param DBObject $obj Section, model, label, view, or item object
+	 * @param DBObject $obj Chapter, specimen, label, perspective, or item object
 	 * @return DBObject Created or updated DBObject
 	 * @access public
 	 */
@@ -108,8 +108,15 @@ class DBObjectManager
 				array_values($obj_data), $obj->data['id']);
 			return $obj;
 		} else {
-			$new_id = $this->DB->create($type, array_keys($obj->data), 
-				array_values($obj->data));
+			if (isset($obj->data['save_fields'])) {
+				$obj_data = array_intersect_key($obj->data, 
+				array_flip($obj->data['save_fields']));
+				$new_id = $this->DB->create($type, array_keys($obj_data), 
+				array_values($obj_data));
+			} else {
+				$new_id = $this->DB->create($type, array_keys($obj->data), 
+					array_values($obj->data));
+			}
 			$obj->data['id'] = $new_id;
 			$obj = new $type($obj->data);
 			return $obj;
@@ -117,10 +124,10 @@ class DBObjectManager
 	}
 
 	/**
-	 * Deletes data from a DBObject section, model, label, view, or item object
+	 * Deletes data from a DBObject chapter, specimen, label, perspective, or item object
 	 * from SQL database.
 	 *
-	 * @param DBObject $obj Section, model, label, view, or item object
+	 * @param DBObject $obj Chapter, specimen, label, perspective, or item object
 	 * @return integer Number of affected database rows (should be 1)
 	 * @access public
 	 */
@@ -148,43 +155,43 @@ class DBObjectManager
 		return $obj_array;
 	}
 
-	protected function readMatchingCollectionModel($match_view_id)
+	protected function readMatchingCollectionSpecimen($match_perspective_id)
 	{
-		$item_ids = $this->DB->read('view_item', 
-									['view_id', '=', $match_view_id],'item_id');
-		$view_ids = $this->DB->read('view_item', ['item_id', 'in', $item_ids], 
-													'view_id', TRUE);
+		$item_ids = $this->DB->read('perspective_item', 
+									['perspective_id', '=', $match_perspective_id],'item_id');
+		$perspective_ids = $this->DB->read('perspective_item', ['item_id', 'in', $item_ids], 
+													'perspective_id', TRUE);
 
 		$item_ids = $this->flattenArray($item_ids);
-		$view_ids = $this->flattenArray($view_ids);
+		$perspective_ids = $this->flattenArray($perspective_ids);
 
-		$view_rows = $this->DB->read('view', ['id', 'in', $view_ids]);
-		$view_objs = $this->dbRowsToObjArray('View', $view_rows);
+		$perspective_rows = $this->DB->read('perspective', ['id', 'in', $perspective_ids]);
+		$perspective_objs = $this->dbRowsToObjArray('Perspective', $perspective_rows);
 
-		$model_ids = array_map(function($x) {return $x->data['model_id'];}, $view_objs);
-		$model_ids = array_unique($model_ids);
+		$specimen_ids = array_map(function($x) {return $x->data['specimen_id'];}, $perspective_objs);
+		$specimen_ids = array_unique($specimen_ids);
 
-		$model_rows = $this->DB->read('model',['id', 'in', $model_ids]);
-		$model_objs = $this->dbRowsToObjArray('Model', $model_rows);
+		$specimen_rows = $this->DB->read('specimen',['id', 'in', $specimen_ids]);
+		$specimen_objs = $this->dbRowsToObjArray('Specimen', $specimen_rows);
 
-		$model_objs = $model_objs[0]->mergeObjects($model_objs, $view_objs);
-		return $model_objs;
+		$specimen_objs = $specimen_objs[0]->mergeObjects($specimen_objs, $perspective_objs);
+		return $specimen_objs;
 	}
 
-	protected function readMatchingCollectionItem($match_view_id)
+	protected function readMatchingCollectionItem($match_perspective_id)
 	{
-		$db_rows = $this->DB->readInnerJoin('item', 'view_item', 'id', 
-											'item_id', ['view_item.view_id','=',
-											$match_view_id]);
+		$db_rows = $this->DB->readInnerJoin('item', 'perspective_item', 'id', 
+											'item_id', ['perspective_item.perspective_id','=',
+											$match_perspective_id]);
 		return $this->dbRowsToObjArray('Item', $db_rows);
 	}
 
-	protected function readMatchingCollection($obj_class, $match_view_id)
+	protected function readMatchingCollection($obj_class, $match_perspective_id)
 	{
-		if ($obj_class == 'Model') {
-			return $this->readMatchingCollectionModel($match_view_id);
+		if ($obj_class == 'Specimen') {
+			return $this->readMatchingCollectionSpecimen($match_perspective_id);
 		} elseif ($obj_class == 'Item') {
-			return $this->readMatchingCollectionItem($match_view_id);
+			return $this->readMatchingCollectionItem($match_perspective_id);
 		} else {
 			return FALSE; // Error later
 		}
@@ -192,30 +199,30 @@ class DBObjectManager
 
 	/**
 	 * Reads multiple database rows corresponding to the $obj_class type with an
-	 * optional where clause to specify results. Optional $match_view_id
-	 * provides special functionality for item and model objects. When used to
-	 * read item objects, method returns items that match a given view ID
-	 * (i.e., all anatomical structures that appear in a given view). When used
-	 * to read model objects, method returns models and associated views that
-	 * share items in common with the given view ID (i.e., anatomical models and
-	 * views of models that share an anatomical structure with a given view).
-	 * Only one of optional parameters $where and $match_view_id should be used.
+	 * optional where clause to specify results. Optional $match_perspective_id
+	 * provides special functionality for item and specimen objects. When used to
+	 * read item objects, method returns items that match a given perspective ID
+	 * (i.e., all anatomical structures that appear in a given perspective). When used
+	 * to read specimen objects, method returns specimens and associated perspectives that
+	 * share items in common with the given perspective ID (i.e., anatomical specimens and
+	 * perspectives of specimens that share an anatomical structure with a given perspective).
+	 * Only one of optional parameters $where and $match_perspective_id should be used.
 	 *
-	 * @param string $obj_class One of ['Section','Model','View','Label','Item']
+	 * @param string $obj_class One of ['Chapter','Specimen','Perspective','Label','Item']
 	 * @param array $where ['column', '=' OR 'in', 'value' OR ['a', 'b', ...]]
-	 * @param integer $match_view_id View ID to match items and models to
-	 * @return array Array of section, model, view, label, or item objects
+	 * @param integer $match_perspective_id Perspective ID to match items and specimens to
+	 * @return array Array of chapter, specimen, perspective, label, or item objects
 	 * @access public
 	 */
-	public function readObjCollection($obj_class, $where=NULL, $match_view_id=NULL)
+	public function readObjCollection($obj_class, $where=NULL, $match_perspective_id=NULL)
 	{
 		$this->validateObjClass($obj_class);
 
-		if ($match_view_id) {
+		if ($match_perspective_id) {
 			if ($where) {
 				return FALSE; // Error later
 			}
-			return $this->readMatchingCollection($obj_class, $match_view_id);
+			return $this->readMatchingCollection($obj_class, $match_perspective_id);
 		}
 		
 		$db_rows = $this->DB->read(strtolower($obj_class),$where);
@@ -228,11 +235,11 @@ class DBObjectManager
 	}
 
 	/**
-	 * Saves data from a an array of DBObject section, model, label, view, or
+	 * Saves data from a an array of DBObject chapter, specimen, label, perspective, or
 	 * item objects to SQL database by either creating new entries or updating
 	 * previous entries.
 	 *
-	 * @param array $obj_array Array of section, model, label, view, item objs
+	 * @param array $obj_array Array of chapter, specimen, label, perspective, item objs
 	 * @return array Array of created or updated DBObjects
 	 * @access public
 	 */
@@ -244,17 +251,17 @@ class DBObjectManager
 	}
 
 	/**
-	 * Deletes data from an array of DBObject section, model, label, view, or
+	 * Deletes data from an array of DBObject chapter, specimen, label, perspective, or
 	 * item objects from SQL database.
 	 *
-	 * @param array $obj_array Array of section, model, label, view, item objs
+	 * @param array $obj_array Array of chapter, specimen, label, perspective, item objs
 	 * @return integer Number of affected database rows
 	 * @access public
 	 */
 	public function deleteObjCollection($obj_array, $type=NULL)
 	{
 		if (!$type) { 
-			if (numberObjClasses($obj_array) != 1) {
+			if ($this->numberObjClasses($obj_array) != 1) {
 				die('Number of object classes not 1'); // Better error later
 			}
 			$type = get_class($obj_array[0]); 
@@ -267,7 +274,13 @@ class DBObjectManager
 			$obj_ids[] = $obj->data['id'];
 		}
 
-		return $this->DB->delete($type, $obj_ids);
+		if (count($obj_ids) == 0) {
+			return 0;
+		} else {
+			return $this->DB->delete($type, $obj_ids);
+		}
+
+		
 	}
 }
 

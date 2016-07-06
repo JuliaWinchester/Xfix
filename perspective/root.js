@@ -21,7 +21,7 @@ app.service('Structure', ['$rootScope', function($rootScope) {
       service.structLabels.push({id: service.structNum, labelPath: new labelPath(structName, [100, 100], [200, 200])});
       $rootScope.$broadcast('structures.update');
       service.structNum += 1;
-      view.draw();
+      perspective.draw();
     },
     deleteStructureArray: function (structs) {
       if (structs.length > 0) {
@@ -29,7 +29,7 @@ app.service('Structure', ['$rootScope', function($rootScope) {
           service.deleteStructure(structs[i]);
         }
         $rootScope.$broadcast('structures.update');
-        view.draw();
+        perspective.draw();
       } 
     },
     deleteStructure: function (structID) {
@@ -46,7 +46,7 @@ app.service('Image', function() {
     addImage: function(imageBlobURL) {
       if (service.raster) { service.raster.remove(); }
       service.raster = new Raster(imageBlobURL);
-      view.draw();
+      perspective.draw();
     }
   }
   
@@ -58,7 +58,7 @@ app.service('Canvas', ['Image', function(Image) {
     repositionImage: function(initHeight, newHeight) {
       var initRasterY = Image.raster.position.y;
       var initRelPos = initRasterY/initHeight;
-      Image.raster.position.y = initRelPos*view.size.height;
+      Image.raster.position.y = initRelPos*perspective.size.height;
     },
     resizeCanvasHeight: function(newHeight) {
       if (newHeight < 183) {
@@ -67,13 +67,13 @@ app.service('Canvas', ['Image', function(Image) {
       else {
         newHeight = Math.round(newHeight);
       }
-      var initHeight = view.size.height;
+      var initHeight = perspective.size.height;
       var ctx = document.getElementById("canvas").getContext("2d");
       ctx.canvas.height = newHeight;
       var toolbar = document.getElementById("nav");
       var toolHeight = newHeight - 183.0;
       toolbar.style.paddingBottom = (newHeight-183.0) + "px";
-      view.viewSize = [ctx.canvas.width, newHeight];
+      perspective.perspectiveSize = [ctx.canvas.width, newHeight];
       if (Image.raster) { service.repositionImage(initHeight, newHeight); }
     }
   }
@@ -103,7 +103,7 @@ app.directive('zoomImageIn', ['Image', 'Canvas', function (Image, Canvas) {
         if (Image.raster) {
           Image.raster.scale(1.1);
           Canvas.resizeCanvasHeight(Image.raster.bounds.height+100);
-          view.draw();
+          perspective.draw();
         }
       }
 
@@ -122,8 +122,8 @@ app.directive('centerImage', ['Image', function (Image) {
     link: function (scope, element, attrs) {
       function centerImage () {
         if (Image.raster) {
-          Image.raster.position = view.center;
-          view.draw();
+          Image.raster.position = perspective.center;
+          perspective.draw();
         }
       }
 
@@ -143,7 +143,7 @@ app.directive('addImage', ['Image', 'Canvas', function (Image, Canvas) {
         Image.raster.onLoad = function () {
           newHeight = Image.raster.height + 100;
           Canvas.resizeCanvasHeight(newHeight);
-          Image.raster.position = view.center;
+          Image.raster.position = perspective.center;
         }
         
       }
@@ -216,7 +216,7 @@ app.directive('draw', [function () {
       init();
       var tool = new Tool;
       uiDrag(tool);
-      view.draw();
+      perspective.draw();
     }
   }
 }]);

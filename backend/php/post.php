@@ -1,7 +1,7 @@
 <?php
 
-include_once('class/DB.class.php');
-include_once('class/DBObjectManager.class.php');
+include_once 'class/DB.class.php';
+include_once 'class/DBObjectManager.class.php';
 
 function validatePost($post)
 {
@@ -11,7 +11,7 @@ function validatePost($post)
 		die('Invalid mode'); // Better error later
 	}
 
-	$valid_types = ['Section', 'Model', 'View', 'Label', 'Item'];
+	$valid_types = ['Chapter', 'Specimen', 'Perspective', 'Label', 'Item'];
 	if (!in_array($post['type'], $valid_types)) {
 		die('Type not valid'); // Better error later
 	}
@@ -23,8 +23,8 @@ function validatePost($post)
 
 function subLayer($type)
 {
-	$valid_types = ['Section', 'Model', 'View'];
-	$sub_types = ['Model', 'View', 'Label'];
+	$valid_types = ['Chapter', 'Specimen', 'Perspective'];
+	$sub_types = ['Specimen', 'Perspective', 'Label'];
 	if (!in_array($type, $valid_types)) {
 		return -1;
 	}
@@ -48,27 +48,31 @@ function recursiveDelete($obj=NULL, $DBObjManager, $type=NULL, $count=0) {
 		}
 
 		// Get count of numbers of label objs matching item_ids
-		$item_id_counts = $DBObjManager->countDBObject('Item', 'item_id', 
-			['item_id', 'IN', $item_id]);
+		$item_id_counts = $DBObjManager->countDBObject('Label', 'item_id', 
+			['item_id', 'in', $item_id]);
+		
 		
 		// Get list of item_id where count=1 for deletion
 		$item_id = array_column($item_id_counts, 'item_id');
-		$counts = array_column($item_id_counts, 'count(*)');
+		$counts = array_column($item_id_counts, 'COUNT(*)');
 		$combined = array_combine($item_id, $counts);
 		$trash_item_ids = array_keys($combined, $search_value = 1);
 
 		// Delete label objects
 		$count += $DBObjManager->deleteObjCollection($obj, $type);
 		
-		// Delete all items where id in item_id list
-		$trash_items = $DBObjManager->readObjCollection('Item', 
-			['id', 'IN', $trash_item_ids]);
-		$count += $DBObjManager->deleteObjCollection($trash_items);
-		// Delete all view_item entries where item_id in item_id list
-		$trash_view_item = $DBObjManager->readObjCollection('View_Item', 
-			['item_id', 'IN', $trash_item_ids]);
-		$count += $DBObjManager->deleteObjCollection($trash_view_item);
+		if (count($trash_item_ids) > 0) {
+			// Delete all perspective_item entries where item_id in item_id list
+			$trash_perspective_item = $DBObjManager->readObjCollection('Perspective_Item', 
+				['item_id', 'in', $trash_item_ids]);
+			$count += $DBObjManager->deleteObjCollection($trash_perspective_item);
 
+			// Delete all items where id in item_id list
+			$trash_items = $DBObjManager->readObjCollection('Item', 
+				['id', 'in', $trash_item_ids]);
+			$count += $DBObjManager->deleteObjCollection($trash_items);
+		}
+		
 		return $count;
 	}
 
@@ -92,49 +96,65 @@ function recursiveDelete($obj=NULL, $DBObjManager, $type=NULL, $count=0) {
 	}
 }
 
+function assignLabelItem($label, $item, $persp_id, $DBObjManager) {
+	$label->data['item_id'] = $item->data['id'];
+	$v_i = $DBObjManager->readObjCollection('Perspective_Item',
+		['item_id', 'in', $item->data['id']]);
+	$v_id_array = obj_data_column($v_i, 'perspective_id');
+	if (!in_array($persp_id, $v_id_array)) {
+		$new_v_i = new Perspective_Item(['perspective_id' => $persp_id, 
+			'item_id' => $item->data['id']]);
+		$DBObjManager->saveObject($new_v_i, 'Perspective_Item');
+	}
+	return $label;
+}
+
+function createItem($label, $persp_id, $DBObjManager) {
+	$new_item = new Item(['name' => $label->data['name']]);
+	$item = $DBObjManager->saveObject($new_item, 'Item');
+	$label->data['item_id'] = $item->data['id'];
+	$new_perspective_item = new Perspective_Item(['perspective_id' => $persp_id, 
+		'item_id' => $item->data['id']]);
+	$DBObjManager->saveObject($new_perspective_item, 'Perspective_Item');
+	return $label;
+}
+
+function checkLabelItem($obj, $DBObjManager) {
+	foreach ($obj->data['labels'] as $key => $label) {
+		if (!$label->data['id']) {
+			$label->data['perspective_id'] = $obj->data['id']; 
+			$item = $DBObjManager->readObjCollection(
+				'Item', ['name', '=', $label->data['name']]);
+			if (count($item) > 1) {
+				die('Two items with the same name, please check.');
+			} elseif (count($item) == 1) {
+				$obj->data['labels'][$key] = assignLabelItem($label, $item[0], 
+					$obj->data['id'], $DBObjManager);
+				//$obj = assignLabelItem($obj);
+			} elseif (count($item) == 0) {
+				$obj->data['labels'][$key] = createItem($label, 
+					$obj->data['id'], $DBObjManager);
+				//$obj = createItem($obj);		
+			}
+		}
+	}
+	return $obj;
+}
+
 function save($post, $DBObjManager)
 {
 	$return = [];
 	foreach ($post['obj'] as $obj) {
 		$r_obj = $DBObjManager->saveObject($obj, $post['type']);
 		if ($post['sub_layer']) {
-			die('sub_layer triggered');
 			$sub = subLayer($post['type']);
 			$sub_array = strtolower($sub)."s";
 			if ($sub == 'Label') {
-				foreach ($obj->data[$sub_array] as $label) {
-					if (!$label->data['id']) {
-						$item = $DBObjManager->readObjCollection(
-							'Item', ['name', '=', $label->data['name']]);
-						if (count($item) > 1) {
-							die('Two items with the same name, please check.');
-						} elseif (count($item) == 1) {
-							$label->data['item_id'] = $item[0]->data['id'];
-							$v_i = $DBObjManager->readObjCollection('View_Item',
-								['item_id', 'IN', $item[0]->data['id']]);
-							$v_id_array = obj_data_column($v_i, 'view_id');
-							if (!in_array($obj->data['id'], $v_id_array)) {
-								$new_v_i = ['view_id' => $obj->data['id'], 
-									'item_id' => $item[0]->data['id'], 'save_fields' =>
-									['view_id', 'item_id']];
-								$DBObjManager->saveObject($new_v_i, 'View_Item');
-							}
-						} elseif (count($item) == 0) {
-							$new_item = ['name' => $label->data['name'], 
-								'save_fields' => ['name']];
-							$item = $DBObjManager->saveObject($new_item, 'Item');
-							$label->data['item_id'] = $item->data['id'];
-							$new_view_item = ['view_id' => $obj->data['id'],
-								'item_id' => $item->data['id'], 'save_fields' =>
-								['view_id', 'item_id']];
-							$DBObjManager->saveObject($new_view_item, 'View_Item');
-						}
-					}
-				}
+				$obj = checkLabelItem($obj, $DBObjManager);
 			}
 			$sub_obj = $DBObjManager->saveObjCollection(
 				$obj->data[$sub_array], $sub);
-			$r_obj[$sub_array] = $sub_obj;
+			$r_obj->data[$sub_array] = $sub_obj;
 		}
 		$return[] = $r_obj;
 	}

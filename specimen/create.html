@@ -1,21 +1,21 @@
-<!-- model/edit.html -->
+<!-- specimen/create.html -->
 <header>
-	<h1>Edit Model</h1>
+	<h1>Create Specimen</h1>
 </header>
 <article>
 	<form>
 		<label for="name">Name:</label>
-		<input type="text" name="name" ng-model="model.data.name" /></br>
+		<input type="text" name="name" ng-model="name" /></br>
 		<label for="typeSelect">Type:</label>
-		<select name="typeSelect" ng-model="model.data.type">
+		<select name="typeSelect" ng-model="type">
 			<option value="Plastic model">Plastic model</option>
 			<option value="Bone">Bone</option>
 		</select></br>
 		<label for="desc">Description:</label>
-		<input type="text" name="desc" ng-model="model.data.description" /></br>
+		<input type="text" name="desc" ng-model="desc" /></br>
 		<label for="chapter">Associated Chapter:</label>
 		<select name="chapter" ng-model="chapterId">
-			<option ng-repeat="section in sections | orderBy:numberFilter track by $index" value="{{section.data.id}}" ng-selected="{{section.data.id == chapterId}}">{{section.data.number}}: {{section.data.name}}</option>
+			<option ng-repeat="chapter in chapters | orderBy:numberFilter track by $index" value="{{chapter.data.id}}" ng-selected="{{chapter.data.id == chapterId}}">{{chapter.data.number}}: {{chapter.data.name}}</option>
 		</select></br>
 		<button ng-click="submit()" type="button">Submit</button>
 		<button ng-click="redirect()" type="button">Cancel</button>

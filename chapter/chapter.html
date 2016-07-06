@@ -1,0 +1,21 @@
+<!-- chapter/chapter.html -->
+<header>
+	<h1>List of chapters</h1>
+</header>
+<article>
+	<a href="#/icon">Icon</a>
+	<a href="#/specimen/create">Create new specimen</a>
+	<div ng-repeat="chapter in chapters | orderBy:numberFilter track by $index">
+		<h2>Chapter {{chapter.data.number}}: {{chapter.data.name}}</h2>
+		</br>
+		<a href="#/chapter/edit/{{chapter.data.id}}">Edit</a>
+		<button delete-chapter id="chapter.data.id">Delete</button>
+		<div ng-repeat="specimen in chapter.data.specimens | orderBy:nameFilter track by $index">
+			<a href="#/specimen/{{specimen.data.id}}">{{specimen.data.name}} (ID: {{specimen.data.id}})</a>
+			<a href="#/specimen/edit/{{specimen.data.id}}">Edit</a>
+			<button delete-specimen mid="specimen.data.id" sid="chapter.data.id">Delete</button>
+		</div>
+	</div>
+	</br>
+	<a href="#/chapter/create">Create New Chapter</a>
+</article>

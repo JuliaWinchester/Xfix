@@ -5,26 +5,26 @@ include_once('class/DBObjectManager.class.php');
 
 function validateReq($req)
 {
-	$valid_types = ['Section', 'Model', 'View', 'Label', 'Item'];
+	$valid_types = ['Chapter', 'Specimen', 'Perspective', 'Label', 'Item'];
 	if (!in_array($req['type'], $valid_types)) {
 		die('Type not valid:'.var_dump($req)); // Better error later
 	}
 	if ($req['sub_layer'] && $req['type'] == 'Item') {
 		die('Item can not have sub-layer'); // Better error later 
 	}
-	if ($req['id'] && $req['match_view_id']) {
-		die('id and match_view_id both present'); // Error later
+	if ($req['id'] && $req['match_perspective_id']) {
+		die('id and match_perspective_id both present'); // Error later
 	}
 
-	if ($req['type'] == 'Model' && $req['match_view_id'] && !$req['sub_layer']) {
-		echo "Warning: View-matched models always include view sub-layers";
+	if ($req['type'] == 'Specimen' && $req['match_perspective_id'] && !$req['sub_layer']) {
+		echo "Warning: Perspective-matched specimens always include perspective sub-layers";
 		$req['sub_layer'] = TRUE;
 	}	
 }
 
 function subLayer($type)
 {
-	$valid_types = ['Section', 'Model', 'View', 'Label'];
+	$valid_types = ['Chapter', 'Specimen', 'Perspective', 'Label'];
 	if (!in_array($type, $valid_types)) {
 		die('No valid sub-layer type'); // Better error later
 	}
@@ -39,15 +39,15 @@ $req = array();
 $req['type'] = $_GET['type'] ?? NULL;
 $req['sub_layer'] = $_GET['sub_layer'] ?? FALSE;
 $req['id'] = $_GET['id'] ?? NULL;
-$req['match_view_id'] = $_GET['match_view_id'] ?? NULL;
+$req['match_perspective_id'] = $_GET['match_perspective_id'] ?? NULL;
 
 validateReq($req);
 
 if ($req['id']) {
 	$obj = $DBObjManager->readObject($req['type'], $req['id']);
-} elseif ($req['match_view_id']) {
+} elseif ($req['match_perspective_id']) {
 	$obj = $DBObjManager->readObjCollection($req['type'], NULL, 
-		$req['match_view_id']);
+		$req['match_perspective_id']);
 } else {
 	$obj = $DBObjManager->readObjCollection($req['type']);
 }

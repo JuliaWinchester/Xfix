@@ -1,13 +1,13 @@
-<!-- view/view.html -->
+<!-- perspective/edit.html -->
 <header>
   <div id="leftbutton">
-    <input add-image class="input-file" type="file" id="file" name="file"/>
+    <input class="input-file" type="file" id="file" name="file"/>
     <label for="file" class="image-button button">Choose a file</label>
     <button add-image class="image-button button">Upload</button>
   </div>
   <div id="rightbutton">
-    <button class="image-button button">Submit</button>
-    <button class="image-button button">Cancel</button>
+    <button ng-click="submit()" class="image-button button">Submit</button>
+    <button ng-click="cancel()" class="image-button button">Cancel</button>
   </div>
 </header>
 <article>
@@ -32,8 +32,8 @@
   </br>
   <label ng-repeat="structure in structures track by $index">
     <div id="itemBox">
-      <p id="item-text">{{structure.text}}</p>
-      <p delete-one-structure itemid="structure.id" id="x">×</p>
+      <p id="item-text">{{structure.name}}</p>
+      <p delete-one-structure itemid="structure.sNum" id="x">×</p>
       </div>
     </div>
   </label>

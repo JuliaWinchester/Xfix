@@ -3,16 +3,16 @@
 include_once 'DBObject.class.php';
 
 /**    
-* Class for Xfix database "model" object, describing an anatomical model  
-* that is associated with one topical section object and can be associated with 
-* one or more view objects of that model. Inherits from DBObject and should be 
+* Class for Xfix database "specimen" object, describing an anatomical specimen  
+* that is associated with one topical chapter object and can be associated with 
+* one or more perspective objects of that specimen. Inherits from DBObject and should be 
 * created by DBObjectManager.
 * 
 * @package Xfix
 * @author Julie Winchester <julie.m.winchester@gmail.com>
 * @access public    
 */
-class Model extends DBObject
+class Specimen extends DBObject
 {
 	// Inherited variables: protected $db_row, $data; public $tiers
 
@@ -27,10 +27,10 @@ class Model extends DBObject
 		$this->data['name'] = $this->db_row['name'] ?? NULL;
 		$this->data['type'] = $this->db_row['type'] ?? NULL;
 		$this->data['description'] = $this->db_row['description'] ?? NULL;
-		$this->data['section_id'] = $this->db_row['section_id'] ?? NULL;
-		$this->data['views'] = [];
+		$this->data['chapter_id'] = $this->db_row['chapter_id'] ?? NULL;
+		$this->data['perspectives'] = [];
 		$this->data['save_fields'] = ['name', 'type', 'description', 
-			'section_id'];
+			'chapter_id'];
 	}
 }
 

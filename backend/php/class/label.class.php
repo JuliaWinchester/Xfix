@@ -4,8 +4,8 @@ include_once 'DBObject.class.php';
 
 /**    
 * Class for Xfix database "label" object, describing a graphical label of a 
-* structure from an anatomical model, associated with one view object
-* representing an anatomical model image and with one item object representing
+* structure from an anatomical specimen, associated with one perspective object
+* representing an anatomical specimen image and with one item object representing
 * the labeled structure. Inherits from DBObject and should be created by 
 * DBObjectManager.
 * 
@@ -33,11 +33,11 @@ class Label extends DBObject
 		$this->data['font_family'] = $this->db_row['font_family'] ?? NULL;
 		$this->data['font_weight'] = $this->db_row['font_weight'] ?? NULL;
 		$this->data['color'] = $this->db_row['color'] ?? NULL;
-		$this->data['view_id'] = $this->db_row['view_id'] ?? NULL;
+		$this->data['perspective_id'] = $this->db_row['perspective_id'] ?? NULL;
 		$this->data['item_id'] = $this->db_row['item_id'] ?? NULL;
 		$this->data['save_fields'] = array('name', 'label_position_x', 
 			'label_position_y', 'arrow_position_x', 'arrow_position_y',
-			'font_family', 'font_weight', 'color', 'view_id', 'item_id');
+			'font_family', 'font_weight', 'color', 'perspective_id', 'item_id');
 	}
 }
 

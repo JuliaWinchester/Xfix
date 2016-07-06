@@ -35,7 +35,7 @@ class DB {
 	
 	/**
 	 * Encloses string in back-ticks and escapes back-ticks within string. For
-	 * strings with '.' (as in 'section.name'), sub-strings on either side of 
+	 * strings with '.' (as in 'chapter.name'), sub-strings on either side of 
 	 * '.' are enclosed in back-ticks
 	 *
 	 * @param string $i
@@ -219,7 +219,7 @@ class DB {
 			}
 			$sql = "SELECT $column FROM $t1 INNER JOIN $t2 ON $j1 = $j2 $where_stmt";
 		} else {
-			$sql = "SELECT $column FROM section INNER JOIN model ON $j1 = $j2";
+			$sql = "SELECT $column FROM chapter INNER JOIN specimen ON $j1 = $j2";
 			$params = [];
 		}
 

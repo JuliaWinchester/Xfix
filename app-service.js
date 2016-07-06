@@ -4,15 +4,15 @@ HTTPService.$inject = ['$http'];
 
 function HTTPService($http) {
 	var service = {
-		get: function (type, sub_layer, id, match_view_id) {
+		get: function (type, sub_layer, id, match_perspective_id) {
 			var t = typeof type !== 'undefined' ?  type : null;
 			var s = typeof sub_layer !== 'undefined' ?  sub_layer : 0;
 			var i = typeof id !== 'undefined' ?  id : null;
 			var m_id = 
-				typeof match_view_id !== 'undefined' ?  match_view_id : null;
+				typeof match_perspective_id !== 'undefined' ?  match_perspective_id : null;
 
 			var config = {params: 
-				{type: t, sub_layer: s, id: i, match_view_id: m_id}};
+				{type: t, sub_layer: s, id: i, match_perspective_id: m_id}};
 			return $http.get('backend/php/query.php', config).then(
 				function successCallback(response) {
 					console.log(response);

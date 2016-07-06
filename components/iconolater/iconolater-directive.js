@@ -9,7 +9,7 @@ function zoomImageIn(Image) {
 			function zoomIn () {
 		        if (Image.raster) {
 		        	Image.raster.scale(1.1);
-		        	Image.resizeCanvasHeight(Image.raster.bounds.height+100);
+		        	Image.setCanvasHeight(Image.raster.bounds.height+100, true);
 		        	view.draw();
 		        }
 		    }
@@ -29,7 +29,7 @@ function zoomImageOut(Image) {
       		function zoomOut () {
         		if (Image.raster) {
           			Image.raster.scale(0.9);
-          			Image.resizeCanvasHeight(Image.raster.bounds.height+100);
+          			Image.setCanvasHeight(Image.raster.bounds.height+100, true);
           			view.draw();
         		}
       		}

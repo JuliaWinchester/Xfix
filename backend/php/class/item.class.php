@@ -6,7 +6,7 @@ include_once 'DBObject.class.php';
 * Class for Xfix database "item" object, describing an anatomical structure. 
 * Label objects representing graphical labels of anatomical structures can be
 * associated with item objects via the label object's item_id variable, and   
-* view objects representing image views of anatomical models can incorporate one
+* perspective objects representing image perspectives of anatomical specimens can incorporate one
 * or more item objects. Inherits from DBObject and should be 
 * created by DBObjectManager.
 * 
