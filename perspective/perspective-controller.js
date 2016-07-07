@@ -9,10 +9,10 @@ function PerspectiveController($scope, HTTPService, $routeParams) {
 angular.module('app').controller('PerspectiveEditController', PerspectiveEditController);
 
 PerspectiveEditController.$inject = ['$scope', 'HTTPService', '$routeParams', 
-	'Structure', 'Image', '$timeout', '$location'];
+	'Structure', 'Image', '$timeout', '$location', '$http'];
 
 function PerspectiveEditController($scope, HTTPService, $routeParams, Structure, 
-	Image, $timeout, $location) {
+	Image, $timeout, $location, $http) {
 	$scope.$on('structures.update', function(event) {
     	$timeout(function () {
             $scope.structures = Structure.structures;
@@ -32,14 +32,8 @@ function PerspectiveEditController($scope, HTTPService, $routeParams, Structure,
   	});
 
     $scope.submit = function () {
-        var base = "http://localhost/Xfix/";
-        if (Image.raster.source.indexOf(base) >= 0) {
-            $scope.perspective.data.image = 
-                Image.raster.source.replace(base, '');
-        } else {
-            console.log('Error. Image source not in base');
-            return;
-        }
+        // Code for detecting change in image source and necessary upload/etc goes here
+
         $scope.perspective.data.position_x = Image.raster.position.x;
         $scope.perspective.data.position_y = Image.raster.position.y;
         Structure.updateStructureData();
@@ -56,6 +50,16 @@ function PerspectiveEditController($scope, HTTPService, $routeParams, Structure,
                         });
                 }
         });
+    };
+
+    $scope.changeImage = function (old_img_src) {
+        var myFormData = new FormData();
+        myFormData.append('file', document.getElementById('file').files[0]);
+        config = {headers: {'Content-Type': undefined}, 
+            params: {old_image: old_img_src}};
+        $http.post('backend/php/upload.php', myFormData, config).then(
+            function successCallback(response) { console.log(response); },
+            function errorCallback(response) { console.log(response); });
     };
 
     $scope.cancel = function () {

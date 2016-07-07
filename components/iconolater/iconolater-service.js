@@ -99,14 +99,17 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 	    	if (typeof src != 'string') { src = URL.createObjectURL(src); }
 	      	if (service.raster) { service.raster.remove(); }
 	      	service.raster = new Raster(src);
-	      	if (x && y && scale) {
-	      		service.raster.position = [x, y];
-	      		service.raster.scale(scale);
-	      		service.setCanvasHeight(service.raster.bounds.height+100, false);
-	      	} else {
-	      		service.setupNewImage();
-	      		service.setCanvasHeight(service.raster.bounds.height+100, true);
-	      	}
+	      	service.raster.onLoad = function () {
+				if (x && y && scale) {
+		      		service.raster.position = [x, y];
+		      		service.raster.scale(scale);
+		      		service.setCanvasHeight(service.raster.bounds.height+100, false);
+		      	} else {
+	         		console.log('in else statement');
+		      		service.setupNewImage();
+		      		service.setCanvasHeight(service.raster.bounds.height+100, true);	      		
+		      	}
+	      	};
 	      	view.draw();
 	    },
 	    setupNewImage: function() {

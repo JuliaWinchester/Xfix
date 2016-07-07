@@ -66,13 +66,7 @@ function addImage(Image) {
     	restrict: 'A',
     	link: function (scope, element, attrs) {
       	function addImage () {
-        	var f = document.getElementById('file').files[0];
-        	Image.addImage(f);
-        	// Image.raster.onLoad = function () {
-         //  		newHeight = Image.raster.height + 100;
-         //  		Canvas.resizeCanvasHeight(newHeight);
-         //  		Image.raster.position = view.center;
-        	// };
+        	Image.addImage(document.getElementById('file').files[0]);
       	}
       	element.on('click', addImage);
     	}
