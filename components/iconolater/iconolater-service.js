@@ -100,6 +100,7 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 	      	if (service.raster) { service.raster.remove(); }
 	      	service.raster = new Raster(src);
 	      	service.raster.onLoad = function () {
+	      		service.raster.sendToBack();
 				if (x && y && scale) {
 		      		service.raster.position = [x, y];
 		      		service.raster.scale(scale);

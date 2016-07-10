@@ -50,6 +50,20 @@ function HTTPService($http) {
 					service.handleError(response);
 				});
 		},
+		img_upload: function (file, old_image) {
+			var myFormData = new FormData();
+        	myFormData.append('file', file);
+        	config = {headers: {'Content-Type': undefined}, 
+            params: {old_image: old_image}};
+        	return $http.post('backend/php/upload.php', myFormData, config).then(
+            	function successCallback(response) { 
+              		console.log(response); 
+              		return response; 
+              	},
+            	function errorCallback(response) { 
+            		service.handleError(response); 
+            	});
+		},
 		handleError: function (response) {
 			console.log('Error in HTTP query or post!');
 			console.log('HTTP Status Text: ' + response.statusText);

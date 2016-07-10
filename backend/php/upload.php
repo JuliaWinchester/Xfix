@@ -10,8 +10,13 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] == 0) {
 	$result['file_uploaded'] = $new_file_name;
 
 	if (isset($_GET['old_image'])) {
-		$delete_success = unlink('../../'.$_GET['old_image']);
-		$result['old_image_del'] = $delete_success;
+		$old_path = '../../'.$_GET['old_image'];
+		if (getimagesize($old_path) == false) {
+			die('Error: Old image not a valid image file');
+		} else {
+			$delete_success = unlink('../../'.$_GET['old_image']);
+			$result['old_image_del'] = $delete_success;
+		}
 	}
 
 	echo json_encode($result);

@@ -36,16 +36,24 @@ function obj_data_column($obj_array, $var) {
 	return array_column($data_column, $var);
 }
 
+function hasID($obj) {
+	if (isset($obj->data['id'])) { return TRUE; } else { return FALSE; }
+}
+
 function recursiveDelete($obj=NULL, $DBObjManager, $type=NULL, $count=0) {
+	if (gettype($obj) == 'array') {
+		foreach ($obj as $member) {
+				if (hasID($member) == false) { return 0; }
+			}	
+	} else {
+		if (hasID($obj) == false) { return 0; }
+		$obj = [$obj];
+	}
+		
 	// Final loop condition
 	if ($type == 'Label') {
 		// Get item_id array from label $obj array
-		if (gettype($obj) == 'array') {
-			$item_id = obj_data_column($obj, 'item_id');
-		} else {
-			$item_id = $obj->data['item_id'];
-			$obj = [$obj];
-		}
+		$item_id = obj_data_column($obj, 'item_id');
 
 		// Get count of numbers of label objs matching item_ids
 		$item_id_counts = $DBObjManager->countDBObject('Label', 'item_id', 
@@ -76,13 +84,7 @@ function recursiveDelete($obj=NULL, $DBObjManager, $type=NULL, $count=0) {
 		return $count;
 	}
 
-	if (gettype($obj) == 'array') {
-		$id = obj_data_column($obj, 'id');
-	} else {
-		$id = $obj->data['id'];
-		$obj = [$obj];
-	}
-
+	$id = obj_data_column($obj, 'id');
 	$count += $DBObjManager->deleteObjCollection($obj, $type);
 	$sub_type = subLayer($type);
 	$obj_id_field = strtolower($type)."_id";
