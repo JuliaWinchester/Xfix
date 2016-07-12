@@ -1,11 +1,27 @@
 angular.module('app').controller('SpecimenController', SpecimenController);
 
-SpecimenController.$inject = ['$scope', '$routeParams', 'HTTPService'];
+SpecimenController.$inject = ['$scope', '$routeParams', 'HTTPService', 
+	'Perspective'];
 
-function SpecimenController($scope, $routeParams, HTTPService) {
+function SpecimenController($scope, $routeParams, HTTPService, Perspective) {
+	$scope.currentId = null;
+	$scope.specimenMatches = [];
+
 	HTTPService.get('Specimen', 1, $routeParams.specimenId).then(function (result) {
 		$scope.specimen = result[0];
+		$scope.setPerspective($scope.specimen.data.perspectives[0].data.id);
 	});
+
+	$scope.setPerspective = function (perspectiveId) {
+		Perspective.get(perspectiveId, 1).then(function (result) {
+				$scope.currentId = Perspective.p.data.id;
+				HTTPService.get('Specimen', 1, null, Perspective.p.data.id).then(function (result) {
+					console.log('Other specimens with these structures');
+					console.log(result);
+					$scope.specimenMatches = result;
+				});
+		});
+	};
 }
 
 angular.module('app').controller('SpecimenEditController', SpecimenEditController);

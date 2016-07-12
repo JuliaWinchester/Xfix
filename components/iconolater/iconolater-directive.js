@@ -47,13 +47,13 @@ function centerImage(Image) {
       restrict: 'A',
           link: function (scope, element, attrs) {
               function centerImage () {
-                  if (Image.raster) {
-                      Image.raster.position = view.center;
-                      view.draw();
-                  }
-              }
+                    if (Image.raster) {
+                        Image.raster.position = view.center;
+                        view.draw();
+                    }
+                }
           element.on('click', centerImage);
-      }
+        }
     };
 }
 
@@ -136,9 +136,9 @@ function deleteStructure(Structure) {
   	};
 }
 
-angular.module('iconolater').directive('draw', draw);
+angular.module('iconolater').directive('drawEdit', drawEdit);
 
-function draw() {
+function drawEdit() {
 	return {
     	restrict: 'A',
     	link: function (scope, element, attrs) {
@@ -153,4 +153,21 @@ function draw() {
       		view.draw();
     	}
   	};
+}
+
+angular.module('iconolater').directive('drawNoEdit', drawNoEdit);
+
+function drawNoEdit() {
+  return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            function init() {
+                paper.install(window);
+                paper.setup(element[0]);
+            }
+
+            init();
+            view.draw();
+        }
+    };
 }

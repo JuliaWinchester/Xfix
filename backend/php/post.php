@@ -53,12 +53,31 @@ function recursiveDelete($obj=NULL, $DBObjManager, $type=NULL, $count=0) {
 	// Final loop condition
 	if ($type == 'Label') {
 		// Get item_id array from label $obj array
-		$item_id = obj_data_column($obj, 'item_id');
+		$item_id = obj_data_column($obj, 'item_id'); // 28 here for 'fat'
+		$persp_id = obj_data_column($obj, 'perspective_id');
 
-		// Get count of numbers of label objs matching item_ids
-		$item_id_counts = $DBObjManager->countDBObject('Label', 'item_id', 
+		// Checking for number of labels per view_ids matching item_ids
+		$persp_id_labels = $DBObjManager->readObjCollection('Label', 
+			['perspective_id', 'in', $persp_id]);
+		$p_i_labels = array_filter($persp_id_labels, function($l) use ($item_id) {
+			return in_array($l->data['item_id'], $item_id);
+		});
+		foreach ($p_i_labels as $l) {
+			$key = $l->data['perspective_id'].'&'.$l->data['item_id'];
+			$l_by_p_i[$key][] = $l;
+		}
+		foreach ($l_by_p_i as $l_array) {
+			if (count($l_array) == 1) {
+				$p_i = $DBObjManager->readObjCollection('Perspective_Item', 
+					[['perspective_id', '=', $l_array[0]->data['perspective_id']], 
+					['item_id', '=', $l_array[0]->data['item_id']]]);
+				$count += $DBObjManager->deleteObjCollection($p_i);
+			}
+		}
+
+		// Checking for number of labels matching item_ids globally
+		$item_id_counts = $DBObjManager->countDBObject('Label', 'item_id', // it's 2 because 1ximage 
 			['item_id', 'in', $item_id]);
-		
 		
 		// Get list of item_id where count=1 for deletion
 		$item_id = array_column($item_id_counts, 'item_id');
@@ -70,11 +89,6 @@ function recursiveDelete($obj=NULL, $DBObjManager, $type=NULL, $count=0) {
 		$count += $DBObjManager->deleteObjCollection($obj, $type);
 		
 		if (count($trash_item_ids) > 0) {
-			// Delete all perspective_item entries where item_id in item_id list
-			$trash_perspective_item = $DBObjManager->readObjCollection('Perspective_Item', 
-				['item_id', 'in', $trash_item_ids]);
-			$count += $DBObjManager->deleteObjCollection($trash_perspective_item);
-
 			// Delete all items where id in item_id list
 			$trash_items = $DBObjManager->readObjCollection('Item', 
 				['id', 'in', $trash_item_ids]);

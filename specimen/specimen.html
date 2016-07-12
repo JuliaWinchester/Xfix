@@ -3,15 +3,21 @@
 	<h1>Specimen {{specimen.data.id}}: {{specimen.data.name}}</h1>
 </header>
 <article>
-	<h2>Type: {{specimen.data.type}}</h2>
-	</br>
-	<h2>Description: {{specimen.data.description}}</h2>
-	</br>
-	<h2>Associated chapter ID: {{specimen.data.chapter_id}}</h2>
-	</br>
-		<div ng-repeat="perspective in specimen.data.perspectives track by $index">
-			<h2>Perspective {{perspective.data.id}}: {{perspective.data.type}}</h2>
-			<img src={{perspective.data.image}} width=1000>
-			</br>
+	<div id="view-block">
+		<p id="views">Views:</p>
+		<div class="perspectives" ng-repeat="perspective in specimen.data.perspectives track by $index">
+			<a class="plink" ng-class="{bold: perspective.data.id == currentId}" href ng-click="setPerspective(perspective.data.id)">{{perspective.data.type}}</a>
 		</div>
+	</div>
+	</br>
+	<canvas id="i-ctx" draw-no-edit width="900" height="500"></canvas>
+	</br>
+	<a ng-href="#/specimen/{{specimen.data.id}}/perspective/edit/{{currentId}}">Edit this view</a>
+	<a ng-href="#/specimen/{{specimen.data.id}}/perspective/create">Create new view</a>
 </article>
+<aside>
+	<h4>Other specimens with these structures</h4>
+	<div ng-repeat="specimen in specimenMatches track by $index">
+		<a ng-href="#/specimen/{{specimen.data.id}}">{{specimen.data.name}}</a>
+	</div>
+</aside>

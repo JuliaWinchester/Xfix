@@ -117,7 +117,7 @@ class DBObjectManager
 				$new_id = $this->DB->create($type, array_keys($obj->data), 
 					array_values($obj->data));
 			}
-			$obj->data['id'] = $new_id;
+			$obj->data['id'] = (int) $new_id;
 			$obj = new $type($obj->data);
 			return $obj;
 		}
@@ -158,13 +158,14 @@ class DBObjectManager
 	protected function readMatchingCollectionSpecimen($match_perspective_id)
 	{
 		$item_ids = $this->DB->read('perspective_item', 
-									['perspective_id', '=', $match_perspective_id],'item_id');
-		$perspective_ids = $this->DB->read('perspective_item', ['item_id', 'in', $item_ids], 
-													'perspective_id', TRUE);
+			['perspective_id', '=', $match_perspective_id],'item_id');
+		if (count($item_ids) == 0) { return []; }
+		$item_ids = array_column($item_ids, 'item_id');
 
-		$item_ids = $this->flattenArray($item_ids);
-		$perspective_ids = $this->flattenArray($perspective_ids);
-
+		$perspective_ids = $this->DB->read('perspective_item', 
+			['item_id', 'in', $item_ids], 'perspective_id', TRUE);
+		$perspective_ids = array_column($perspective_ids, 'perspective_id');
+		
 		$perspective_rows = $this->DB->read('perspective', ['id', 'in', $perspective_ids]);
 		$perspective_objs = $this->dbRowsToObjArray('Perspective', $perspective_rows);
 
@@ -220,7 +221,7 @@ class DBObjectManager
 
 		if ($match_perspective_id) {
 			if ($where) {
-				return FALSE; // Error later
+				die('Error: matching ID and where both provided');
 			}
 			return $this->readMatchingCollection($obj_class, $match_perspective_id);
 		}

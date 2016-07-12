@@ -1,41 +1,47 @@
 <!-- perspective/edit.html -->
 <header>
-  <div id="leftbutton">
-    <input class="input-file" type="file" id="file" name="file"/>
-    <label for="file" class="image-button button">Choose a file</label>
-    <button add-image class="image-button button">Upload</button>
+  <div id="i-l-btn">
+    <input class="i-input-file" type="file" id="file" name="file"/>
+    <label for="file" class="i-img-btn i-btn">Choose a file</label>
+    <button add-image class="i-img-btn i-btn">Upload</button>
   </div>
-  <div id="rightbutton">
-    <button ng-click="submit()" class="image-button button">Submit</button>
-    <button ng-click="cancel()" class="image-button button">Cancel</button>
+  <div id="i-r-btn">
+    <button ng-click="submit()" class="i-img-btn i-btn">Submit</button>
+    <button ng-click="cancel()" class="i-img-btn i-btn">Back</button>
   </div>
 </header>
-<article>
-<section id="image-edit" class="pane">
-  <section id="canvas-section">
-    <canvas id="canvas" draw width="900" height="500"></canvas>
+<div id="i-main">
+<section id="i-img-sctn" class="i-pane">
+  <section id="i-ctx-sctn">
+    <canvas id="i-ctx" draw-edit width="900" height="500"></canvas>
   </section>
-  <nav id="nav">
-    <button zoom-image-in id="zoom-in" class="zbut nav-tool" title="Zoom In"></button>
+  <div id="i-toolbar">
+    <button zoom-image-in id="i-zoom-in" class="i-zbtn i-nav-tool" title="Zoom In"></button>
     <br />
-    <button zoom-image-out id="zoom-out" class="zbut nav-tool" title="Zoom Out"></button>
+    <button zoom-image-out id="i-zoom-out" class="i-zbtn i-nav-tool" title="Zoom Out"></button>
     <br/>
-    <button center-image id="center" class="nav-tool" title="Center Image"></button>
-  </nav>
-</section>
-<aside class="pane">
-  <p id="labeled-items-text">Labeled Items</p>
-  <div id="item-input">
-    <input add-structure type="text" id="text1" name="text1" ng-model="textvar"/>
-    <button add-structure class="add-button button">Add</button>
+    <button center-image id="i-ctr" class="i-nav-tool" title="Center Image"></button>
   </div>
-  </br>
-  <label ng-repeat="structure in structures track by $index">
-    <div id="itemBox">
-      <p id="item-text">{{structure.name}}</p>
-      <p delete-one-structure itemid="structure.sNum" id="x">×</p>
-      </div>
+</section>
+<section id="i-l-sctn">
+  <div class="i-l-pane" id="i-l-pane-1">
+    <p class="i-pane-hdr" id="i-type-txt">Perspective Type</p>
+    <p class="i-pane-sub-hdr">(Anterior, Cross section, ... )</p>
+    <input type="text" id="i-txt-1" name="type" ng-model="ptype"/>
+  </div>
+  <div class="i-l-pane" id="i-l-pane-2">
+    <p class="i-pane-hdr">Labeled Items</p>
+    <div>
+      <input add-structure type="text" id="i-txt-2" name="text1" ng-model="textvar"/>
+      <button add-structure class="i-add-btn i-btn">Add</button>
     </div>
-  </label>
-</aside>
-</article>
+    </br>
+    <label ng-repeat="structure in structures track by $index">
+      <div id="i-itm-box">
+        <p id="i-itm-txt">{{structure.name}}</p>
+        <p delete-one-structure itemid="structure.sNum" id="i-x">×</p>
+      </div>
+    </label>
+  </div>
+</section>
+</div>

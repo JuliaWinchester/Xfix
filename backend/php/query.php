@@ -52,7 +52,7 @@ if ($req['id']) {
 	$obj = $DBObjManager->readObjCollection($req['type']);
 }
 
-if ($req['sub_layer']) {
+if ($req['sub_layer'] && !isset($req['match_perspective_id'])) {
 	if ($req['id']) {
 		$sub_where = [strtolower($req['type'])."_id", "=", $req['id']];
 	} else {

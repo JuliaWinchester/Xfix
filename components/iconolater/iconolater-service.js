@@ -85,6 +85,18 @@ function Structure($rootScope) {
 	      		service.structures[index].labelPath.group.remove();
 	        	service.structures.splice(index, 1);
 	      	}
+	    },
+	    deleteAllStructs: function (trashAll) {
+	    	if (trashAll) {
+	    		service.trashStruct = 
+	    			service.trashStruct.concat(service.structures);
+	    	}
+	    	for (var i = 0; i < service.structures.length; i++) {
+	    		service.structures[i].labelPath.group.remove();
+	    	}
+	    	service.structures = [];
+	    	$rootScope.$broadcast('structures.update');
+	    	view.draw();
 	    }
   	};
   	return service;
@@ -114,7 +126,7 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 	      	view.draw();
 	    },
 	    setupNewImage: function() {
-	    	var ctx = document.getElementById("canvas").getContext("2d");
+	    	var ctx = document.getElementById("i-ctx").getContext("2d");
 	    	service.raster.scale((ctx.canvas.width - 100)/service.raster.width);
 	    	service.raster.position = view.center;
 	    },
@@ -124,13 +136,19 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 	      	} else {
 	        	newHeight = Math.round(newHeight);
 	      	}
+	      	
 	      	var initHeight = view.size.height;
-	      	var ctx = document.getElementById("canvas").getContext("2d");
+	      	var ctx = document.getElementById("i-ctx").getContext("2d");
 	      	ctx.canvas.height = newHeight;
-	      	var toolbar = document.getElementById("nav");
-	      	var toolHeight = newHeight - 183.0;
-	      	toolbar.style.paddingBottom = (newHeight-183.0) + "px";
+
+	      	if (document.getElementById("nav")) {
+	      		var toolbar = document.getElementById("nav");
+	      		var toolHeight = newHeight - 183.0;
+	      		toolbar.style.paddingBottom = (newHeight-183.0) + "px";
+	      	}
+	      	
 	      	view.viewSize = [ctx.canvas.width, newHeight];
+	      	
 	      	if (service.raster && moveRaster) { 
 	      		var initRasterY = service.raster.position.y;
 	      		var initRelPos = initRasterY/initHeight;

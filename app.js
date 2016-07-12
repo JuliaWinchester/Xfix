@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'routeStyles', 'iconolater']);
+var app = angular.module('app', ['ngRoute', 'iconolater']);
 
 app.config(function($routeProvider, $locationProvider) {
 	$routeProvider
@@ -22,19 +22,17 @@ app.config(function($routeProvider, $locationProvider) {
 			templateUrl: 'specimen/edit.html',
 			controller: 'SpecimenEditController'
 		})
-		.when('/specimen/:specimenId/perspective/:perspectiveId', {
-			templateUrl: 'perspective/perspective.html',
-			controller: 'PerspectiveController',
-			css: 'perspective/perspective.css'
-		})
-		.when('/specimen/:specimenId/perspective/edit/:perspectiveId', {
-			templateUrl: 'perspective/edit.html',
-			controller: 'PerspectiveEditController',
-			css: 'perspective/perspective.css'
-		})
 		.when('/specimen/:specimenId/perspective/create', {
 			templateUrl: 'perspective/create.html',
 			controller: 'PerspectiveCreateController'
+		})
+		.when('/specimen/:specimenId/perspective/:perspectiveId', {
+			templateUrl: 'perspective/perspective.html',
+			controller: 'PerspectiveController'
+		})
+		.when('/specimen/:specimenId/perspective/edit/:perspectiveId', {
+			templateUrl: 'perspective/edit.html',
+			controller: 'PerspectiveEditController'
 		})
 		.otherwise({
 			templateUrl: 'chapter/chapter.html',

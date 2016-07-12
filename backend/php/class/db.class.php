@@ -105,6 +105,43 @@ class DB {
 		return $result;
 	}
 
+	function parse_where($where) {
+		$where_col = $this->prepareidentifier($where[0]);
+		if ($where[1] == "=") {
+			$where_stmt = "$where_col = ?";
+			$params = [$where[2]];
+		} elseif ($where[1] == "in") {
+			$placeholder = "(".implode(',',array_fill(0,count($where[2]), '?')).")";
+			$where_stmt = "$where_col IN $placeholder";
+			if (gettype($where[2]) == 'array') {
+				if (count($where[2]) == 0) { die('Empty array in where clause'); }
+				$params = $where[2];
+			} else {
+				$params = [$where[2]];
+			}
+		} else {
+			die('Where statement problem. Where: '.var_dump($where)); 
+		}
+		return [$where_stmt, $params];
+	}
+
+	function prepare_where($where) {
+		if (gettype($where[0]) == 'array') { // multiple where condition
+			$where_stmts = [];
+			$params = [];
+			foreach ($where as $w) {
+				$return = $this->parse_where($w);
+				$where_stmts[] = $return[0];
+				$params = array_merge($params, $return[1]);
+			}
+			$where_stmt = 'WHERE '.implode(' AND ', $where_stmts);
+			return [$where_stmt, $params];
+		} else { // single where condition
+			$return = $this->parse_where($where);
+			return ['WHERE '.$return[0], $return[1]];
+		}
+	}
+
 	/**
 	 * Reads data from database table. 
 	 *
@@ -143,22 +180,9 @@ class DB {
 		}
 
 		if ($where) {
-			$where_col = $this->prepareidentifier($where[0]);
-			if ($where[1] == "=") {
-				$where_stmt = "WHERE $where_col = ?";
-				$params = [$where[2]];
-			} elseif ($where[1] == "in") {
-				$placeholder = "(".implode(',',array_fill(0,count($where[2]), '?')).")";
-				$where_stmt = "WHERE $where_col IN $placeholder";
-				if (gettype($where[2]) == 'array') {
-					$params = $where[2];
-				} else {
-					$params = [$where[2]];
-				}
-			} else {
-				die('Where statement problem. Where: '.var_dump($where)); 
-			}
-			$sql = "SELECT $column FROM $table $where_stmt";
+			$where_array = $this->prepare_where($where);
+			$sql = "SELECT $column FROM $table $where_array[0]";
+			$params = $where_array[1];
 		} else {
 			$sql = "SELECT $column FROM $table";
 			$params = [];
