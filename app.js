@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'iconolater']);
+var app = angular.module('app', ['ngRoute', 'ngMaterial', 'iconolater']);
 
 app.config(function($routeProvider, $locationProvider) {
 	$routeProvider
@@ -38,4 +38,10 @@ app.config(function($routeProvider, $locationProvider) {
 			templateUrl: 'chapter/chapter.html',
 			controller: 'ChapterController'
 		});
+});
+
+app.config(function($mdThemingProvider) {
+  $mdThemingProvider.theme('default')
+    .primaryPalette('teal')
+    .accentPalette('grey');
 });

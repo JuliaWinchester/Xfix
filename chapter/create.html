@@ -1,14 +1,18 @@
 <!-- chapter/create.html -->
-<header>
-	<h1>Create new chapter</h1>
-</header>
-<article>
-	<form>
+<md-dialog aria-label="Add new chapter" ng-cloak>
+	<md-toolbar class="toolbar-title">
+		<p>Add new chapter</p>
+	</md-toolbar>
+	<md-dialog-content layout="row" layout-margin>
+		<form>
 		<label for="name">Name:</label>
 		<input type="text" name="name" ng-model="name" />
 		<label for="number">Number:</label>
 		<input type="text" name="number" ng-model="number" />
-		<button ng-click="submit()" type="button">Submit</button>
-		<button ng-click="redirect()" type="button">Cancel</button>
-	</form>
-</article>
+		</form>
+	</md-dialog-content>
+	<md-dialog-actions layout="row">
+		<md-button ng-click="submit()">Submit</md-button>
+		<md-button ng-click="cancel()">Cancel</md-button>
+	</md-dialog-actions>
+</md-dialog>

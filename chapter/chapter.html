@@ -1,21 +1,86 @@
 <!-- chapter/chapter.html -->
-<header>
-	<h1>List of chapters</h1>
-</header>
-<article>
-	<a href="#/icon">Icon</a>
-	<a href="#/specimen/create">Create new specimen</a>
-	<div ng-repeat="chapter in chapters | orderBy:numberFilter track by $index">
-		<h2>Chapter {{chapter.data.number}}: {{chapter.data.name}}</h2>
-		</br>
-		<a href="#/chapter/edit/{{chapter.data.id}}">Edit</a>
-		<button delete-chapter id="chapter.data.id">Delete</button>
-		<div ng-repeat="specimen in chapter.data.specimens | orderBy:nameFilter track by $index">
-			<a href="#/specimen/{{specimen.data.id}}">{{specimen.data.name}} (ID: {{specimen.data.id}})</a>
-			<a href="#/specimen/edit/{{specimen.data.id}}">Edit</a>
-			<button delete-specimen mid="specimen.data.id" sid="chapter.data.id">Delete</button>
-		</div>
-	</div>
-	</br>
-	<a href="#/chapter/create">Create New Chapter</a>
-</article>
+<md-toolbar layout="row" class="md-hue-2 toolbar-title" layout-align="start center">
+	<h1 class="md-title toolbar-title">ANP 300 > Chapters</h1>
+	<span flex></span>
+	<md-menu>
+		<md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
+			<md-icon md-menu-origin md-font-library="material-icons"> add </md-icon>
+		</md-button>
+		<md-menu-content width="4">
+			<md-menu-item>
+				<md-button ng-click="chapterCreateModal($event)">
+					<md-icon md-menu-align-target md-font-library="material-icons"> book </md-icon>
+					Add new chapter
+				</md-button>
+			</md-menu-item>
+			<md-menu-item>
+				<md-button ng-click="specimenCreateModal($event)">
+					<md-icon md-font-library="material-icons"> pan_tool </md-icon>
+					Add new specimen
+				</md-button>
+			</md-menu-item>
+		</md-menu-content>
+	</md-menu>
+	<p class="toolbar-user">{{user}}</p>
+</md-toolbar>
+<md-content layout="column" layout-align="start center">
+	<md-list class="list-box" layout="column" layout-align="start stretch">
+		<md-list-item class="" layout="column" layout-align="start stretch" ng-repeat="chapter in chapters | orderBy:numberFilter track by $index">
+			<div layout="row" layout-align="start center" class="header-list">
+				<h2 class="md-title header-text">Chapter {{chapter.data.number}}: {{chapter.data.name}}</h2>
+				<md-menu>
+					<md-button class="md-icon-button md-accent" ng-click="$mdOpenMenu($event)">
+						<md-icon md-menu-origin md-font-library="material-icons"> mode_edit </md-icon>
+					</md-button>
+					<md-menu-content width="4">
+						<md-menu-item>
+							<md-button ng-click="chapterEditModal($event, chapter.data.id)">
+								<md-icon md-menu-align-target md-font-library="material-icons"> mode_edit </md-icon>
+								Edit chapter
+							</md-button>
+						</md-menu-item>
+						<md-menu-item>
+							<md-button delete-chapter id="chapter.data.id">
+								<md-icon md-font-library="material-icons"> delete </md-icon>
+								Delete chapter
+							</md-button>
+						</md-menu-item>
+					</md-menu-content>
+				</md-menu>
+				<span flex></span>
+				<md-button class="md-icon-button" ng-click="toggleShow(chapter.data.number)" expand-toggle>
+					<md-icon md-font-library="material-icons"> expand_more </md-icon> 
+				</md-button>
+			</div>
+			<md-divider></md-divider>
+			<div flex layout="row" class="sub-list animate-show" ng-show="showSpecimens[chapter.data.number]">
+				<div flex="5"></div>
+				<md-list flex>
+					<md-list-item layout="row" layout-align="start center" ng-repeat="specimen in chapter.data.specimens | orderBy:nameFilter track by $index">
+						<md-icon style="margin: 5px;" md-font-library="material-icons">&#xE5CC;</md-icon>
+						<a class="sub-list-text" href="#/specimen/{{specimen.data.id}}">{{specimen.data.name}}</a>
+						<md-menu>
+							<md-button class="md-icon-button md-primary" ng-click="$mdOpenMenu($event)">
+								<md-icon md-menu-origin md-font-library="material-icons"> mode_edit </md-icon>
+							</md-button>
+							<md-menu-content width="4">
+								<md-menu-item>
+									<md-button ng-click="specimenEditModal($event, specimen.data.id)">
+										<md-icon md-menu-align-target md-font-library="material-icons"> mode_edit </md-icon>
+										Edit specimen
+									</md-button>
+								</md-menu-item>
+								<md-menu-item>
+									<md-button delete-specimen mid="specimen.data.id" sid="chapter.data.id">
+										<md-icon md-font-library="material-icons"> delete </md-icon>
+										Delete specimen
+									</md-button>
+								</md-menu-item>
+							</md-menu-content>
+						</md-menu>
+					</md-list-item>
+				</md-list>
+			</div>
+		</md-list-item>
+	</md-list>
+</md-content>

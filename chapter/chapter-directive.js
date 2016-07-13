@@ -36,3 +36,22 @@ function deleteSpecimen(Chapter) {
 		}
 	};
 }
+
+angular.module('app').directive('expandToggle', expandToggle);
+
+function expandToggle() {
+	return {
+		restrict: 'A',
+		link: function (scope, element, attrs) {
+			function expandToggle () {
+				console.log(element[0].firstElementChild.innerText);
+				if (element[0].firstElementChild.innerText == "expand_more") {
+					element[0].firstElementChild.innerText = "expand_less";
+				} else if (element[0].firstElementChild.innerText == "expand_less") {
+					element[0].firstElementChild.innerText = "expand_more";
+				}
+			}
+			element.on('click', expandToggle);
+		}
+	};
+}

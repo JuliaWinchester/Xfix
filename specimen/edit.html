@@ -1,9 +1,10 @@
 <!-- specimen/edit.html -->
-<header>
-	<h1>Edit Specimen</h1>
-</header>
-<article>
-	<form>
+<md-dialog aria-label="Edit specimen" ng-cloak>
+	<md-toolbar class="toolbar-title">
+		<p>Edit specimen</p>
+	</md-toolbar>
+	<md-dialog-content layout="row" layout-margin>
+		<form>
 		<label for="name">Name:</label>
 		<input type="text" name="name" ng-model="specimen.data.name" /></br>
 		<label for="typeSelect">Type:</label>
@@ -16,8 +17,11 @@
 		<label for="chapter">Associated Chapter:</label>
 		<select name="chapter" ng-model="chapterId">
 			<option ng-repeat="chapter in chapters | orderBy:numberFilter track by $index" value="{{chapter.data.id}}" ng-selected="{{chapter.data.id == chapterId}}">{{chapter.data.number}}: {{chapter.data.name}}</option>
-		</select></br>
-		<button ng-click="submit()" type="button">Submit</button>
-		<button ng-click="redirect()" type="button">Cancel</button>
-	</form>
-</article>
+		</select>
+		</form>
+	</md-dialog-content>
+	<md-dialog-actions layout="row">
+		<md-button ng-click="submit()">Submit</md-button>
+		<md-button ng-click="cancel()">Cancel</md-button>
+	</md-dialog-actions>
+</md-dialog>
