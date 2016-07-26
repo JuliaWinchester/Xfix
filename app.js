@@ -1,4 +1,4 @@
-var app = angular.module('app', ['ngRoute', 'ngMaterial', 'iconolater']);
+var app = angular.module('app', ['ngRoute', 'ngMaterial', 'ngCookies', 'iconolater']);
 
 app.config(function($routeProvider, $locationProvider) {
 	$routeProvider
@@ -33,6 +33,10 @@ app.config(function($routeProvider, $locationProvider) {
 		.when('/specimen/:specimenId/perspective/edit/:perspectiveId', {
 			templateUrl: 'perspective/edit.html',
 			controller: 'PerspectiveEditController'
+		})
+		.when('/login', {
+			templateUrl: 'login/login.html',
+			controller: 'AppController'
 		})
 		.otherwise({
 			templateUrl: 'chapter/chapter.html',

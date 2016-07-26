@@ -1,47 +1,44 @@
 <!-- perspective/create.html -->
-<header>
-  <div id="i-l-btn">
-    <input class="i-input-file" type="file" id="file" name="file"/>
-    <label for="file" class="i-img-btn i-btn">Choose a file</label>
-    <button add-image class="i-img-btn i-btn">Upload</button>
+<md-content layout="row">
+  <div layout="column" style="margin-top: 20px">
+    <md-button zoom-image-in class="thin-btn">
+      <md-icon md-menu-align-target md-font-library="material-icons"> zoom_in </md-icon>
+    </md-button>
+    <md-button zoom-image-out class="thin-btn">
+      <md-icon md-menu-align-target md-font-library="material-icons"> zoom_out </md-icon>
+    </md-button>
+    <md-button center-image class="thin-btn">
+      <md-icon md-menu-align-target md-font-library="material-icons"> filter_center_focus </md-icon>
+    </md-button>
   </div>
-  <div id="i-r-btn">
-    <button ng-click="submit()" class="i-img-btn i-btn">Submit</button>
-    <button ng-click="cancel()" class="i-img-btn i-btn">Back</button>
-  </div>
-</header>
-<div id="i-main">
-<section id="i-img-sctn" class="i-pane">
-  <section id="i-ctx-sctn">
+  <div style="margin-top: 20px">
     <canvas id="i-ctx" draw-edit width="900" height="500"></canvas>
-  </section>
-  <div id="i-toolbar">
-    <button zoom-image-in id="i-zoom-in" class="i-zbtn i-nav-tool" title="Zoom In"></button>
-    <br />
-    <button zoom-image-out id="i-zoom-out" class="i-zbtn i-nav-tool" title="Zoom Out"></button>
-    <br/>
-    <button center-image id="i-ctr" class="i-nav-tool" title="Center Image"></button>
   </div>
-</section>
-<section id="i-l-sctn">
-  <div class="i-l-pane" id="i-l-pane-1">
-    <p class="i-pane-hdr" id="i-type-txt">Perspective Type</p>
-    <p class="i-pane-sub-hdr">(Anterior, Cross section, ... )</p>
-    <input type="text" id="i-txt-1" name="type" ng-model="ptype"/>
+  <div class="margintwenty" layout="column" layout-align="start center" flex>
+    <md-sidenav class="md-sidenav-right list-box" md-is-locked-open="true">
+      <md-toolbar layout="column" layout-align="center center">
+        <p>Perspective</p>
+      </md-toolbar>
+      <md-content class="sub-list" layout="column" layout-align="start center">
+        <input class="marginten" type="text" id="i-txt-1" name="type" ng-model="ptype"/>      
+      </md-content>
+    </md-sidenav>
+    <md-sidenav class="md-sidenav-right list-box" md-is-locked-open="true" flex>
+      <md-toolbar layout="row" layout-align="center center">
+        <p class="marginten">Structures</p>
+      </md-toolbar>
+      <md-content class="sub-list" layout="column" layout-align="start center" flex>
+        <div class="marginten">
+          <input add-structure type="text" id="i-txt-2" name="text1" ng-model="textvar"/>
+          <button add-structure class="i-add-btn i-btn">Add</button>
+        </div>
+        <label ng-repeat="structure in structures track by $index">
+          <div id="i-itm-box" layout="row" layout-margin>
+            <p id="i-itm-txt">{{structure.name}}</p>
+            <md-icon delete-one-structure itemid="structure.sNum" id="i-x" md-menu-align-target md-font-library="material-icons"> clear </md-icon>
+          </div>
+        </label>     
+      </md-content>
+    </md-sidenav>
   </div>
-  <div class="i-l-pane" id="i-l-pane-2">
-    <p class="i-pane-hdr">Labeled Items</p>
-    <div>
-      <input add-structure type="text" id="i-txt-2" name="text1" ng-model="textvar"/>
-      <button add-structure class="i-add-btn i-btn">Add</button>
-    </div>
-    </br>
-    <label ng-repeat="structure in structures track by $index">
-      <div id="i-itm-box">
-        <p id="i-itm-txt">{{structure.name}}</p>
-        <p delete-one-structure itemid="structure.sNum" id="i-x">×</p>
-      </div>
-    </label>
-  </div>
-</section>
-</div>
+</md-content>

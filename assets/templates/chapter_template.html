@@ -1,0 +1,20 @@
+<!-- templates/chapter_template.html -->
+<md-menu ng-show="$route.current.scope.LogInService.currentUser === 'administrator'">
+		<md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
+			<md-icon md-menu-origin md-font-library="material-icons"> add </md-icon>
+		</md-button>
+		<md-menu-content width="4">
+			<md-menu-item>
+				<md-button ng-click="$route.current.scope.chapterCreateModal($event)">
+					<md-icon md-menu-align-target md-font-library="material-icons"> book </md-icon>
+					Add new chapter
+				</md-button>
+			</md-menu-item>
+			<md-menu-item>
+				<md-button ng-click="$route.current.scope.specimenCreateModal($event)">
+					<md-icon md-font-library="material-icons"> pan_tool </md-icon>
+					Add new specimen
+				</md-button>
+			</md-menu-item>
+		</md-menu-content>
+</md-menu>

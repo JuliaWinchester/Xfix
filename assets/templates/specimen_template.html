@@ -1,0 +1,26 @@
+<!-- templates/specimen_template.html -->
+<md-menu>
+		<md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
+			<md-icon md-menu-origin md-font-library="material-icons"> mode_edit </md-icon>
+		</md-button>
+		<md-menu-content width="4">
+			<md-menu-item>
+				<md-button ng-href="#/specimen/{{$route.current.scope.specimen.data.id}}/perspective/create">
+					<md-icon md-menu-align-target md-font-library="material-icons"> add </md-icon>
+					Create new view
+				</md-button>
+			</md-menu-item>
+			<md-menu-item>
+				<md-button ng-href="#/specimen/{{$route.current.scope.specimen.data.id}}/perspective/edit/{{$route.current.scope.currentId}}">
+					<md-icon md-font-library="material-icons"> mode_edit </md-icon>
+					Edit current view
+				</md-button>
+			</md-menu-item>
+			<md-menu-item>
+				<md-button ng-click="$route.current.scope.specimenDeleteModal($event)">
+					<md-icon md-font-library="material-icons"> delete </md-icon>
+					Delete current view
+				</md-button>
+			</md-menu-item>
+		</md-menu-content>
+</md-menu>

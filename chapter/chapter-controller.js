@@ -1,14 +1,18 @@
 angular.module('app').controller('ChapterController', ChapterController);
 
-ChapterController.$inject = ['$scope', 'HTTPService', 'Chapter', '$mdDialog'];
+ChapterController.$inject = ['$scope', 'HTTPService', 'Chapter', '$mdDialog', 
+	'$location', 'LogInService'];
 
-function ChapterController($scope, HTTPService, Chapter, $mdDialog) {
+function ChapterController($scope, HTTPService, Chapter, $mdDialog, $location, LogInService) {
 	$scope.$on('chapters.update', function(event) {
 		$scope.chapters = Chapter.chapters;
 	});
 
 	$scope.showSpecimens = {};
-	$scope.user = "MockUser";
+	$scope.LogInService = LogInService;
+	$scope.title = "ANP 300 > Chapters";
+	$scope.headerTemplate = "assets/templates/chapter_template.html";
+	$scope.ctrl = "ChapterController";
 
 	$scope.chapters = Chapter.chapters;
 	HTTPService.get('Chapter', 1).then(function (result) { 

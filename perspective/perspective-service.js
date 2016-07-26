@@ -8,13 +8,21 @@ function Perspective(HTTPService, Image, Structure) {
 		get: function (perspectiveId, getLabel) {
 			return HTTPService.get('Perspective', getLabel, perspectiveId).then(
 				function (result) {
-  					service.p = result[0];
-  					Image.addImage(service.p.data.image, service.p.data.position_x,
-  					service.p.data.position_y, service.p.data.scale);
-                    Structure.deleteAllStructs(0);
-        			Structure.addStructure(service.p.data.labels);
+                    service.set(result[0]);
+  					// service.p = result[0];
+  					// Image.addImage(service.p.data.image, service.p.data.position_x,
+  					// service.p.data.position_y, service.p.data.scale);
+       //              Structure.deleteAllStructs(0);
+       //  			Structure.addStructure(service.p.data.labels);
   			});
 		},
+        set: function (pObj) {
+            service.p = pObj;
+            Image.addImage(pObj.data.image, pObj.data.position_x, 
+                pObj.data.position_y, pObj.data.scale);
+            Structure.deleteAllStructs(0);
+            Structure.addStructure(pObj.data.labels);
+        },
 		save: function (ptype) {
             service.p.data.type = ptype;
 			service.p.data.position_x = Image.raster.position.x;

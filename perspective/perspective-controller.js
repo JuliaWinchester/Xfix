@@ -46,10 +46,10 @@ function PerspectiveEditController($scope, $routeParams, $timeout, $location,
 angular.module('app').controller('PerspectiveCreateController', PerspectiveCreateController);
 
 PerspectiveCreateController.$inject = ['$scope', '$routeParams', '$timeout', 
-    '$location', 'Structure', 'Perspective'];
+    '$location', 'Structure', 'Perspective', 'Image'];
 
 function PerspectiveCreateController($scope, $routeParams, $timeout, $location,
-    Structure, Perspective) {
+    Structure, Perspective, Image) {
 	$scope.$on('structures.update', function(event) {
         $timeout(function () {
             $scope.structures = Structure.structures;
@@ -57,6 +57,7 @@ function PerspectiveCreateController($scope, $routeParams, $timeout, $location,
         }); 
     });
   
+    $scope.title = "ANP 300 > Chapter > Specimen > Create Perspective";
     $scope.structures = Structure.structures;
     $scope.textvar = "";
     $scope.ptype = "";
@@ -76,6 +77,9 @@ function PerspectiveCreateController($scope, $routeParams, $timeout, $location,
         }
     };
 
+    $scope.upload = function (files) {
+        Image.addImage(files[0]);
+    };
 
     $scope.submit = function () {
         Perspective.submit($scope.ptype);

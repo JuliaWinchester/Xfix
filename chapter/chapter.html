@@ -1,34 +1,10 @@
 <!-- chapter/chapter.html -->
-<md-toolbar layout="row" class="md-hue-2 toolbar-title" layout-align="start center">
-	<h1 class="md-title toolbar-title">ANP 300 > Chapters</h1>
-	<span flex></span>
-	<md-menu>
-		<md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
-			<md-icon md-menu-origin md-font-library="material-icons"> add </md-icon>
-		</md-button>
-		<md-menu-content width="4">
-			<md-menu-item>
-				<md-button ng-click="chapterCreateModal($event)">
-					<md-icon md-menu-align-target md-font-library="material-icons"> book </md-icon>
-					Add new chapter
-				</md-button>
-			</md-menu-item>
-			<md-menu-item>
-				<md-button ng-click="specimenCreateModal($event)">
-					<md-icon md-font-library="material-icons"> pan_tool </md-icon>
-					Add new specimen
-				</md-button>
-			</md-menu-item>
-		</md-menu-content>
-	</md-menu>
-	<p class="toolbar-user">{{user}}</p>
-</md-toolbar>
 <md-content layout="column" layout-align="start center">
 	<md-list class="list-box" layout="column" layout-align="start stretch">
-		<md-list-item class="" layout="column" layout-align="start stretch" ng-repeat="chapter in chapters | orderBy:numberFilter track by $index">
+		<md-list-item layout="column" layout-align="start stretch" ng-repeat="chapter in chapters | orderBy:numberFilter track by $index">
 			<div layout="row" layout-align="start center" class="header-list">
 				<h2 class="md-title header-text">Chapter {{chapter.data.number}}: {{chapter.data.name}}</h2>
-				<md-menu>
+				<md-menu ng-show="LogInService.currentUser === 'administrator'">
 					<md-button class="md-icon-button md-accent" ng-click="$mdOpenMenu($event)">
 						<md-icon md-menu-origin md-font-library="material-icons"> mode_edit </md-icon>
 					</md-button>
@@ -59,7 +35,7 @@
 					<md-list-item layout="row" layout-align="start center" ng-repeat="specimen in chapter.data.specimens | orderBy:nameFilter track by $index">
 						<md-icon style="margin: 5px;" md-font-library="material-icons">&#xE5CC;</md-icon>
 						<a class="sub-list-text" href="#/specimen/{{specimen.data.id}}">{{specimen.data.name}}</a>
-						<md-menu>
+						<md-menu ng-show="LogInService.currentUser === 'administrator'">
 							<md-button class="md-icon-button md-primary" ng-click="$mdOpenMenu($event)">
 								<md-icon md-menu-origin md-font-library="material-icons"> mode_edit </md-icon>
 							</md-button>

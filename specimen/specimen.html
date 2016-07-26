@@ -1,23 +1,23 @@
 <!-- specimen.html -->
-<header>
-	<h1>Specimen {{specimen.data.id}}: {{specimen.data.name}}</h1>
-</header>
-<article>
-	<div id="view-block">
-		<p id="views">Views:</p>
-		<div class="perspectives" ng-repeat="perspective in specimen.data.perspectives track by $index">
-			<a class="plink" ng-class="{bold: perspective.data.id == currentId}" href ng-click="setPerspective(perspective.data.id)">{{perspective.data.type}}</a>
+<md-content layout="row">
+	<div id="canvas-and-views" class="margintwenty">
+		<div id="view-block" layout="row" layout-align="start center">
+			<p id="views">Views:</p>
+			<div class="perspectives marginten" ng-repeat="perspective in specimen.data.perspectives track by $index">
+				<a class="plink" ng-class="{bold: perspective.data.id == currentId}" href ng-click="getPerspective(perspective.data.id)">{{perspective.data.type}}</a>
+			</div>
 		</div>
+		<canvas id="i-ctx" draw-no-edit width="900" height="500"></canvas>	
 	</div>
-	</br>
-	<canvas id="i-ctx" draw-no-edit width="900" height="500"></canvas>
-	</br>
-	<a ng-href="#/specimen/{{specimen.data.id}}/perspective/edit/{{currentId}}">Edit this view</a>
-	<a ng-href="#/specimen/{{specimen.data.id}}/perspective/create">Create new view</a>
-</article>
-<aside>
-	<h4>Other specimens with these structures</h4>
-	<div ng-repeat="specimen in specimenMatches track by $index">
-		<a ng-href="#/specimen/{{specimen.data.id}}">{{specimen.data.name}}</a>
-	</div>
-</aside>
+	<span flex></span>
+	<md-sidenav class="md-sidenav-right list-box" md-is-locked-open="true">
+		<md-toolbar layout="row" layout-align="center center">
+			<p class="marginten">For these structures, also see:</p>
+		</md-toolbar>
+		<md-content class="sub-list" flex>
+			<div class="marginten" ng-repeat="specimen in specimenMatches track by $index">
+				<a ng-href="#/specimen/{{specimen.data.id}}">{{specimen.data.name}}</a>
+			</div>			
+		</md-content>
+	</md-sidenav>
+</md-content>

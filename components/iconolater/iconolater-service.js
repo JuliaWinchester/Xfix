@@ -118,12 +118,12 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 		      		service.raster.scale(scale);
 		      		service.setCanvasHeight(service.raster.bounds.height+100, false);
 		      	} else {
-	         		console.log('in else statement');
+	         		console.log('No x, y, or scale; setting up new image');
 		      		service.setupNewImage();
 		      		service.setCanvasHeight(service.raster.bounds.height+100, true);	      		
 		      	}
+		      	view.draw();
 	      	};
-	      	view.draw();
 	    },
 	    setupNewImage: function() {
 	    	var ctx = document.getElementById("i-ctx").getContext("2d");
@@ -140,6 +140,10 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 	      	var initHeight = view.size.height;
 	      	var ctx = document.getElementById("i-ctx").getContext("2d");
 	      	ctx.canvas.height = newHeight;
+	      	console.log('By this point canvas height should be');
+	      	console.log(newHeight);
+	      	console.log('Canvas height is actually:');
+	      	console.log(ctx.canvas.height);
 
 	      	if (document.getElementById("nav")) {
 	      		var toolbar = document.getElementById("nav");

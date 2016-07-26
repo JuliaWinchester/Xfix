@@ -1,25 +1,43 @@
 angular.module('app').controller('SpecimenController', SpecimenController);
 
-SpecimenController.$inject = ['$scope', '$routeParams', 'HTTPService', 
-	'Perspective'];
+SpecimenController.$inject = ['$scope', '$routeParams', '$mdDialog', 'HTTPService', 
+	'Perspective', '$document', '$timeout'];
 
-function SpecimenController($scope, $routeParams, HTTPService, Perspective) {
+function SpecimenController($scope, $routeParams, $mdDialog, HTTPService, Perspective, $document, $timeout) {
 	$scope.currentId = null;
 	$scope.specimenMatches = [];
+	$scope.title = "ANP 300 > Chapter > Specimen";
+	$scope.headerTemplate = "assets/templates/specimen_template.html";
 
 	HTTPService.get('Specimen', 1, $routeParams.specimenId).then(function (result) {
 		$scope.specimen = result[0];
-		$scope.setPerspective($scope.specimen.data.perspectives[0].data.id);
+		console.log('Setting perspective');
+        $scope.getPerspective($scope.specimen.data.perspectives[0].data.id);
 	});
 
-	$scope.setPerspective = function (perspectiveId) {
-		Perspective.get(perspectiveId, 1).then(function (result) {
-				$scope.currentId = Perspective.p.data.id;
-				HTTPService.get('Specimen', 1, null, Perspective.p.data.id).then(function (result) {
-					console.log('Other specimens with these structures');
-					console.log(result);
-					$scope.specimenMatches = result;
-				});
+	$scope.specimenDeleteModal = function(ev) {
+		var confirm = $mdDialog.confirm()
+			.title('Delete confirmation')
+			.textContent('Are you sure you want to delete this view? This is permanent and irreversible!')
+			.ariaLabel('Delete confirmation')
+			.targetEvent(ev)
+			.ok('Delete')
+			.cancel('Cancel')
+		$mdDialog.show(confirm).then(function () {
+			console.log('Would delete, but not implemented yet');
+		}, function () {
+			console.log('Cancelled out');
+		});
+	};
+
+	$scope.getPerspective = function (pId) {
+		Perspective.get(pId, 1, $scope).then(function () {
+			$scope.currentId = Perspective.p.data.id;
+			HTTPService.get('Specimen', 1, null, Perspective.p.data.id).then(function (result) {
+				console.log('Other specimens with these structures');
+				console.log(result);
+				$scope.specimenMatches = result; 
+			});
 		});
 	};
 }
