@@ -1,18 +1,21 @@
 angular.module('app').controller('SpecimenController', SpecimenController);
 
 SpecimenController.$inject = ['$scope', '$routeParams', '$mdDialog', 'HTTPService', 
-	'Perspective', '$document', '$timeout'];
+	'Perspective', '$document', '$timeout', 'LogInService'];
 
-function SpecimenController($scope, $routeParams, $mdDialog, HTTPService, Perspective, $document, $timeout) {
+function SpecimenController($scope, $routeParams, $mdDialog, HTTPService, 
+	Perspective, $document, $timeout, LogInService) {
+	$scope.LogInService = LogInService;
 	$scope.currentId = null;
 	$scope.specimenMatches = [];
-	$scope.title = "ANP 300 > Chapter > Specimen";
 	$scope.headerTemplate = "assets/templates/specimen_template.html";
+	$scope.title = "";
 
 	HTTPService.get('Specimen', 1, $routeParams.specimenId).then(function (result) {
 		$scope.specimen = result[0];
-		console.log('Setting perspective');
+		$scope.title = $scope.specimen.data.name;
         $scope.getPerspective($scope.specimen.data.perspectives[0].data.id);
+
 	});
 
 	$scope.specimenDeleteModal = function(ev) {

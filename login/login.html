@@ -1,13 +1,15 @@
 <md-content layout="row" layout-align="center center" flex>
-	<md-content layout="column" layout-padding layout-margin class="sub-list list-box" flex="30">
-	  	<md-input-container>
-	    	<input ng-model="username" placeholder="Username">
-	  	</md-input-container>
-	  	<md-input-container>
-	    	<input ng-model="password" placeholder="Password">
-	  	</md-input-container>
-	  	<md-button class="md-raised md-primary" style="margin-top: 0px" ng-click="login()">
-	  		Log in
-	  	</md-button>
+	<md-content layout="column" layout-padding layout-margin class="sub-list shadow" flex="50">
+		<div layout="column">
+		  	<md-input-container>
+		    	<input ng-model="username" placeholder="Username">
+		  	</md-input-container>
+		  	<md-input-container>
+		    	<input ng-model="password" placeholder="Password">
+		  	</md-input-container>
+		  	<md-button class="md-raised md-primary" style="margin-top: 0px" ng-click="login()">
+		  		Log in
+		  	</md-button>
+		</div>
 	</md-content>
  </md-content>

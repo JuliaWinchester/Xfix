@@ -10,22 +10,22 @@ function AppController($scope, $route, LogInService, $location, $timeout) {
 	$scope.$route = $route;
 	LogInService.getUser();
 	$scope.user = LogInService.currentUser;
-	if ($scope.user) {
-		$location.path('/');
-	}
 
-	$scope.title = "ANP 300 > Log In";
+	$scope.title = "Log In";
 
 	$scope.username = "";
 	$scope.password = "";
 
 	$scope.login = function () {
 		if ($scope.username && $scope.password) {
-			if (LogInService.login($scope.username, $scope.password)) {
-				$location.path('/');
-			} else {
-				console.log('Incorrect username or password');
-			}
+			LogInService.login($scope.username, $scope.password).then(
+				function (result) {
+					if (result === true) {
+						$location.path('/');
+					} else {
+						console.log('Incorrect username or password');
+					}
+				})
 			$scope.username = "";
 			$scope.password = "";
 		}
@@ -34,5 +34,7 @@ function AppController($scope, $route, LogInService, $location, $timeout) {
 	$scope.logout = function () {
 		LogInService.logout();
 		$location.path('/login');
+		$scope.username = "";
+		$scope.password = "";
 	};
 }

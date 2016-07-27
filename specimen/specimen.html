@@ -1,13 +1,13 @@
 <!-- specimen.html -->
 <md-content layout="row">
 	<div id="canvas-and-views" class="margintwenty">
-		<div id="view-block" layout="row" layout-align="start center">
-			<p id="views">Views:</p>
-			<div class="perspectives marginten" ng-repeat="perspective in specimen.data.perspectives track by $index">
-				<a class="plink" ng-class="{bold: perspective.data.id == currentId}" href ng-click="getPerspective(perspective.data.id)">{{perspective.data.type}}</a>
+		<div id="view-block" class="sub-list shadow" style="width: 900px" layout="row" layout-padding layout-wrap>
+			<span>Views:</span>
+			<div ng-repeat="perspective in specimen.data.perspectives track by $index">
+				<a ng-class="{bold: perspective.data.id == currentId}" href ng-click="getPerspective(perspective.data.id)">{{perspective.data.type}}</a>
 			</div>
 		</div>
-		<canvas id="i-ctx" draw-no-edit width="900" height="500"></canvas>	
+		<canvas id="i-ctx" class="shadow" draw-no-edit width="900" height="500"></canvas>	
 	</div>
 	<span flex></span>
 	<md-sidenav class="md-sidenav-right list-box" md-is-locked-open="true">

@@ -10,7 +10,7 @@ function ChapterController($scope, HTTPService, Chapter, $mdDialog, $location, L
 
 	$scope.showSpecimens = {};
 	$scope.LogInService = LogInService;
-	$scope.title = "ANP 300 > Chapters";
+	$scope.title = "Chapter list";
 	$scope.headerTemplate = "assets/templates/chapter_template.html";
 	$scope.ctrl = "ChapterController";
 
