@@ -49,13 +49,13 @@ function Chapter($rootScope, HTTPService) {
 					}
 				});
 		},
-		deleteSpecimen: function (sId, mId) {
-			sIndex = service.findIndex(sId, service.chapters);
-			mIndex = service.findIndex(mId, service.chapters[sIndex].data.specimens);
+		deleteSpecimen: function (chId, sId) {
+			chIndex = service.findIndex(chId, service.chapters);
+			sIndex = service.findIndex(sId, service.chapters[chIndex].data.specimens);
 			success = HTTPService.delete('Specimen', 
-				service.chapters[sIndex].data.specimens[mIndex]);
+				service.chapters[chIndex].data.specimens[sIndex]);
 			if (success) {
-				service.chapters[sIndex].data.specimens.splice(mIndex, 1);
+				service.chapters[chIndex].data.specimens.splice(sIndex, 1);
 				$rootScope.$broadcast('chapters.update');
 				return success;
 			} else {

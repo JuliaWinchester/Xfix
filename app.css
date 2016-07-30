@@ -96,9 +96,13 @@
 	font-weight: bold;
 }
 
-#anp-300 {
-	color: rgba(255,255,255,0.87);
+#header-start {
 	margin-left: 10px;
+	color: rgba(255,255,255,0.87);
+}
+
+#header-link {
+	color: rgba(255,255,255,0.87);
 }
 
 .log-in {

@@ -1,23 +1,29 @@
 <!-- specimen/edit.html -->
-<md-dialog aria-label="Edit specimen" ng-cloak>
-	<md-toolbar class="toolbar-title">
-		<p>Edit specimen</p>
+<md-dialog aria-label="Edit specimen" ng-cloak flex="60">
+	<md-toolbar>
+		<p class="md-title toolbar-title">Add new specimen</p>
 	</md-toolbar>
-	<md-dialog-content layout="row" layout-margin>
-		<form>
-		<label for="name">Name:</label>
-		<input type="text" name="name" ng-model="specimen.data.name" /></br>
-		<label for="typeSelect">Type:</label>
-		<select name="typeSelect" ng-model="specimen.data.type">
-			<option value="Plastic model">Plastic model</option>
-			<option value="Bone">Bone</option>
-		</select></br>
-		<label for="desc">Description:</label>
-		<input type="text" name="desc" ng-model="specimen.data.description" /></br>
-		<label for="chapter">Associated Chapter:</label>
-		<select name="chapter" ng-model="chapterId">
-			<option ng-repeat="chapter in chapters | orderBy:numberFilter track by $index" value="{{chapter.data.id}}" ng-selected="{{chapter.data.id == chapterId}}">{{chapter.data.number}}: {{chapter.data.name}}</option>
-		</select>
+	<md-dialog-content layout="column" layout-margin>
+		<form layout="column">
+		<md-input-container>
+			<input ng-model="specimen.data.name" placeholder="Specimen name">
+		</md-input-container>
+		<md-input-container>
+			<label>Specimen type</label>
+			<md-select ng-model="specimen.data.type">
+				<md-option value="Plastic model">Plastic model</md-option>
+				<md-option value="Bone">Bone</md-option>
+			</md-select>
+		</md-input-container>
+		<md-input-container>
+			<input ng-model="specimen.data.description" placeholder="Short Description">
+		</md-input-container>
+		<md-input-container>
+			<label>Associated chapter</label>
+			<md-select ng-model="chapterId">
+				<md-option ng-repeat="chapter in chapters | orderBy:numberFilter track by $index" value="{{chapter.data.id}}" ng-selected="{{chapter.data.id == chapterId}}">{{chapter.data.number}}: {{chapter.data.name}}</md-option>
+			</md-select>
+		</md-input-container>
 		</form>
 	</md-dialog-content>
 	<md-dialog-actions layout="row">

@@ -99,17 +99,18 @@ function recursiveDelete($obj=NULL, $DBObjManager, $type=NULL, $count=0) {
 	}
 
 	$id = obj_data_column($obj, 'id');
-	$count += $DBObjManager->deleteObjCollection($obj, $type);
+	
 	$sub_type = subLayer($type);
 	$obj_id_field = strtolower($type)."_id";
 	$sub_obj = $DBObjManager->readObjCollection($sub_type, 
 		[$obj_id_field, 'in', $id]);
 
 	if (count($sub_obj) > 0) {
-		recursiveDelete($sub_obj, $DBObjManager, $sub_type, $count);
-	} else {
-		return $count;
-	}
+		$count += recursiveDelete($sub_obj, $DBObjManager, $sub_type, $count);
+	} 
+
+	$count += $DBObjManager->deleteObjCollection($obj, $type);
+	return $count;
 }
 
 function assignLabelItem($label, $item, $persp_id, $DBObjManager) {

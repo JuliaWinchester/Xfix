@@ -9,28 +9,20 @@ function SpecimenController($scope, $routeParams, $mdDialog, HTTPService,
 	$scope.currentId = null;
 	$scope.specimenMatches = [];
 	$scope.headerTemplate = "assets/templates/specimen_template.html";
-	$scope.title = "";
+	$scope.headers = [];
+
+	if (typeof tool !== 'undefined') { // Remove any pre-existing PaperJS tool from Perspective create/edit
+		if (tool !== null) { tool.remove(); }
+	}
 
 	HTTPService.get('Specimen', 1, $routeParams.specimenId).then(function (result) {
 		$scope.specimen = result[0];
-		$scope.title = $scope.specimen.data.name;
+		$scope.headers.push({text: $scope.specimen.data.name, link: ''});
         $scope.getPerspective($scope.specimen.data.perspectives[0].data.id);
-
 	});
 
-	$scope.specimenDeleteModal = function(ev) {
-		var confirm = $mdDialog.confirm()
-			.title('Delete confirmation')
-			.textContent('Are you sure you want to delete this view? This is permanent and irreversible!')
-			.ariaLabel('Delete confirmation')
-			.targetEvent(ev)
-			.ok('Delete')
-			.cancel('Cancel')
-		$mdDialog.show(confirm).then(function () {
-			console.log('Would delete, but not implemented yet');
-		}, function () {
-			console.log('Cancelled out');
-		});
+	$scope.filterNonSelf = function (specimen) {
+		return specimen.data.id != $routeParams.specimenId;
 	};
 
 	$scope.getPerspective = function (pId) {
@@ -42,6 +34,36 @@ function SpecimenController($scope, $routeParams, $mdDialog, HTTPService,
 				$scope.specimenMatches = result; 
 			});
 		});
+	};
+
+	$scope.specimenDeleteModal = function(ev) {
+		var confirm = $mdDialog.confirm()
+			.title('Delete confirmation')
+			.textContent('Are you sure you want to delete this view? This is permanent and irreversible!')
+			.ariaLabel('Delete confirmation')
+			.targetEvent(ev)
+			.ok('Delete')
+			.cancel('Cancel')
+		$mdDialog.show(confirm).then(function () {
+			console.log('Deleting perspective');
+			$scope.deletePerspective();
+		}, function () {
+			console.log('Cancelled out');
+		});
+	};
+
+	$scope.deletePerspective = function() {
+		pIndex = $scope.findPerspectiveIndex(Perspective.p.data.id);
+		Perspective.delete().then(function () {
+			$scope.specimen.data.perspectives.splice(pIndex, 1);
+			$scope.getPerspective($scope.specimen.data.perspectives[0].data.id);
+		});
+	};
+
+	$scope.findPerspectiveIndex = function (pId) {
+      	var result = $scope.specimen.data.perspectives.filter(function(obj) {
+        	return obj.data.id == pId; })[0];
+      	return $scope.specimen.data.perspectives.indexOf(result);
 	};
 }
 
@@ -66,6 +88,10 @@ function SpecimenEditController($scope, HTTPService, Chapter, $location,
 			$scope.specimen.data.description && $scope.chapterId) {
 			$scope.specimen.data.chapter_id = $scope.chapterId;
 			HTTPService.save($scope.specimen, 'Specimen').then(function (result) {
+				var chIndex = Chapter.findIndex($scope.chapterId, Chapter.chapters);
+				var sIndex = Chapter.findIndex($scope.specimen.data.id,
+					Chapter.chapters[chIndex].data.specimens);
+				Chapter.chapters[chIndex].data.specimens[sIndex] = $scope.specimen;
 				$mdDialog.hide('Specimen edited');
 			});
 		}

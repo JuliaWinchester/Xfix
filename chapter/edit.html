@@ -1,14 +1,16 @@
 <!-- chapter/edit.html -->
-<md-dialog aria-label="Edit chapter" ng-cloak>
-	<md-toolbar class="toolbar-title">
-		<p>Edit chapter</p>
+<md-dialog aria-label="Edit chapter" ng-cloak flex="60">
+	<md-toolbar>
+		<p class="md-title toolbar-title">Edit chapter</p>
 	</md-toolbar>
-	<md-dialog-content layout="row" layout-margin>
-		<form>
-		<label for="name">Name:</label>
-		<input type="text" name="name" ng-model="name" />
-		<label for="number">Number:</label>
-		<input type="text" name="number" ng-model="number" />
+	<md-dialog-content layout="column" layout-margin>
+		<form layout="column">
+		<md-input-container>
+			<input ng-model="name" placeholder="Chapter name">
+		</md-input-container>
+		<md-input-container>
+			<input ng-model="number" placeholder="Chapter number">
+		</md-input-container>
 		</form>
 	</md-dialog-content>
 	<md-dialog-actions>

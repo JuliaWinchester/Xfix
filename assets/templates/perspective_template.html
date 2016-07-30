@@ -1,14 +1,16 @@
 <!-- templates/perspective_template.html -->
-<input class="i-input-file" type="file" id="file" name="file" custom-on-change="upload"/>
-<label for="file" class="md-button" md-ink-ripple>
-  Upload image
-  <md-icon md-menu-align-target md-font-library="material-icons"> file_upload </md-icon>
-</label>
-<md-button ng-click="$route.current.scope.submit()">
-  Submit view
-  <md-icon md-font-library="material-icons"> save </md-icon>
-</md-button>
-<md-button ng-click="$route.current.scope.cancel()">
-  Cancel
-  <md-icon md-font-library="material-icons"> exit_to_app </md-icon>
-</md-button>
+<div layout="row" layout-align="start center">
+	<input class="i-input-file" type="file" id="file" name="file" custom-on-change="$route.current.scope.upload" />
+	<label for="file" class="md-button" md-ink-ripple>
+	  Upload image
+	  <md-icon md-menu-align-target md-font-library="material-icons"> file_upload </md-icon>
+	</label>
+	<md-button ng-click="$route.current.scope.submit()">
+	  Submit view
+	  <md-icon md-font-library="material-icons"> save </md-icon>
+	</md-button>
+	<md-button ng-click="$route.current.scope.cancel()">
+	  Cancel
+	  <md-icon md-font-library="material-icons"> exit_to_app </md-icon>
+	</md-button>
+</div>

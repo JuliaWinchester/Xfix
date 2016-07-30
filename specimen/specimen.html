@@ -1,5 +1,5 @@
 <!-- specimen.html -->
-<md-content layout="row">
+<md-content layout="row" ng-cloak>
 	<div id="canvas-and-views" class="margintwenty">
 		<div id="view-block" class="sub-list shadow" style="width: 900px" layout="row" layout-padding layout-wrap>
 			<span>Views:</span>
@@ -7,7 +7,7 @@
 				<a ng-class="{bold: perspective.data.id == currentId}" href ng-click="getPerspective(perspective.data.id)">{{perspective.data.type}}</a>
 			</div>
 		</div>
-		<canvas id="i-ctx" class="shadow" draw-no-edit width="900" height="500"></canvas>	
+		<canvas id="i-ctx" class="shadow" draw-no-edit width="900" height="500" ng-cloak></canvas>	
 	</div>
 	<span flex></span>
 	<md-sidenav class="md-sidenav-right list-box" md-is-locked-open="true">
@@ -15,7 +15,7 @@
 			<p class="marginten">For these structures, also see:</p>
 		</md-toolbar>
 		<md-content class="sub-list" flex>
-			<div class="marginten" ng-repeat="specimen in specimenMatches track by $index">
+			<div class="marginten" ng-repeat="specimen in specimenMatches | filter:filterNonSelf track by $index">
 				<a ng-href="#/specimen/{{specimen.data.id}}">{{specimen.data.name}}</a>
 			</div>			
 		</md-content>

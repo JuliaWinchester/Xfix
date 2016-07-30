@@ -7,6 +7,14 @@ function Structure($rootScope) {
     	structNum: 0,
     	structures: [],
     	trashStruct: [],
+    	reset: function () {
+    		for (var i = 0; i < service.structures.length; i++) {
+	    		service.structures[i].labelPath.group.remove();
+	    	}
+	    	service.structNum = 0;
+    		service.structures = [];
+    		service.trashStruct = [];
+    	},
 	    findIndex: function (arrayOfObjs, ObjID) {
 	      	var result = arrayOfObjs.filter(function(obj) {
 	        	return obj.sNum == ObjID; })[0];
@@ -118,7 +126,6 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 		      		service.raster.scale(scale);
 		      		service.setCanvasHeight(service.raster.bounds.height+100, false);
 		      	} else {
-	         		console.log('No x, y, or scale; setting up new image');
 		      		service.setupNewImage();
 		      		service.setCanvasHeight(service.raster.bounds.height+100, true);	      		
 		      	}
@@ -140,10 +147,6 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 	      	var initHeight = view.size.height;
 	      	var ctx = document.getElementById("i-ctx").getContext("2d");
 	      	ctx.canvas.height = newHeight;
-	      	console.log('By this point canvas height should be');
-	      	console.log(newHeight);
-	      	console.log('Canvas height is actually:');
-	      	console.log(ctx.canvas.height);
 
 	      	if (document.getElementById("nav")) {
 	      		var toolbar = document.getElementById("nav");

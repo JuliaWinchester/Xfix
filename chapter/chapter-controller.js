@@ -10,14 +10,21 @@ function ChapterController($scope, HTTPService, Chapter, $mdDialog, $location, L
 
 	$scope.showSpecimens = {};
 	$scope.LogInService = LogInService;
-	$scope.title = "Chapter list";
+	$scope.headers = [{text: 'Chapter list', link: ''}];
 	$scope.headerTemplate = "assets/templates/chapter_template.html";
-	$scope.ctrl = "ChapterController";
 
 	$scope.chapters = Chapter.chapters;
 	HTTPService.get('Chapter', 1).then(function (result) { 
 		Chapter.addContent(result);
 	});
+
+	$scope.deleteChapter = function(chId) {
+		Chapter.deleteChapter(chId);
+	};
+
+	$scope.deleteSpecimen = function (chId, sId) {
+		Chapter.deleteSpecimen(chId, sId);
+	};
 
 	$scope.chapterCreateModal = function(ev) {
 		$mdDialog.show({
@@ -48,7 +55,23 @@ function ChapterController($scope, HTTPService, Chapter, $mdDialog, $location, L
 		}, function () {
 			console.log('Cancelled out');
 		});
-	}
+	};
+
+	$scope.chapterDeleteModal = function(ev, chId) {
+		var confirm = $mdDialog.confirm()
+			.title('Delete confirmation')
+			.textContent('Are you sure you want to delete this chapter? This is permanent and irreversible! All specimens (and perspectives) in this chapter will also be deleted.')
+			.ariaLabel('Delete confirmation')
+			.targetEvent(ev)
+			.ok('Delete')
+			.cancel('Cancel')
+		$mdDialog.show(confirm).then(function () {
+			console.log('Deleting chapter');
+			$scope.deleteChapter(chId);
+		}, function () {
+			console.log('Cancelled out');
+		});
+	};
 
 	$scope.specimenCreateModal = function(ev) {
 		$mdDialog.show({
@@ -78,7 +101,23 @@ function ChapterController($scope, HTTPService, Chapter, $mdDialog, $location, L
 		}, function () {
 			console.log('Cancelled out');
 		});
-	}
+	};
+
+	$scope.specimenDeleteModal = function(ev, chId, sId) {
+		var confirm = $mdDialog.confirm()
+			.title('Delete confirmation')
+			.textContent('Are you sure you want to delete this specimen? This is permanent and irreversible! All perspectives in this chapter will also be deleted.')
+			.ariaLabel('Delete confirmation')
+			.targetEvent(ev)
+			.ok('Delete')
+			.cancel('Cancel')
+		$mdDialog.show(confirm).then(function () {
+			console.log('Deleting specimen');
+			$scope.deleteSpecimen(chId, sId);
+		}, function () {
+			console.log('Cancelled out');
+		});
+	};
 
 	$scope.toggleShow = function (chapter) {
 		if (!$scope.showSpecimens[chapter]) {

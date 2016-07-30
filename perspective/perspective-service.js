@@ -1,8 +1,8 @@
 angular.module('app').service('Perspective', Perspective);
 
-Perspective.$inject = ['HTTPService', 'Image', 'Structure'];
+Perspective.$inject = ['HTTPService', 'Image', 'Structure', '$timeout'];
 
-function Perspective(HTTPService, Image, Structure) {
+function Perspective(HTTPService, Image, Structure, $timeout) {
 	var service = {
 		p: {},
 		get: function (perspectiveId, getLabel) {
@@ -20,7 +20,7 @@ function Perspective(HTTPService, Image, Structure) {
             service.p = pObj;
             Image.addImage(pObj.data.image, pObj.data.position_x, 
                 pObj.data.position_y, pObj.data.scale);
-            Structure.deleteAllStructs(0);
+            Structure.reset();
             Structure.addStructure(pObj.data.labels);
         },
 		save: function (ptype) {
@@ -31,7 +31,7 @@ function Perspective(HTTPService, Image, Structure) {
         	Structure.updateStructureData();
         	service.p.data.labels = Structure.structures;
         	console.log(service.p);
-        	HTTPService.save(service.p, 'Perspective', 1).then(
+        	return HTTPService.save(service.p, 'Perspective', 1).then(
             	function (result) {
                 	console.log('Saved');
                 	service.p = result.data[0];
@@ -40,6 +40,7 @@ function Perspective(HTTPService, Image, Structure) {
                         service.p.data.scale);
                 	Structure.deleteAllStructs(false);
                 	Structure.addStructure(service.p.data.labels);
+                    console.log('Submit finished (all but trash collect)');
                 	if (Structure.trashStruct.length > 0) {
                     	HTTPService.delete('Label', Structure.trashStruct).then(
                         	function (result) {
@@ -52,7 +53,7 @@ function Perspective(HTTPService, Image, Structure) {
 		submit: function (ptype) {
         	if (Image.raster.source.substring(0, 4) == 'blob') {
         		var file = document.getElementById('file').files[0];
-            	HTTPService.img_upload(file, service.p.data.image).then( 
+            	return HTTPService.img_upload(file, service.p.data.image).then( 
                 	function (result) {
                     	if (result.data.old_image_del == 1) {
                         	console.log('Previous image deleted from server');
@@ -60,15 +61,22 @@ function Perspective(HTTPService, Image, Structure) {
                     	}
                     	service.p.data.image = 
                         	'assets/images/' + result.data.file_uploaded;
-
-                    	service.save(ptype);
+                        console.log('starting perspective.save');
+                    	return service.save(ptype);
                 });  
         	} else if (Image.raster.source.substring(0, 4) == 'http') {
-         		service.save(ptype);
+         		return service.save(ptype);
 			} else {
 				console.log('No image supplied');
 			}
-		}
+		},
+        delete: function () {
+            return HTTPService.delete('Perspective', service.p).then(
+                function (result) {
+                    console.log('Perspective deleted');
+                    Structure.reset();
+                });
+        }
 	};
 	return service;
 }	

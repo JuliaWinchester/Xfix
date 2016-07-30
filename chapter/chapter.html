@@ -16,7 +16,7 @@
 							</md-button>
 						</md-menu-item>
 						<md-menu-item>
-							<md-button delete-chapter id="chapter.data.id">
+							<md-button ng-click="chapterDeleteModal($event, chapter.data.id)">
 								<md-icon md-font-library="material-icons"> delete </md-icon>
 								Delete chapter
 							</md-button>
@@ -47,7 +47,7 @@
 									</md-button>
 								</md-menu-item>
 								<md-menu-item>
-									<md-button delete-specimen mid="specimen.data.id" sid="chapter.data.id">
+									<md-button ng-click="specimenDeleteModal($event, chapter.data.id, specimen.data.id)">
 										<md-icon md-font-library="material-icons"> delete </md-icon>
 										Delete specimen
 									</md-button>

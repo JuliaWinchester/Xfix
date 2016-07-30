@@ -9,10 +9,10 @@ function PerspectiveController($scope, $routeParams, Perspective) {
 angular.module('app').controller('PerspectiveEditController', PerspectiveEditController);
 
 PerspectiveEditController.$inject = ['$scope', '$routeParams', '$timeout', 
-    '$location', 'Structure', 'Perspective'];
+    '$location', 'Structure', 'Perspective', 'Image'];
 
 function PerspectiveEditController($scope, $routeParams, $timeout, $location,
-    Structure, Perspective) {
+    Structure, Perspective, Image) {
 	$scope.$on('structures.update', function(event) {
     	$timeout(function () {
             $scope.structures = Structure.structures;
@@ -20,16 +20,24 @@ function PerspectiveEditController($scope, $routeParams, $timeout, $location,
         }); 
   	});
 	
+    $scope.headers = [{text: 'Edit perspective', link: ''}];
+    $scope.headerTemplate = "assets/templates/perspective_template.html";
+
+    Structure.reset();
   	$scope.structures = Structure.structures;
   	$scope.textvar = "";
-    $scope.ptype = "";
     Perspective.get($routeParams.perspectiveId, 1).then(function (result) {
         $scope.ptype = Perspective.p.data.type;
     });
 
+    $scope.upload = function (files) {
+        Image.addImage(files[0]);
+    };
 
     $scope.submit = function () {
-        Perspective.submit($scope.ptype);
+        Perspective.submit($scope.ptype).then(function () {
+            $scope.redirect();
+        });
     };
 
     $scope.cancel = function () {
@@ -40,7 +48,6 @@ function PerspectiveEditController($scope, $routeParams, $timeout, $location,
         console.log('redirect');
         $location.path('/specimen/'+$routeParams.specimenId);
     };
-
 }
 
 angular.module('app').controller('PerspectiveCreateController', PerspectiveCreateController);
@@ -57,7 +64,10 @@ function PerspectiveCreateController($scope, $routeParams, $timeout, $location,
         }); 
     });
   
-    $scope.title = "ANP 300 > Chapter > Specimen > Create Perspective";
+    $scope.headers = [{text: 'Create perspective', link: ''}];
+    $scope.headerTemplate = "assets/templates/perspective_template.html";
+
+    Structure.reset();
     $scope.structures = Structure.structures;
     $scope.textvar = "";
     $scope.ptype = "";
@@ -82,7 +92,10 @@ function PerspectiveCreateController($scope, $routeParams, $timeout, $location,
     };
 
     $scope.submit = function () {
-        Perspective.submit($scope.ptype);
+        Perspective.submit($scope.ptype).then(function () {
+            console.log('starting redirect');
+            $scope.redirect();
+        });
     };
 
     $scope.cancel = function () {
