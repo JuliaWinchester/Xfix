@@ -11,12 +11,12 @@
 * @access public    
 */
 
-include_once 'Chapter.class.php';
-include_once 'Specimen.class.php';
-include_once 'Perspective.class.php';
-include_once 'Label.class.php';
-include_once 'Item.class.php';
-include_once 'Perspective_Item.class.php';
+include_once 'chapter.class.php';
+include_once 'specimen.class.php';
+include_once 'perspective.class.php';
+include_once 'label.class.php';
+include_once 'item.class.php';
+include_once 'perspective_item.class.php';
 
 class DBObjectManager
 {

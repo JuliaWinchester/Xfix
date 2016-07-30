@@ -1,6 +1,6 @@
 <?php
 
-include_once 'DBObject.class.php';
+include_once 'dbObject.class.php';
 
 /**    
 * Class for Xfix database "chapter" object, describing a chapter or chapter 

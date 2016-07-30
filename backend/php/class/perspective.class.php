@@ -1,6 +1,6 @@
 <?php
 
-include_once 'DBObject.class.php';
+include_once 'dbObject.class.php';
 
 /**    
 * Class for Xfix database "perspective" object, describing an image perspective of an

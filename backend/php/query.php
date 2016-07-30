@@ -1,7 +1,7 @@
 <?php
 
-include_once('class/DB.class.php');
-include_once('class/DBObjectManager.class.php');
+include_once('class/db.class.php');
+include_once('class/dbObjectManager.class.php');
 
 function validateReq($req)
 {
