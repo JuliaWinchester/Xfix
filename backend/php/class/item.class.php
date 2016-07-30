@@ -25,8 +25,8 @@ class Item extends DBObject
 	*/
 	protected function unpackData()
 	{
-		$this->data['id'] = $this->db_row['id'] ?? NULL;
-		$this->data['name'] = $this->db_row['name'] ?? NULL;
+		$this->data['id'] = isset($this->db_row['id']) ? $this->db_row['id'] : NULL;
+		$this->data['name'] = isset($this->db_row['name']) ? $this->db_row['name'] : NULL;
 		$this->data['save_fields'] = array('name');
 	}
 }

@@ -22,9 +22,9 @@ class Perspective_Item extends DBObject
 	*/
 	protected function unpackData()
 	{
-		$this->data['id'] = $this->db_row['id'] ?? NULL;
-		$this->data['perspective_id'] = $this->db_row['perspective_id'] ?? NULL;
-		$this->data['item_id'] = $this->db_row['item_id'] ?? NULL;
+		$this->data['id'] = isset($this->db_row['id']) ? $this->db_row['id'] : NULL;
+		$this->data['perspective_id'] = isset($this->db_row['perspective_id']) ? $this->db_row['perspective_id'] : NULL; 
+		$this->data['item_id'] = isset($this->db_row['item_id']) ? $this->db_row['item_id'] : NULL;
 		$this->data['save_fields'] = array('perspective_id', 'item_id');
 	}
 }

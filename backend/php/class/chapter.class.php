@@ -22,9 +22,9 @@ class Chapter extends DBObject
 	*/
 	protected function unpackData()
 	{
-		$this->data['id'] = $this->db_row['id'] ?? NULL;
-		$this->data['name'] = $this->db_row['name'] ?? NULL;
-		$this->data['number'] = $this->db_row['number'] ?? NULL;
+		$this->data['id'] = isset($this->db_row['id']) ? $this->db_row['id'] : NULL;
+		$this->data['name'] = isset($this->db_row['name']) ? $this->db_row['name'] : NULL;
+		$this->data['number'] = isset($this->db_row['number']) ? $this->db_row['number'] : NULL;
 		$this->data['specimens'] = [];
 		$this->data['save_fields'] = array('name', 'number');
 	}

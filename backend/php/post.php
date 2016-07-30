@@ -210,10 +210,10 @@ $data = json_decode(file_get_contents('php://input'));
 
 $post = array();
 
-$post['mode'] = $_GET['mode'] ?? NULL;
-$post['type'] = $_GET['type'] ?? NULL;
-$post['sub_layer'] = $_GET['sub_layer'] ?? FALSE;
-$post['obj'] = $data->obj ?? NULL;
+$post['mode'] = isset($_GET['mode']) ? $_GET['mode'] : NULL;
+$post['type'] = isset($_GET['type']) ? $_GET['type'] : NULL;
+$post['sub_layer'] = isset($_GET['sub_layer']) ? $_GET['sub_layer'] : FALSE;
+$post['obj'] = isset($data->obj) ? $data->obj : NULL;
 
 if (gettype($post['obj']) != 'array') { $post['obj'] = [$post['obj']]; }
 

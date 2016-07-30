@@ -24,17 +24,17 @@ class Label extends DBObject
 	*/
 	protected function unpackData()
 	{
-		$this->data['id'] = $this->db_row['id'] ?? NULL;
-		$this->data['name'] = $this->db_row['name'] ?? NULL;
-		$this->data['label_position_x'] = $this->db_row['label_position_x'] ?? NULL;
-		$this->data['label_position_y'] = $this->db_row['label_position_y'] ?? NULL;
-		$this->data['arrow_position_x'] = $this->db_row['arrow_position_x'] ?? NULL;
-		$this->data['arrow_position_y'] = $this->db_row['arrow_position_y'] ?? NULL;
-		$this->data['font_family'] = $this->db_row['font_family'] ?? NULL;
-		$this->data['font_weight'] = $this->db_row['font_weight'] ?? NULL;
-		$this->data['color'] = $this->db_row['color'] ?? NULL;
-		$this->data['perspective_id'] = $this->db_row['perspective_id'] ?? NULL;
-		$this->data['item_id'] = $this->db_row['item_id'] ?? NULL;
+		$this->data['id'] = isset($this->db_row['id']) ? $this->db_row['id'] : NULL;
+		$this->data['name'] = isset($this->db_row['name']) ? $this->db_row['name'] : NULL;
+		$this->data['label_position_x'] = isset($this->db_row['label_position_x']) ? $this->db_row['label_position_x'] : NULL;
+		$this->data['label_position_y'] = isset($this->db_row['label_position_y']) ? $this->db_row['label_position_y'] : NULL;
+		$this->data['arrow_position_x'] = isset($this->db_row['arrow_position_x']) ? $this->db_row['arrow_position_x'] : NULL;
+		$this->data['arrow_position_y'] = isset($this->db_row['arrow_position_y']) ? $this->db_row['arrow_position_y'] : NULL;
+		$this->data['font_family'] = isset($this->db_row['font_family']) ? $this->db_row['font_family'] : NULL;
+		$this->data['font_weight'] = isset($this->db_row['font_weight']) ? $this->db_row['font_weight'] : NULL;
+		$this->data['color'] = isset($this->db_row['color']) ? $this->db_row['color'] : NULL;
+		$this->data['perspective_id'] = isset($this->db_row['perspective_id']) ? $this->db_row['perspective_id'] : NULL;
+		$this->data['item_id'] = isset($this->db_row['item_id']) ? $this->db_row['item_id'] : NULL;
 		$this->data['save_fields'] = array('name', 'label_position_x', 
 			'label_position_y', 'arrow_position_x', 'arrow_position_y',
 			'font_family', 'font_weight', 'color', 'perspective_id', 'item_id');

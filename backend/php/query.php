@@ -36,10 +36,10 @@ $DBObjManager = new DBObjectManager($DB);
 
 $req = array();
 
-$req['type'] = $_GET['type'] ?? NULL;
-$req['sub_layer'] = $_GET['sub_layer'] ?? FALSE;
-$req['id'] = $_GET['id'] ?? NULL;
-$req['match_perspective_id'] = $_GET['match_perspective_id'] ?? NULL;
+$req['type'] = isset($_GET['type']) ? $_GET['type'] : NULL;
+$req['sub_layer'] = isset($_GET['sub_layer']) ? $_GET['sub_layer'] : FALSE;
+$req['id'] = isset($_GET['id']) ? $_GET['id'] : NULL;
+$req['match_perspective_id'] = isset($_GET['match_perspective_id']) ? $_GET['match_perspective_id'] : NULL;
 
 validateReq($req);
 
