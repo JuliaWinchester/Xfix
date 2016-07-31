@@ -181,8 +181,9 @@ class DB {
 
 		if ($where) {
 			$where_array = $this->prepare_where($where);
+			echo var_dump($where_array);
 			$sql = "SELECT $column FROM $table $where_array[0]";
-			$params = $where_array[1];
+			$params = array_values($where_array[1]);
 		} else {
 			$sql = "SELECT $column FROM $table";
 			$params = [];
