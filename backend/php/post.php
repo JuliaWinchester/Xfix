@@ -32,8 +32,11 @@ function subLayer($type)
 }
 
 function obj_data_column($obj_array, $var) {
-	$data_column = array_column($obj_array, 'data');
-	return array_column($data_column, $var);
+	$result = [];
+	foreach ($obj_array as $obj) {
+		$result[] = $obj->data[$var];
+	}
+	return $result;
 }
 
 function hasID($obj) {
@@ -99,7 +102,7 @@ function recursiveDelete($obj=NULL, $DBObjManager, $type=NULL, $count=0) {
 	}
 
 	$id = obj_data_column($obj, 'id');
-	
+
 	$sub_type = subLayer($type);
 	$obj_id_field = strtolower($type)."_id";
 	$sub_obj = $DBObjManager->readObjCollection($sub_type, 

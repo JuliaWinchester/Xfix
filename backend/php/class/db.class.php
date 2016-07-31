@@ -114,7 +114,7 @@ class DB {
 			$placeholder = "(".implode(',',array_fill(0,count($where[2]), '?')).")";
 			$where_stmt = "$where_col IN $placeholder";
 			if (gettype($where[2]) == 'array') {
-				if (count($where[2]) == 0) { die('Empty array in where clause'); }
+				if (count($where[2]) == 0) { die('Empty array in where clause. Where clause: '.var_dump($where)); }
 				$params = $where[2];
 			} else {
 				$params = [$where[2]];
