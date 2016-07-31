@@ -104,17 +104,17 @@ class DBObjectManager
 		if (isset($obj->data['id'])) {
 			$obj_data = array_intersect_key($obj->data, 
 				array_flip($obj->data['save_fields']));
-			$this->DB->update($type, array_keys($obj_data), 
+			$this->DB->update(strtolower($type), array_keys($obj_data), 
 				array_values($obj_data), $obj->data['id']);
 			return $obj;
 		} else {
 			if (isset($obj->data['save_fields'])) {
 				$obj_data = array_intersect_key($obj->data, 
 				array_flip($obj->data['save_fields']));
-				$new_id = $this->DB->create($type, array_keys($obj_data), 
+				$new_id = $this->DB->create(strtolower($type), array_keys($obj_data), 
 				array_values($obj_data));
 			} else {
-				$new_id = $this->DB->create($type, array_keys($obj->data), 
+				$new_id = $this->DB->create(strtolower($type), array_keys($obj->data), 
 					array_values($obj->data));
 			}
 			$obj->data['id'] = (int) $new_id;
@@ -278,7 +278,7 @@ class DBObjectManager
 		if (count($obj_ids) == 0) {
 			return 0;
 		} else {
-			return $this->DB->delete($type, $obj_ids);
+			return $this->DB->delete(strtolower($type), $obj_ids);
 		}
 
 		
