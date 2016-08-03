@@ -108,3 +108,8 @@
 .log-in {
 	margin: 50px;
 }
+
+.test-inline {
+	border: 1px solid red;
+	display: inline;
+}

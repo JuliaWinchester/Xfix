@@ -6,14 +6,18 @@
 		<md-menu-content width="4">
 			<md-menu-item>
 				<md-button ng-click="$route.current.scope.chapterCreateModal($event)">
-					<md-icon md-menu-align-target md-font-library="material-icons"> book </md-icon>
-					Add new chapter
+					<div layout="row">
+						<md-icon md-menu-align-target md-font-library="material-icons"> book </md-icon>
+						Add new chapter
+					</div>
 				</md-button>
 			</md-menu-item>
 			<md-menu-item>
 				<md-button ng-click="$route.current.scope.specimenCreateModal($event)">
-					<md-icon md-font-library="material-icons"> pan_tool </md-icon>
-					Add new specimen
+					<div layout="row">
+						<md-icon md-font-library="material-icons"> pan_tool </md-icon>
+						Add new specimen
+					</div>
 				</md-button>
 			</md-menu-item>
 		</md-menu-content>

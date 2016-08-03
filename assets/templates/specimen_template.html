@@ -6,20 +6,26 @@
 		<md-menu-content width="4">
 			<md-menu-item>
 				<md-button ng-href="#/specimen/{{$route.current.scope.specimen.data.id}}/perspective/create">
-					<md-icon md-menu-align-target md-font-library="material-icons"> add </md-icon>
-					Create new view
+					<div layout="row">
+						<md-icon md-menu-align-target md-font-library="material-icons"> add </md-icon>
+						Create new view
+					</div>
 				</md-button>
 			</md-menu-item>
 			<md-menu-item>
 				<md-button ng-href="#/specimen/{{$route.current.scope.specimen.data.id}}/perspective/edit/{{$route.current.scope.currentId}}">
-					<md-icon md-font-library="material-icons"> mode_edit </md-icon>
-					Edit current view
+					<div layout="row">
+						<md-icon md-font-library="material-icons"> mode_edit </md-icon>
+						Edit current view
+					</div>
 				</md-button>
 			</md-menu-item>
 			<md-menu-item>
 				<md-button ng-click="$route.current.scope.specimenDeleteModal($event)">
-					<md-icon md-font-library="material-icons"> delete </md-icon>
-					Delete current view
+					<div layout="row">
+						<md-icon md-font-library="material-icons"> delete </md-icon>
+						Delete current view
+					</div>
 				</md-button>
 			</md-menu-item>
 		</md-menu-content>
