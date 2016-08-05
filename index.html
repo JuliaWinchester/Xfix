@@ -3,7 +3,10 @@
 <html ng-app="app" ng-controller="AppController">
 <head>
 	<meta charset="UTF-8">
+	<!-- Fonts and icons -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<!-- JS libraries -->
 	<script src="lib/angular.min.js"></script>
 	<script src="lib/angular-route.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular-animate.min.js"></script>
@@ -13,9 +16,11 @@
   	<script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.js"></script>
 	<script src="lib/paper-full.js"></script>
   	<script src="lib/labelPath.js"></script>
+  	<!-- Iconolater -->
 	<script src="components/iconolater/iconolater.js"></script>
 	<script src="components/iconolater/iconolater-service.js"></script>
 	<script src="components/iconolater/iconolater-directive.js"></script>
+	<!-- App files -->
 	<script src="app.js"></script>
 	<script src="app-controller.js"></script>
 	<script src="app-service.js"></script>
@@ -27,33 +32,32 @@
 	<script src="perspective/perspective-directive.js"></script>
 	<script src="perspective/perspective-service.js"></script>
 	<script src="login/login-service.js"></script>
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<!-- CSS -->
 	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.min.css">
 	<link rel="stylesheet" href="app.css">
 	<link rel="stylesheet" href="animations.css">
 
 	<base href="/Xfix/">
 
-	<title>Xfix</title>
+	<title>AnatDB</title>
 </head>
 <body>
 	<md-content layout="column" layout-fill>
 		<md-toolbar layout="row" class="md-hue-2" layout-align="start center">
-			<a class="md-title toolbar-title" id="header-start" href ng-click="homelink()">ANP 300</a>
+			<a class="md-title toolbar-title" id="header-start" href ng-click="homelink()">AnatDB</a>
 			<h1 class="md-title toolbar-title">></h1>
-			<div class="header-div" ng-repeat="header in $route.current.scope.headers">
-				<a class="md-title toolbar-title" id="header-link" ng-href="{{header.link}}">{{header.text}}</a>
-			</div>
+			<div ng-include="$route.current.scope.headerLeftTemplate"></div>
 	  		<span flex></span>
 	  		<div ng-include="$route.current.scope.headerTemplate"></div>
 	  		<md-menu>
 		  		<md-button class="user-icon-btn" ng-click="$mdOpenMenu($event)">
 		  			{{user}}
-		  			<md-icon class="user-icon" md-menu-origin md-font-library="$route.current.scope.material-icons"> person </md-icon>
+		  			<md-icon class="user-icon" md-menu-origin md-font-library="material-icons"> person </md-icon>
 		  		</md-button>
-		  		<md-menu-content ng-show="user" width="4">
+		  		<md-menu-content ng-show="user" width="2">
 					<md-menu-item>
 						<md-button ng-click="logout()">
+							<md-icon md-font-library="material-icons"> exit_to_app </md-icon>
 							Logout
 						</md-button>
 					</md-menu-item>

@@ -10,7 +10,7 @@ function ChapterController($scope, HTTPService, Chapter, $mdDialog, $location, L
 
 	$scope.showSpecimens = {};
 	$scope.LogInService = LogInService;
-	$scope.headers = [{text: 'Chapter list', link: ''}];
+	$scope.headerLeftTemplate = "assets/templates/chapter_left_template.html";
 	$scope.headerTemplate = "assets/templates/chapter_template.html";
 
 	$scope.chapters = Chapter.chapters;

@@ -105,6 +105,21 @@ function Structure($rootScope) {
 	    	service.structures = [];
 	    	$rootScope.$broadcast('structures.update');
 	    	view.draw();
+	    },
+	    toggleLabels: function () {
+	    	if (service.structures.length > 0) {
+	    		if (service.structures[0].labelPath.group.visible === true) {
+	    			for (var i = 0; i < service.structures.length; i++) {
+	    				service.structures[i].labelPath.group.visible = false;
+	    			}
+	    			view.draw();
+	    		} else if (service.structures[0].labelPath.group.visible === false) {
+	    			for (var i = 0; i < service.structures.length; i++) {
+	    				service.structures[i].labelPath.group.visible = true;
+	    			}
+	    			view.draw();
+	    		}
+	    	}
 	    }
   	};
   	return service;

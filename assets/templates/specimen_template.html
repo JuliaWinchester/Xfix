@@ -1,4 +1,12 @@
 <!-- templates/specimen_template.html -->
+<md-button class="" ng-click="$route.current.scope.toggleLabels()">
+	{{$route.current.scope.labelButtonText}}
+	<md-icon md-font-library="material-icons"> layers </md-icon>
+</md-button>
+<md-button class="" ng-click="" ng-disabled="true">
+	Quiz
+	<md-icon md-font-library="material-icons"> help_outline </md-icon>
+</md-button>
 <md-menu ng-show="$route.current.scope.LogInService.currentUser === 'administrator'">
 		<md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
 			<md-icon md-menu-origin md-font-library="material-icons"> mode_edit </md-icon>

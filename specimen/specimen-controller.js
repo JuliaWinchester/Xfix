@@ -1,15 +1,17 @@
 angular.module('app').controller('SpecimenController', SpecimenController);
 
 SpecimenController.$inject = ['$scope', '$routeParams', '$mdDialog', 'HTTPService', 
-	'Perspective', '$document', '$timeout', 'LogInService'];
+	'Perspective', '$document', '$timeout', 'LogInService', 'Chapter'];
 
 function SpecimenController($scope, $routeParams, $mdDialog, HTTPService, 
-	Perspective, $document, $timeout, LogInService) {
+	Perspective, $document, $timeout, LogInService, Chapter) {
 	$scope.LogInService = LogInService;
 	$scope.currentId = null;
 	$scope.specimenMatches = [];
+	$scope.labelButtonText = "Hide labels";
+	$scope.headerLeftTemplate = "assets/templates/specimen_left_template.html";
 	$scope.headerTemplate = "assets/templates/specimen_template.html";
-	$scope.headers = [];
+	$scope.chapter = null;
 
 	if (typeof tool !== 'undefined') { // Remove any pre-existing PaperJS tool from Perspective create/edit
 		if (tool !== null) { tool.remove(); }
@@ -17,9 +19,24 @@ function SpecimenController($scope, $routeParams, $mdDialog, HTTPService,
 
 	HTTPService.get('Specimen', 1, $routeParams.specimenId).then(function (result) {
 		$scope.specimen = result[0];
-		$scope.headers.push({text: $scope.specimen.data.name, link: ''});
         $scope.getPerspective($scope.specimen.data.perspectives[0].data.id);
+        HTTPService.get('Chapter', 1, $scope.specimen.data.chapter_id).then(function (result) { 
+			Chapter.addContent(result);
+			$scope.chapter = Chapter.chapters[0];
+		});
 	});
+
+	$scope.toggleLabels = function () {
+		if ($scope.labelButtonText == "Hide labels") {
+			Perspective.toggleLabels();
+			//view.draw();
+			$scope.labelButtonText = "Show labels";
+		} else if ($scope.labelButtonText == "Show labels") {
+			Perspective.toggleLabels();
+			//view.draw();
+			$scope.labelButtonText = "Hide labels";
+		}
+	};
 
 	$scope.filterNonSelf = function (specimen) {
 		return specimen.data.id != $routeParams.specimenId;
@@ -64,6 +81,10 @@ function SpecimenController($scope, $routeParams, $mdDialog, HTTPService,
       	var result = $scope.specimen.data.perspectives.filter(function(obj) {
         	return obj.data.id == pId; })[0];
       	return $scope.specimen.data.perspectives.indexOf(result);
+	};
+
+	$scope.nameFilter = function (obj) {
+		return obj.data.name;
 	};
 }
 

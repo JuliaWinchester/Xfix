@@ -76,6 +76,9 @@ function Perspective(HTTPService, Image, Structure, $timeout) {
                     console.log('Perspective deleted');
                     Structure.reset();
                 });
+        },
+        toggleLabels: function () {
+            Structure.toggleLabels();
         }
 	};
 	return service;

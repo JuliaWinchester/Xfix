@@ -1,0 +1,18 @@
+<!-- templates/specimen_left_template.html -->
+<div layout="row" layout-align="start center" ng-cloak>
+	<md-menu md-position-mode="target-left target">
+		<a md-menu-origin class="md-title toolbar-title" id="header-link" href ng-click="$mdOpenMenu($event)" ng-cloak>Chapter {{$route.current.scope.chapter.data.number}}</a>
+		<md-menu-content width="4" style="padding: 0px">
+			<md-toolbar style="min-height:50px" layout="row" layout-align="center center">
+				<h2 class="md-subhead">Chapter {{$route.current.scope.chapter.data.number}} Specimens</h2>
+			</md-toolbar>
+			<md-menu-item layout="row" layout-align="start center" ng-repeat="specimen in $route.current.scope.chapter.data.specimens | orderBy:$route.current.scope.nameFilter track by $index" >
+				<md-icon class="arrow" md-font-library="material-icons"> keyboard_arrow_right </md-icon>
+				<a ng-href="#/specimen/{{specimen.data.id}}">{{specimen.data.name}}</a>
+				<span flex></span>
+			</md-menu-item>
+		</md-menu-content>
+	</md-menu>
+	<h1 class="md-title toolbar-title">></h1>
+	<h1 class="md-title toolbar-title">{{$route.current.scope.specimen.data.name}}</h1>
+</div>

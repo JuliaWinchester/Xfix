@@ -11,8 +11,6 @@ function AppController($scope, $route, LogInService, $location, $timeout) {
 	LogInService.getUser();
 	$scope.user = LogInService.currentUser;
 
-	$scope.title = "Log In";
-
 	$scope.username = "";
 	$scope.password = "";
 
@@ -32,7 +30,7 @@ function AppController($scope, $route, LogInService, $location, $timeout) {
 					} else {
 						console.log('Incorrect username or password');
 					}
-				})
+				});
 			$scope.username = "";
 			$scope.password = "";
 		}

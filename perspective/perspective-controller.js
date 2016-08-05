@@ -19,9 +19,10 @@ function PerspectiveEditController($scope, $routeParams, $timeout, $location,
             $scope.textvar = "";
         }); 
   	});
-	
-    $scope.headers = [{text: 'Edit perspective', link: ''}];
+    
     $scope.headerTemplate = "assets/templates/perspective_template.html";
+    $scope.headerLeftTemplate = "assets/templates/perspective_left_template.html";
+    $scope.banner = "Edit perspective";
 
     Structure.reset();
   	$scope.structures = Structure.structures;
@@ -64,8 +65,9 @@ function PerspectiveCreateController($scope, $routeParams, $timeout, $location,
         }); 
     });
   
-    $scope.headers = [{text: 'Create perspective', link: ''}];
     $scope.headerTemplate = "assets/templates/perspective_template.html";
+    $scope.headerLeftTemplate = "assets/templates/perspective_left_template.html";
+    $scope.banner = "Create perspective";
 
     Structure.reset();
     $scope.structures = Structure.structures;
