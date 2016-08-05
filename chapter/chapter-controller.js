@@ -8,6 +8,7 @@ function ChapterController($scope, HTTPService, Chapter, $mdDialog, $location, L
 		$scope.chapters = Chapter.chapters;
 	});
 
+	Chapter.reset();
 	$scope.showSpecimens = {};
 	$scope.LogInService = LogInService;
 	$scope.headerLeftTemplate = "assets/templates/chapter_left_template.html";

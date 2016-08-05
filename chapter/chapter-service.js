@@ -61,6 +61,9 @@ function Chapter($rootScope, HTTPService) {
 			} else {
 				console.log('Error deleting specimen.');
 			}	
+		},
+		reset: function () {
+			service.chapters = [];
 		}
 	};
 	return service;
