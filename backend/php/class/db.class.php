@@ -9,17 +9,23 @@
  * @author Julie Winchester <julie.m.winchester@gmail.com>
  * @access public
  */
+
 class DB {
 	protected $dbdriver = 'mysql';
-	protected $host     = '127.0.0.1';
-	protected $dbname   = 'Xfix';
-	protected $charset  = 'utf8';
-	protected $username = 'Moocow';
-	protected $password = 'salmiakki';
+	protected $host;
+	protected $dbname;
+	protected $charset;
+	protected $username;
+	protected $password;
 	public $dbh;
 
-	function __construct() 
+	function __construct($db_host, $db_name, $db_charset, $db_username, $db_password) 
 	{
+		$this->host = $db_host;
+		$this->dbname = $db_name;
+		$this->charset= $db_charset;
+		$this->username = $db_username;
+		$this->password = $db_password;
 		// Error catching isn't necessary, but in case of bad server config
 		try {
 			$dsn = "$this->dbdriver:host=$this->host;port=3306;dbname=$this->dbname;charset=$this->charset";

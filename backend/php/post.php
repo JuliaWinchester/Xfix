@@ -1,5 +1,6 @@
 <?php
 
+include_once 'cfg/db-cfg.php';
 include_once 'class/db.class.php';
 include_once 'class/dbObjectManager.class.php';
 
@@ -206,7 +207,7 @@ function dataObjToArray($obj, $type)
 	return $obj;
 }
 
-$DB = new DB();
+$DB = new DB($db_host, $db_name, $db_charset, $db_username, $db_password);
 $DBObjManager = new DBObjectManager($DB);
 
 $data = json_decode(file_get_contents('php://input'));
