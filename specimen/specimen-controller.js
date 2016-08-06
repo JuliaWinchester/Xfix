@@ -43,6 +43,7 @@ function SpecimenController($scope, $routeParams, $mdDialog, HTTPService,
 	};
 
 	$scope.getPerspective = function (pId) {
+		$scope.labelButtonText = "Hide labels";
 		Perspective.get(pId, 1, $scope).then(function () {
 			$scope.currentId = Perspective.p.data.id;
 			HTTPService.get('Specimen', 1, null, Perspective.p.data.id).then(function (result) {
