@@ -162,6 +162,7 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 	      	var initHeight = view.size.height;
 	      	var ctx = document.getElementById("i-ctx").getContext("2d");
 	      	ctx.canvas.height = newHeight;
+	      	console.log(ctx.canvas.width);
 
 	      	if (document.getElementById("nav")) {
 	      		var toolbar = document.getElementById("nav");
