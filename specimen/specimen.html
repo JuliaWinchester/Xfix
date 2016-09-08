@@ -1,15 +1,14 @@
 <!-- specimen.html -->
-<md-content layout="row" ng-cloak>
-	<div id="canvas-and-views" class="margintwenty">
+<md-content layout="row" layout-align="center start" ng-cloak>
+	<div id="canvas-and-views" class="margintwenty" style="width: 900px">
 		<div id="view-block" class="sub-list shadow" style="width: 900px" layout="row" layout-padding layout-wrap>
 			<span>Views:</span>
 			<div ng-repeat="perspective in specimen.data.perspectives track by $index">
 				<a ng-class="{bold: perspective.data.id == currentId}" href ng-click="getPerspective(perspective.data.id)">{{perspective.data.type}}</a>
 			</div>
 		</div>
-		<canvas id="i-ctx" class="shadow" draw-no-edit width="900" height="500" ng-cloak></canvas>
+		<canvas id="i-ctx" class="shadow ctx-width" draw-no-edit width="900" height="500" ng-cloak></canvas>
 	</div>
-	<span flex></span>
 	<md-sidenav class="md-sidenav-right list-box" md-is-locked-open="true">
 		<md-toolbar layout="row" layout-align="center center">
 			<p class="marginten">For these structures, also see:</p>
