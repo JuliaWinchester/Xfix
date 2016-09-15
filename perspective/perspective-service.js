@@ -195,8 +195,6 @@ function QuizService(Image, Structure) {
                     fillColor: 'white',
                     fontFamily: 'Helvetica',
                     fontSize: '16px',
-                    shadowColor: 'black',
-                    shadowBlur: 4,
                     name: 'answer'
                 });
                 service.labels[i].answerText.frame = new Path.Rectangle({
