@@ -1,6 +1,6 @@
 <!-- specimen.html -->
 <md-content layout="row" layout-align="center start" ng-cloak>
-	<div id="canvas-and-views" class="margintwenty">
+	<div id="canvas-and-views" class="margintoptwenty">
 		<div id="top-block" class="sub-list shadow" layout="row" layout-padding layout-wrap>
 			<div style="margin: 0px; padding: 0px" layout="row" layout-padding layout-wrap ng-hide="quizEnabled"> 
 				<span>Views:</span>
@@ -17,7 +17,11 @@
 		</div>
 		<canvas id="i-ctx" class="shadow" draw-no-edit width="900" height="500" ng-cloak></canvas>
 	</div>
-	<md-sidenav class="md-sidenav-right list-box" md-is-locked-open="!quizEnabled" md-component-id="right">
+	<md-button class="see-also-button md-raised md-primary shadow" ng-click="toggleSideNav()" hide-gt-md ng-show="!quizEnabled">
+		<p class="vertical-text">See also</p>
+	</md-button>
+
+	<md-sidenav class="md-sidenav-right list-box" md-is-locked-open="!quizEnabled && $mdMedia('gt-md')" md-component-id="right">
 		<md-toolbar layout="row" layout-align="center center">
 			<p class="marginten" style="white-space: nowrap;">See also:</p>
 		</md-toolbar>

@@ -65,8 +65,8 @@
 	margin: 10px;
 }
 
-.margintwenty {
-	margin: 20px;
+.margintoptwenty {
+	margin-top: 20px;
 }
 
 .i-input-file {
@@ -111,4 +111,16 @@
 
 .arrow {
 	width: 20px;
+}
+
+.see-also-button {
+	margin-top: 19px;
+	height: 400px;
+	min-width: 50px;
+	width: 50px;
+}
+
+.vertical-text {
+	transform: translate(0px, 5px) rotate(270deg);
+	transform-origin: center center;
 }

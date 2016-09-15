@@ -51,6 +51,10 @@ function SpecimenController($scope, $routeParams, $mdDialog, HTTPService,
 		}
 	};
 
+	$scope.toggleSideNav = function () {
+		$mdSidenav('right').toggle();
+	};
+
 	$scope.filterNonSelf = function (specimen) {
 		return specimen.data.id != $routeParams.specimenId;
 	};
