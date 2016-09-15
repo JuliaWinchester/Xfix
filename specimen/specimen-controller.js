@@ -1,16 +1,19 @@
 angular.module('app').controller('SpecimenController', SpecimenController);
 
 SpecimenController.$inject = ['$scope', '$routeParams', '$mdDialog', 'HTTPService', 
-	'Perspective', '$document', '$timeout', 'LogInService', 'Chapter'];
+	'Perspective', '$document', '$timeout', 'LogInService', 'Chapter', '$mdSidenav'];
 
 function SpecimenController($scope, $routeParams, $mdDialog, HTTPService, 
-	Perspective, $document, $timeout, LogInService, Chapter) {
+	Perspective, $document, $timeout, LogInService, Chapter, $mdSidenav) {
 	$scope.LogInService = LogInService;
-	$scope.currentId = null;
-	$scope.specimenMatches = [];
-	$scope.labelButtonText = "Hide labels";
 	$scope.headerLeftTemplate = "assets/templates/specimen_left_template.html";
 	$scope.headerTemplate = "assets/templates/specimen_template.html";
+
+	$scope.labelButtonText = "Hide labels";
+	$scope.quizEnabled = false;
+
+	$scope.currentId = null;
+	$scope.specimenMatches = [];
 	$scope.chapter = null;
 
 	if (typeof tool !== 'undefined') { // Remove any pre-existing PaperJS tool from Perspective create/edit
@@ -29,12 +32,22 @@ function SpecimenController($scope, $routeParams, $mdDialog, HTTPService,
 	$scope.toggleLabels = function () {
 		if ($scope.labelButtonText == "Hide labels") {
 			Perspective.toggleLabels();
-			//view.draw();
 			$scope.labelButtonText = "Show labels";
 		} else if ($scope.labelButtonText == "Show labels") {
 			Perspective.toggleLabels();
-			//view.draw();
 			$scope.labelButtonText = "Hide labels";
+		}
+	};
+
+	$scope.toggleQuiz = function () {
+		if ($scope.quizEnabled == false) {
+			$scope.quizEnabled = true;
+			$timeout(function () {
+				Perspective.initQuiz();
+			}, 400);
+		} else if ($scope.quizEnabled == true) {
+			$scope.quizEnabled = false;
+			Perspective.endQuiz();
 		}
 	};
 

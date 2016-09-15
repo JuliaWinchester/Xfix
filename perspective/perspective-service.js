@@ -1,8 +1,8 @@
 angular.module('app').service('Perspective', Perspective);
 
-Perspective.$inject = ['HTTPService', 'Image', 'Structure'];
+Perspective.$inject = ['HTTPService', 'Image', 'Structure', 'QuizService'];
 
-function Perspective(HTTPService, Image, Structure) {
+function Perspective(HTTPService, Image, Structure, QuizService) {
 	var service = {
 		p: {},
 		get: function (perspectiveId, getLabel) {
@@ -74,6 +74,12 @@ function Perspective(HTTPService, Image, Structure) {
         },
         toggleLabels: function () {
             Structure.toggleLabels();
+        },
+        initQuiz: function () {
+            QuizService.initQuiz();
+        },
+        endQuiz: function () {
+            QuizService.endQuiz();
         }
 	};
 	return service;
@@ -90,27 +96,121 @@ function QuizService(Image, Structure) {
         labels: [],
         nCorrect: 0,
         nCorrectText: null,
-        enable: function () {
+        topText: null,
+        cleanUp: function () {
+            service.nCorrect = 0;
+            for (var i = 0; i < service.labels.length; i++) {
+                service.labels[i].answerText.frame.remove();
+                service.labels[i].answerText.remove();
+            }
+            service.labels = [];
+            if (service.labelBox) { service.labelBox.remove(); };
+            if (service.nCorrectText) { service.nCorrectText.remove(); };
+            if (service.topText) { service.topText.remove(); };
+            for (var i = 0; i < Structure.structures.length; i++) {
+                Structure.structures[i].labelPath.label.visible = true;
+                if (Structure.structures[i].labelPath.hasOwnProperty('questionFrame')) {
+                    Structure.structures[i].labelPath.questionFrame.remove();
+                }
+            }
+        },
+        initQuiz: function () {
+            service.cleanUp();
             service.drawQuiz();
             service.dragOn();
             view.draw();
         },
         drawQuiz: function () {
-            Image.setCanvasWidth(1400);
+            Image.setCanvasWidth(1200);
             var ctxDims = Image.getCanvasDims();
-            service.labelBox = new Rectangle(950, 50, 1350, ctxDims.height-50);
-            var labelXY; // Write code to give evenly spaced grid locs for n structures
+            service.labelBox = new Path.Rectangle(new Point(920, 60), new Point(1180, ctxDims.height-20));
+            service.labelBox.fillColor = '#009688';
+            service.labelBox.shadowColor = 'white';
+            service.labelBox.shadowBlur = 3;
+            service.nCorrectText = new PointText({
+                point: new Point(service.labelBox.bounds.left + 55, 
+                    service.labelBox.bounds.top - 10),
+                content: service.nCorrect+'/'+Structure.structures.length+' correctly placed',
+                fillColor: 'white',
+                fontFamily: 'Helvetica',
+                fontSize: '16px',
+                shadowColor: 'black',
+                shadowBlur: 4
+            });
+            service.topText = new PointText({
+                point: new Point(service.labelBox.bounds.left + 15, 
+                    service.labelBox.bounds.top - 35),
+                content: 'Drag labels to appropriate boxes',
+                fillColor: 'white',
+                fontFamily: 'Helvetica',
+                fontSize: '16px',
+                shadowColor: 'black',
+                shadowBlur: 4
+            });
+
+            // Drawing answer labels and erasing canvas labels
             for (var i = 0; i < Structure.structures.length; i++) {
-                Structure.structures[i].labelPath.label.visible = false;
-                // Code to draw box on old labels
-                var label = new Text(labelX[i].x, labelY[i].y, 
-                    Structure.structures[i].labelPath.label.text);
-                // Code to draw label borders or background
-                labels.push(label);
+                    var lp = Structure.structures[i].labelPath;
+                    var l = lp.label;
+                    var p = lp.pathGroup.children['path'];
+                    l.visible = false;
+                    var qf = new Path.Rectangle({
+                        point: [p.getPointAt(0).x-10, p.getPointAt(0).y-10],
+                        size: [20, 20],
+                        fillColor: '#26a69a',
+                        opacity: 0.75,
+                        name: 'questionFrame'
+                    });
+                    Structure.structures[i].labelPath.questionFrame = qf;
+                    service.labels.push({text: l.content, width: l.bounds.width});
             }
-            service.nCorrectText = new Text(labelBox.bbox.center, 
-                labelBox.bbox.bottom - 40, 
-                nCorrect+'/'+service.labels.length+' correctly placed');
+
+            var shuffle = function (array) {
+                var m = array.length, i, t;
+                while (m) {
+                    i = Math.floor(Math.random() * m--);
+                    t = array[m];
+                    array[m] = array[i];
+                    array[i] = t;
+                }
+                return array;
+            };
+
+            service.labels = shuffle(service.labels);
+            var ansX = service.labelBox.bounds.left+10;
+            var ansY = service.labelBox.bounds.top+30;
+            var ansXFinal = service.labelBox.bounds.right-10;
+            var ansYFinal = service.labelBox.bounds.bottom-60;
+            for (var i = 0; i < service.labels.length; i++) {
+                if (service.labels[i].width + ansX > ansXFinal) {
+                    ansY += 30;
+                    if (ansY > ansYFinal) {
+                        // Expand canvas+view, labelBox, bottomText
+                    }
+                    ansX = service.labelBox.bounds.left+10;
+                }
+                service.labels[i].answerText = new PointText({
+                    point: new Point(ansX, ansY),
+                    content: service.labels[i].text,
+                    fillColor: 'white',
+                    fontFamily: 'Helvetica',
+                    fontSize: '16px',
+                    shadowColor: 'black',
+                    shadowBlur: 4,
+                    name: 'answer'
+                });
+                service.labels[i].answerText.frame = new Path.Rectangle({
+                    from: [service.labels[i].answerText.bounds.left-4,
+                        service.labels[i].answerText.bounds.top-2],
+                    to: [service.labels[i].answerText.bounds.right+4,
+                        service.labels[i].answerText.bounds.bottom],
+                    fillColor: '#004d40',
+                    shadowColor: 'gray',
+                    shadowBlur: 3
+                }).insertBelow(service.labels[i].answerText);
+                
+                ansX = ansX + service.labels[i].width + 15;
+            }
         },
         dragOn: function () {
             service.tool = new Tool(); // After this, add event functions to tool
@@ -123,31 +223,51 @@ function QuizService(Image, Structure) {
             };
 
             service.tool.onMouseDown = function(event) {
-                project.activeLayer.selected = false;
                 service.tool.item = null;
-
                 var hitResult = project.hitTest(event.point, hitOptions);
-                if (!hitResult || hitResult.item != label || service.labels.findIndex(hitResult.item) == -1) {
-                    return;
+                if (hitResult.item.name == 'answer') {
+                    service.tool.item = hitResult.item;
+                    service.tool.item.frame.strokeWidth = 0;
                 }
-                service.tool.item = hitResult.item;
-                service.tool.item.box.selected = true;
-                service.tool.mouseStart = event.point;
             };
 
             service.tool.onMouseDrag = function(event) {
                 service.tool.item.position = 
                     service.tool.item.position.add(event.delta);
-                service.tool.item.box.position = 
-                    service.tool.item.box.position.add(event.delta);
+                service.tool.item.frame.position = service.tool.item.position;
             };
 
             service.tool.onMouseUp = function(event) {
-                // Where ~the magic~ happens
+                for (var i = 0; i < Structure.structures.length; i++) {
+                    var lp = Structure.structures[i].labelPath;
+                    if (service.tool.item.frame.intersects(lp.questionFrame) || 
+                        service.tool.item.frame.contains(lp.questionFrame.position)) {
+                        service.tool.item.position = lp.questionFrame.position;
+                        service.tool.item.frame.position = 
+                            lp.questionFrame.position;
+                        if (service.tool.item.content == lp.label.content) {
+                            service.tool.item.frame.strokeColor = '#e0f2f1';
+                            service.tool.item.frame.strokeWidth = 2;
+                            service.tool.item.name = 'answerLocked';
+                            service.nCorrect++;
+                            service.nCorrectText.content = 
+                                service.nCorrect+ '/' + 
+                                Structure.structures.length+ 
+                                ' correctly placed';
+                        } else {
+                            service.tool.item.frame.strokeColor = '#b71c1c';
+                            service.tool.item.frame.strokeWidth = 2;
+                        }
+                    }       
+                }
             };
-        },
-        disable: function () {
 
+            //uiDrag(tool);
+        },
+        endQuiz: function () {
+            Image.setCanvasWidth(900);
+            service.cleanUp();
+            view.draw();
         }
     };
     return service;

@@ -1,17 +1,25 @@
 <!-- specimen.html -->
 <md-content layout="row" layout-align="center start" ng-cloak>
-	<div id="canvas-and-views" class="margintwenty" style="width: 900px">
-		<div id="view-block" class="sub-list shadow" style="width: 900px" layout="row" layout-padding layout-wrap>
-			<span>Views:</span>
-			<div ng-repeat="perspective in specimen.data.perspectives track by $index">
-				<a ng-class="{bold: perspective.data.id == currentId}" href ng-click="getPerspective(perspective.data.id)">{{perspective.data.type}}</a>
+	<div id="canvas-and-views" class="margintwenty">
+		<div id="top-block" class="sub-list shadow" layout="row" layout-padding layout-wrap>
+			<div style="margin: 0px; padding: 0px" layout="row" layout-padding layout-wrap ng-hide="quizEnabled"> 
+				<span>Views:</span>
+				<div ng-repeat="perspective in specimen.data.perspectives track by $index">
+					<a ng-class="{bold: perspective.data.id == currentId}" href ng-click="getPerspective(perspective.data.id)">{{perspective.data.type}}</a>
+				</div>
+			</div>
+			<div style="margin: 0px; padding: 0px" layout="row" layout-align="center center" flex ng-show="quizEnabled">
+				<md-button style="margin: -0.5px;" class="md-raised md-primary" ng-click="toggleQuiz()">
+					Exit Quiz
+					<md-icon md-font-library="material-icons"> exit_to_app </md-icon>
+				</md-button>
 			</div>
 		</div>
-		<canvas id="i-ctx" class="shadow ctx-width" draw-no-edit width="900" height="500" ng-cloak></canvas>
+		<canvas id="i-ctx" class="shadow" draw-no-edit width="900" height="500" ng-cloak></canvas>
 	</div>
-	<md-sidenav class="md-sidenav-right list-box" md-is-locked-open="true">
+	<md-sidenav class="md-sidenav-right list-box" md-is-locked-open="!quizEnabled" md-component-id="right">
 		<md-toolbar layout="row" layout-align="center center">
-			<p class="marginten">For these structures, also see:</p>
+			<p class="marginten" style="white-space: nowrap;">See also:</p>
 		</md-toolbar>
 		<md-content class="sub-list" flex>
 			<div class="marginten" ng-repeat="specimen in specimenMatches | filter:filterNonSelf track by $index">

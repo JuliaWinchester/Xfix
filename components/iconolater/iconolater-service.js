@@ -177,6 +177,15 @@ function CanvasImage() { // Function name avoids PaperJS conflict
 	      		var initRelPos = initRasterY/initHeight;
 	      		service.raster.position.y = initRelPos*view.size.height; 
 	      	}
+	    },
+	    setCanvasWidth: function(width) {
+	    	var ctx = document.getElementById("i-ctx").getContext("2d");
+	    	ctx.canvas.width = width;
+	    	view.viewSize = [width, ctx.canvas.height];
+	    },
+	    getCanvasDims: function () {
+	    	var ctx = document.getElementById("i-ctx").getContext("2d");
+	    	return {width: ctx.canvas.width, height: ctx.canvas.height};
 	    }
 	};
 	return service;

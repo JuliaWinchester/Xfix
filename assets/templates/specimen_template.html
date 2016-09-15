@@ -3,7 +3,7 @@
 	{{$route.current.scope.labelButtonText}}
 	<md-icon md-font-library="material-icons"> layers </md-icon>
 </md-button>
-<md-button class="" ng-click="" ng-disabled="true">
+<md-button class="" ng-click="$route.current.scope.toggleQuiz()" ng-disabled="$route.current.scope.quizEnabled">
 	Quiz
 	<md-icon md-font-library="material-icons"> help_outline </md-icon>
 </md-button>
