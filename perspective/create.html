@@ -14,8 +14,8 @@
   <div style="margin-top: 20px">
     <canvas id="i-ctx" draw-edit width="900" height="500"></canvas>
   </div>
-  <div class="margintwenty" layout="column" layout-align="start center" flex>
-    <md-sidenav class="md-sidenav-right list-box" md-is-locked-open="true">
+  <div layout="column" layout-align="start center" flex>
+    <md-sidenav class="perspective-sn md-sidenav-right list-box" md-is-locked-open="true">
       <md-toolbar layout="column" layout-align="center center">
         <p>Perspective</p>
       </md-toolbar>
@@ -23,7 +23,7 @@
         <input class="marginten" type="text" id="i-txt-1" name="type" ng-model="ptype"/>      
       </md-content>
     </md-sidenav>
-    <md-sidenav class="md-sidenav-right list-box" md-is-locked-open="true" flex>
+    <md-sidenav class="perspective-sn md-sidenav-right list-box" md-is-locked-open="true" flex>
       <md-toolbar layout="row" layout-align="center center">
         <p class="marginten">Structures</p>
       </md-toolbar>
@@ -34,8 +34,8 @@
         </div>
         <label ng-repeat="structure in structures track by $index">
           <div id="i-itm-box" layout="row" layout-margin>
-            <p id="i-itm-txt">{{structure.name}}</p>
             <md-icon delete-one-structure itemid="structure.sNum" id="i-x" md-menu-align-target md-font-library="material-icons"> clear </md-icon>
+            <p id="i-itm-txt">{{structure.name}}</p>
           </div>
         </label>     
       </md-content>

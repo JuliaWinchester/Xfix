@@ -7,7 +7,7 @@
 	Quiz
 	<md-icon md-font-library="material-icons"> help_outline </md-icon>
 </md-button>
-<md-menu ng-show="$route.current.scope.LogInService.currentUser === 'administrator'">
+<md-menu ng-show="user === 'administrator'">
 		<md-button class="md-icon-button" ng-click="$mdOpenMenu($event)">
 			<md-icon md-menu-origin md-font-library="material-icons"> mode_edit </md-icon>
 		</md-button>

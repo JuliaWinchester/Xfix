@@ -16,12 +16,14 @@
 			</div>
 		</div>
 		<canvas id="i-ctx" class="shadow" draw-no-edit width="900" height="500" ng-cloak></canvas>
+		<div flex layout="row" layout-align="center center">
+			<span style="color: gray; margin-top: 10px">&#169; 2016 Julie Winchester.</span>
+		</div>
 	</div>
 	<md-button class="see-also-button md-raised md-primary shadow" ng-click="toggleSideNav()" hide-gt-md ng-show="!quizEnabled">
 		<p class="vertical-text">See also</p>
 	</md-button>
-
-	<md-sidenav class="md-sidenav-right list-box" md-is-locked-open="!quizEnabled && $mdMedia('gt-md')" md-component-id="right">
+	<md-sidenav class="specimen-sn md-sidenav-right list-box" md-is-locked-open="!quizEnabled && $mdMedia('gt-md')" md-component-id="right">
 		<md-toolbar layout="row" layout-align="center center">
 			<p class="marginten" style="white-space: nowrap;">See also:</p>
 		</md-toolbar>

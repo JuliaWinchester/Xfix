@@ -10,7 +10,7 @@ function ChapterController($scope, HTTPService, Chapter, $mdDialog, $location, L
 
 	Chapter.reset();
 	$scope.showSpecimens = {};
-	$scope.LogInService = LogInService;
+	LogInService.redirectIfNoUser();
 	$scope.headerLeftTemplate = "assets/templates/chapter_left_template.html";
 	$scope.headerTemplate = "assets/templates/chapter_template.html";
 

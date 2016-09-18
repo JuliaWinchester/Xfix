@@ -1,18 +1,10 @@
-angular.module('app').controller('PerspectiveController', PerspectiveController);
-
-PerspectiveController.$inject = ['$scope', '$routeParams', 'Perspective'];
-
-function PerspectiveController($scope, $routeParams, Perspective) {
-    Perspective.get($routeParams.perspectiveId, 1);
-}
-
 angular.module('app').controller('PerspectiveEditController', PerspectiveEditController);
 
 PerspectiveEditController.$inject = ['$scope', '$routeParams', '$timeout', 
-    '$location', 'Structure', 'Perspective', 'Image'];
+    '$location', 'LogInService', 'Structure', 'Perspective', 'Image'];
 
 function PerspectiveEditController($scope, $routeParams, $timeout, $location,
-    Structure, Perspective, Image) {
+    LogInService, Structure, Perspective, Image) {
 	$scope.$on('structures.update', function(event) {
     	$timeout(function () {
             $scope.structures = Structure.structures;
@@ -20,6 +12,7 @@ function PerspectiveEditController($scope, $routeParams, $timeout, $location,
         }); 
   	});
     
+    LogInService.redirectIfNoUser();
     $scope.headerTemplate = "assets/templates/perspective_template.html";
     $scope.headerLeftTemplate = "assets/templates/perspective_left_template.html";
     $scope.banner = "Edit perspective";
@@ -54,10 +47,10 @@ function PerspectiveEditController($scope, $routeParams, $timeout, $location,
 angular.module('app').controller('PerspectiveCreateController', PerspectiveCreateController);
 
 PerspectiveCreateController.$inject = ['$scope', '$routeParams', '$timeout', 
-    '$location', 'Structure', 'Perspective', 'Image'];
+    '$location', 'LogInService', 'Structure', 'Perspective', 'Image'];
 
 function PerspectiveCreateController($scope, $routeParams, $timeout, $location,
-    Structure, Perspective, Image) {
+    LogInService, Structure, Perspective, Image) {
 	$scope.$on('structures.update', function(event) {
         $timeout(function () {
             $scope.structures = Structure.structures;
@@ -65,6 +58,7 @@ function PerspectiveCreateController($scope, $routeParams, $timeout, $location,
         }); 
     });
   
+    LogInService.redirectIfNoUser();  
     $scope.headerTemplate = "assets/templates/perspective_template.html";
     $scope.headerLeftTemplate = "assets/templates/perspective_left_template.html";
     $scope.banner = "Create perspective";

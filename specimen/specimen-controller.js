@@ -5,9 +5,9 @@ SpecimenController.$inject = ['$scope', '$routeParams', '$mdDialog', 'HTTPServic
 
 function SpecimenController($scope, $routeParams, $mdDialog, HTTPService, 
 	Perspective, $document, $timeout, LogInService, Chapter, $mdSidenav) {
-	$scope.LogInService = LogInService;
 	$scope.headerLeftTemplate = "assets/templates/specimen_left_template.html";
 	$scope.headerTemplate = "assets/templates/specimen_template.html";
+	LogInService.redirectIfNoUser();
 
 	$scope.labelButtonText = "Hide labels";
 	$scope.quizEnabled = false;

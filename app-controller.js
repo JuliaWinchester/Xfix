@@ -8,14 +8,16 @@ function AppController($scope, $route, LogInService, $location, $timeout) {
   	});
 
 	$scope.$route = $route;
-	LogInService.getUser();
-	$scope.user = LogInService.currentUser;
+	LogInService.redirectIfNoUser();
+	if (LogInService.getUser() !== false) {
+		$scope.user = LogInService.getUser();
+	}
 
 	$scope.username = "";
 	$scope.password = "";
 
 	$scope.homelink = function () {
-		if (LogInService.getUser()) {
+		if (LogInService.getUser() !== false) {
 			console.log('redirecting');
 			$location.path('/');
 		}

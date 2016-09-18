@@ -69,6 +69,10 @@
 	margin-top: 20px;
 }
 
+.margintwenty {
+	margin: 20px;
+}
+
 .i-input-file {
 	width: 0.1px;
 	height: 0.1px;
@@ -115,7 +119,7 @@
 
 .see-also-button {
 	margin-top: 19px;
-	height: 400px;
+	height: 300px;
 	min-width: 50px;
 	width: 50px;
 }
@@ -123,4 +127,13 @@
 .vertical-text {
 	transform: translate(0px, 5px) rotate(270deg);
 	transform-origin: center center;
+}
+
+.specimen-sn {
+	background-color: #E0F2F1;
+}
+
+.perspective-sn {
+	width: 250px;
+	min-width: 250px;
 }

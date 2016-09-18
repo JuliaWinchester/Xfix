@@ -13,7 +13,12 @@ function LogInService($cookies, $rootScope, $location, $http) {
 				service.currentUser = $cookies.getObject('globals').currentUser.username;
 				return service.currentUser;
 			} else {
-				console.log('No current user!');
+				return false;
+			}
+		},
+		redirectIfNoUser: function () {
+			if (service.getUser() === false) {
+				console.log('No current user');
 				$location.path('/login');
 			}
 		},
