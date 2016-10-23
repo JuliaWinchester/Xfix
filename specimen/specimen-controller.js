@@ -13,7 +13,7 @@ function SpecimenController($scope, $routeParams, $mdDialog, HTTPService,
 	$scope.quizEnabled = false;
 
 	$scope.currentId = null;
-	$scope.specimenMatches = [];
+	//$scope.specimenMatches = [];
 	$scope.chapter = null;
 
 	if (typeof tool !== 'undefined') { // Remove any pre-existing PaperJS tool from Perspective create/edit

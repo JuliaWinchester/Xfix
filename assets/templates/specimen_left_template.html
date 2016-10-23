@@ -1,7 +1,7 @@
 <!-- templates/specimen_left_template.html -->
 <div layout="row" layout-align="start center" ng-cloak>
 	<md-menu md-position-mode="target-left target">
-		<a md-menu-origin class="md-title toolbar-title" id="header-link" href ng-click="$mdOpenMenu($event)" ng-cloak>Chapter {{$route.current.scope.chapter.data.number}}</a>
+		<a md-menu-origin class="no-wrap md-title toolbar-title" id="header-link" href ng-click="$mdOpenMenu($event)" ng-cloak>Chapter {{$route.current.scope.chapter.data.number}}</a>
 		<md-menu-content width="4" style="padding: 0px">
 			<md-toolbar style="min-height:50px" layout="row" layout-align="center center">
 				<h2 class="md-subhead">Chapter {{$route.current.scope.chapter.data.number}} Specimens</h2>
@@ -14,5 +14,5 @@
 		</md-menu-content>
 	</md-menu>
 	<h1 class="md-title toolbar-title">></h1>
-	<h1 class="md-title toolbar-title">{{$route.current.scope.specimen.data.name}}</h1>
+	<h1 class="no-wrap md-title toolbar-title">{{$route.current.scope.specimen.data.name}}</h1>
 </div>

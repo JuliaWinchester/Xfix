@@ -41,11 +41,11 @@
 <body>
 	<md-content layout="column" layout-fill>
 		<md-toolbar layout="row" class="md-hue-2" layout-align="start center">
-			<a class="md-title toolbar-title" id="header-start" href ng-click="homelink()">AnatDB</a>
+			<a class="md-title toolbar-title no-wrap" id="header-start" href ng-click="homelink()">AnatDB</a>
 			<h1 class="md-title toolbar-title">></h1>
 			<div ng-include="$route.current.scope.headerLeftTemplate"></div>
 	  		<span flex></span>
-	  		<div ng-include="$route.current.scope.headerTemplate"></div>
+	  		<div layout="row" layout-nowrap ng-include="$route.current.scope.headerTemplate"></div>
 	  		<md-menu>
 		  		<md-button class="user-icon-btn" ng-click="$mdOpenMenu($event)">
 		  			{{user}}
